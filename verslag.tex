@@ -12,6 +12,7 @@
 \date{\today}
 
 \documentclass[12pt]{article}
+\usepackage{listings} 
 \usepackage{hyperref}
 \usepackage{graphicx}
 \usepackage[dutch]{babel}
@@ -36,7 +37,7 @@ Ook vergelijken we mogelijkheden van Io met die van While.
 %Zo'n programma helpt om duidelijk te krijgen hoe programma's in jullie taal er uitzien.
 \section{Introductie Io}
 Io, een programmeertaal, is in 2002 gemaakt door Steve Dekorte omdat hij zijn begrip over de werking programmeertalen wilde verbreden.
-Het bijzondere aan Io is dat het een heel minimalistische en puur objectge\"orienteerde programmeertaal is en gebaseerd op prototypes. %Ik weet niet helemaal zeker of dit het nou zo bijzonder maakt
+Het bijzondere aan Io is dat het een heel minimalistische en puur objectge\"orienteerde programmeertaal is en gebaseerd op prototypes. Daarnaast is de taal geinspireerd op Smalltalk. Alles, inclusief objecten, bestaat uit 'messages' die worden doorgegeven. %Ik weet niet helemaal zeker of dit het nou zo bijzonder maakt
 Dit houdt in dat er alleen maar objecten bestaan en dat overerving plaats vindt door bestaande objecten te clonen.
 Ook is Io een dynamische taal, dus objecten kunnen tijdens runtime uit worden gebreidt.
 
@@ -57,20 +58,63 @@ zo goed mogelijk uit te werken.  Bovendien willen we kijken of we zonder keyword
 
 \section{Syntax}
 %Zorg dat je een beschrijving geeft van de syntax die je gaat gebruiken. Dat kan natuurlijk al een complete grammatica zijn, maar op dit moment is het voldoende om hier te beschrijven welke constructies uitgewerkt gaan worden. In het bijzonder geef je hier aan of je de hele taal gaat beschrijven of slechts een deel er van. Verwacht je nu al problemen bij de beschrijving van de syntax, benoem die hier dan al.
-De syntax van Io is erg minimaal. Dit komt grotendeels omdat je alleen objecten en messages hebt en geen keywords.
 
-De basis syntax ziet er als volgt uit:
-\begin{lstlisting}
-exp        ::= { message | terminator }
-message    ::= symbol [arguments]
-arguments  ::= "(" [exp [ { "," exp } ]] ")"
-symbol     ::= identifier | number | string
-terminator ::= "\n" | ";"
-\end{lstlisting}
+De syntax van Io is relatief eenvoudig en beperkt, en bevat weinig gereserveerde termen zoals gebruikelijk in andere talen. Termen als 'if', 'while' en 'for' zijn bijvoorbeeld in veel talen gereserveerde termen, maar niet in Io. Wel gelijk aan de meeste talen is dat een programma simpelweg een expressie is. In Io bestaat een expressie uit messages en terminatoren.
+\[ expr ::= \{message | terminator\}\]
+Waarbij we een terminator defineren als een newline, of een expliciet terminator karakter.
+\[ terminator ::= ''\backslash n'' | '';''\]
+Meteen is te zien dat eigenlijk alles in Io een message is, aangezien buiten de terminator een expressie niets anders kan zijn dan een message. Een message defineren we als volgt:
+\[ message ::= symbol [arguments]\]
+\[ symbol ::= identifier | number | string\]
+%todo: Volgens de regels zouden we nu ook, net als in While, vast moeten leggen wat een identifier, number of string nou eigenlijk inhoud.
+Een identifier heeft de volgende syntax:
+\[Identifier ::= { letter | digit | "_" }\]
+\[letter ::= "a" ... "z" | "A" ... "Z"\]
+\[digit ::= "0" ... "9"\]
+Een string kan als volgt gerepresenteerd worden:
+\[quote ::= MonoQuote | TriQuote\]
+\[MonoQuote ::= """ [ "\"" | not(""")] """\]
+\[TriQuote ::= """"" [ not(""""")] """"" \]
+% ik stel voor nummers alleen decimaal te laten zijn.
+Een nummer ziet er als volgt uit:
+\[number ::= HexNumber | Decimal\]
+\[HexNumber ::= "0" anyCase("x") { [ digit | hexLetter ] }\]
+\[hexLetter ::= "a" | "b" | "c" | "d" | "e" | "f"\]
+\[Decimal ::= digits | "." digits | \]
+\[digits "." digits ["e" [-] digits]\]
+\[digit ::= "0" ... "9"\]
+\[digits ::= { digit }\]
+Een message kan enkel een symbol zijn, maar arguments kunnen worden doorgegeven. Arguments worden omvat door ronde haken, en opgedeelt door een komma.
+\[ arguments ::= ''\left('' [ expr [ \{'','' expr \}] ] ''\right)''\]
+
+\subsection{Operatoren}
+Voor het gemak van de programmeur zijn er enkele operatoren opgenomen in de taal. Zo is het mogenlijk om de infix-variant van de plus-operator te schrijven.
+\[6 + 4\]
+Deze word voor de compilatie eerst door de parser vertaald naar de variant die aan de syntax voldoet:
+\[6 +(4)\]
+Waar \(6\) en \(+\) messages zijn, en \( (4) \) het argument is van de message \(+\), zichzelf bestaand uit de message \(4\). Dezelfde vertaling van een bekende infix notatie naar de in de syntax correcte vorm word gebruikt voor assignments. Zo accepteert de parser de volgende expressies:
+\[x ::= 4;\]
+\[y := 5;\]
+\[z = 6;\]
+En vertaald deze eerst naar de volgens de syntax correcte vormen:
+\[newSlot(''x'', 4);\]
+\[setSlot(''y'', 5);\]
+\[updateSlot(''z'', 6);\]
 
 De volledige syntax is te vinden op: \url{http://iolanguage.org/guide/guide.html#Appendix}
 
-% Wat hebben we hier precies voor nodig?
+\section{Semantiek}
+%Zorg dat je een beschrijving geeft van de semantiek die je gaat gebruiken. Ga je voor ns, sos of nog heel iets anders? En waarom? Probeer ook vast iets te zeggen over de concepten die je nodig hebt: wat zijn je toestanden (als je toestanden gebruikt), wat zijn je transities, welke types spelen een rol, etcetera. Natuurlijk hoef je hier nog geen complete lijst met semantiekregels te geven, maar je moet al wel een idee hebben hoe je denkt te gaan werken. Verwacht je nu al problemen bij de beschrijving van de semantiek, benoem die hier dan al.
+
+\subsection{Messages}
+In Io is alles een message. Elke message word doorgegeven in het programma. Zo kunnen we bijvoorbeeld een simpel programma schrijven bestaande uit drie messages:
+\begin{lstlisting}[frame=single]
+getNumber +(3) print;
+\end{lstlisting}
+Waarbij \('getNumber'\) een arbitraire manier is om een nummer te genereren. Dit nummer word dan als message doorgegeven aan volgende message \('+(3)'\) Deze telt \(3\) aan de doorgegeven message op, en geeft het resultaat door aan de volgende message. Deze leest dit doorgegeven message, en print deze uit.
+In deze sectie zullen we de semantiek van het doorgeven van messages uitleggen.
+
+\subsection{Objecten}
 Objecten bestaan uit een lijst met key/value paren. Zo'n paar wordt een slot genoemd.
 in zo'n slot kun je zowel variabelen als messages zetten.
 % bijvoorbeeld:
@@ -86,15 +130,6 @@ Deze functie maakt nieuw object aan en initialiseerd, initialiseerd de slots en 
 % while
 % break en continue
 % Lists
-
-
-
-
-
-\section{Semantiek}
-Zorg dat je een beschrijving geeft van de semantiek die je gaat gebruiken. Ga je voor ns, sos of nog heel iets anders? En waarom? Probeer ook vast iets te zeggen over de concepten die je nodig hebt: wat zijn je toestanden (als je toestanden gebruikt), wat zijn je transities, welke types spelen een rol, etcetera. Natuurlijk hoef je hier nog geen complete lijst met semantiekregels te geven, maar je moet al wel een idee hebben hoe je denkt te gaan werken. Verwacht je nu al problemen bij de beschrijving van de semantiek, benoem die hier dan al.
-\subsection{Messages}
-\subsection{Objecten}
 
 \section{Analyse}
 Zorg dat je kort beschrijft wat voor een analyse je gaat doen. Heb je bijvoorbeeld al een mooi stuk voorbeeldcode waarvan je uiteindelijk wil laten zien dat het precies doet wat in je semantiekregels hebt vastgelegd, geef dat voorbeeld dan reeds expliciet aan. Dit mag natuurlijk het voorbeeld uit de inleiding zijn, maar het hoeft niet.
