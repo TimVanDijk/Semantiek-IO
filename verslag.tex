@@ -16,6 +16,7 @@
 \usepackage{graphicx}
 \usepackage[dutch]{babel}
 \usepackage[bottom]{footmisc}
+\usepackage{listings}
 \graphicspath{{images/}}
 
 \begin{document}
@@ -44,12 +45,51 @@ Om die vergelijking te kunnen maken moet eerst vast worden gelegd hoe de taal pr
 We leggen daarom eerst de syntax vast en daarna de semantiek. Bij het vastleggen van de semantiek gebruiken we natuurlijke semantiek.
 Daarna werken we de semantiek uit van een wat groter voorbeeld.
 %Nog iets over dat we constructies uit Io om willen zetten naar While (en/of andersom)?
+% concrete constructies horen denk ik meer onder het kopje syntax?
+
+Bij een objectge\"orienteerde taal zoals Io komen veel nieuwe concepten langs, zoals prototypen, inheritance etc. De kracht van ons project wordt dan ook om al de mogelijkheden van objecten 
+%en messages? 
+zo goed mogelijk uit te werken.  Bovendien willen we kijken of we zonder keywords zoals for en while toch dezelfde functionaliteit kunnen krijgen.
+
 
 \subsection*{Voorbeeld}
 
 
 \section{Syntax}
-Zorg dat je een beschrijving geeft van de syntax die je gaat gebruiken. Dat kan natuurlijk al een complete grammatica zijn, maar op dit moment is het voldoende om hier te beschrijven welke constructies uitgewerkt gaan worden. In het bijzonder geef je hier aan of je de hele taal gaat beschrijven of slechts een deel er van. Verwacht je nu al problemen bij de beschrijving van de syntax, benoem die hier dan al.
+%Zorg dat je een beschrijving geeft van de syntax die je gaat gebruiken. Dat kan natuurlijk al een complete grammatica zijn, maar op dit moment is het voldoende om hier te beschrijven welke constructies uitgewerkt gaan worden. In het bijzonder geef je hier aan of je de hele taal gaat beschrijven of slechts een deel er van. Verwacht je nu al problemen bij de beschrijving van de syntax, benoem die hier dan al.
+De syntax van Io is erg minimaal. Dit komt grotendeels omdat je alleen objecten en messages hebt en geen keywords.
+
+De basis syntax ziet er als volgt uit:
+\begin{lstlisting}
+exp        ::= { message | terminator }
+message    ::= symbol [arguments]
+arguments  ::= "(" [exp [ { "," exp } ]] ")"
+symbol     ::= identifier | number | string
+terminator ::= "\n" | ";"
+\end{lstlisting}
+
+De volledige syntax is te vinden op: \url{http://iolanguage.org/guide/guide.html#Appendix}
+
+% Wat hebben we hier precies voor nodig?
+Objecten bestaan uit een lijst met key/value paren. Zo'n paar wordt een slot genoemd.
+in zo'n slot kun je zowel variabelen als messages zetten.
+% bijvoorbeeld:
+% method()
+Een van de methodes die we sowieso willen implementeren is de method functie. 
+Deze functie maakt nieuw object aan en initialiseerd, initialiseerd de slots en zet de proto pointer en self slot naar het doelwit van de message. 
+% block()
+%	return()
+% super()
+% if(<condition>, <do message>, <else do message>)
+% verschillende vormen van assignment (:== := en =)
+% repeat
+% while
+% break en continue
+% Lists
+
+
+
+
 
 \section{Semantiek}
 Zorg dat je een beschrijving geeft van de semantiek die je gaat gebruiken. Ga je voor ns, sos of nog heel iets anders? En waarom? Probeer ook vast iets te zeggen over de concepten die je nodig hebt: wat zijn je toestanden (als je toestanden gebruikt), wat zijn je transities, welke types spelen een rol, etcetera. Natuurlijk hoef je hier nog geen complete lijst met semantiekregels te geven, maar je moet al wel een idee hebben hoe je denkt te gaan werken. Verwacht je nu al problemen bij de beschrijving van de semantiek, benoem die hier dan al.
