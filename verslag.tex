@@ -12,6 +12,7 @@
 \date{\today}
 
 \documentclass[12pt]{article}
+\usepackage{listings} 
 \usepackage{hyperref}
 \usepackage{graphicx}
 \usepackage[dutch]{babel}
@@ -35,7 +36,7 @@ Ook vergelijken we mogelijkheden van Io met die van While.
 %Zo'n programma helpt om duidelijk te krijgen hoe programma's in jullie taal er uitzien.
 \section{Introductie Io}
 Io, een programmeertaal, is in 2002 gemaakt door Steve Dekorte omdat hij zijn begrip over de werking programmeertalen wilde verbreden.
-Het bijzondere aan Io is dat het een heel minimalistische en puur objectge\"orienteerde programmeertaal is en gebaseerd op prototypes. %Ik weet niet helemaal zeker of dit het nou zo bijzonder maakt
+Het bijzondere aan Io is dat het een heel minimalistische en puur objectge\"orienteerde programmeertaal is en gebaseerd op prototypes. Daarnaast is de taal geinspireerd op Smalltalk. Alles, inclusief objecten, bestaat uit 'messages' die worden doorgegeven. %Ik weet niet helemaal zeker of dit het nou zo bijzonder maakt
 Dit houdt in dat er alleen maar objecten bestaan en dat overerving plaats vindt door bestaande objecten te clonen.
 Ook is Io een dynamische taal, dus objecten kunnen tijdens runtime uit worden gebreidt.
 
@@ -50,7 +51,7 @@ Daarna werken we de semantiek uit van een wat groter voorbeeld.
 
 \section{Syntax}
 %Zorg dat je een beschrijving geeft van de syntax die je gaat gebruiken. Dat kan natuurlijk al een complete grammatica zijn, maar op dit moment is het voldoende om hier te beschrijven welke constructies uitgewerkt gaan worden. In het bijzonder geef je hier aan of je de hele taal gaat beschrijven of slechts een deel er van. Verwacht je nu al problemen bij de beschrijving van de syntax, benoem die hier dan al.
-De syntax van Io is relatief eenvoudig en beperkt, en bevat weinig gereserveerde termen zoals gebruikelijk in andere talen. Termen als 'if', 'while' en 'for' zijn bijvoorbeeld in veel talen gereserveerde termen, maar niet in Io. Wel gelijk aan de meeste talen is dat een programma simpelweg een opeenvolging van expressies is. We defineeren eerst een individuele expressie:
+De syntax van Io is relatief eenvoudig en beperkt, en bevat weinig gereserveerde termen zoals gebruikelijk in andere talen. Termen als 'if', 'while' en 'for' zijn bijvoorbeeld in veel talen gereserveerde termen, maar niet in Io. Wel gelijk aan de meeste talen is dat een programma simpelweg een expressie is. In Io bestaat een expressie uit messages en terminatoren.
 \[ expr ::= \{message | terminator\}\]
 Waarbij we een terminator defineren als een newline, of een expliciet terminator karakter.
 \[ terminator ::= ''\backslash n'' | '';''\]
@@ -67,19 +68,26 @@ Voor het gemak van de programmeur zijn er enkele operatoren opgenomen in de taal
 Deze word voor de compilatie eerst door de parser vertaald naar de variant die aan de syntax voldoet:
 \[6 +(4)\]
 Waar \(6\) en \(+\) messages zijn, en \( (4) \) het argument is van de message \(+\), zichzelf bestaand uit de message \(4\). Dezelfde vertaling van een bekende infix notatie naar de in de syntax correcte vorm word gebruikt voor assignments. Zo accepteert de parser de volgende expressies:
-\[x ::= 4\]
-\[y := 5\]
-\[z = 6\]
+\[x ::= 4;\]
+\[y := 5;\]
+\[z = 6;\]
 En vertaald deze eerst naar de volgens de syntax correcte vormen:
-\[newSlot(''x'', 4)\]
-\[setSlot(''y'', 5)\]
-\[updateSlot(''z'', 6)\]
+\[newSlot(''x'', 4);\]
+\[setSlot(''y'', 5);\]
+\[updateSlot(''z'', 6);\]
 
 
 \section{Semantiek}
 %Zorg dat je een beschrijving geeft van de semantiek die je gaat gebruiken. Ga je voor ns, sos of nog heel iets anders? En waarom? Probeer ook vast iets te zeggen over de concepten die je nodig hebt: wat zijn je toestanden (als je toestanden gebruikt), wat zijn je transities, welke types spelen een rol, etcetera. Natuurlijk hoef je hier nog geen complete lijst met semantiekregels te geven, maar je moet al wel een idee hebben hoe je denkt te gaan werken. Verwacht je nu al problemen bij de beschrijving van de semantiek, benoem die hier dan al.
 
 \subsection{Messages}
+In Io is alles een message. Elke message word doorgegeven in het programma. Zo kunnen we bijvoorbeeld een simpel programma schrijven bestaande uit drie messages:
+\begin{lstlisting}[frame=single]
+getNumber +(3) print;
+\end{lstlisting}
+Waarbij \('getNumber'\) een arbitraire manier is om een nummer te genereren. Dit nummer word dan als message doorgegeven aan volgende message \('+(3)'\) Deze telt \(3\) aan de doorgegeven message op, en geeft het resultaat door aan de volgende message. Deze leest dit doorgegeven message, en print deze uit.
+In deze sectie zullen we de semantiek van het doorgeven van messages uitleggen.
+
 \subsection{Objecten}
 
 \section{Analyse}
