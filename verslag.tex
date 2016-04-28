@@ -86,7 +86,7 @@ Een identifier heeft de volgende syntax:
 %\[letter ::= ''a'' ... ''z'' | ''A'' ... ''Z''\]
 %\[digit ::= "0" ... "9"\]
 \begin{lstlisting}
-	Identifier 	::= { letter | digit | "_" }
+	identifier 	::= { letter | digit | "_" }
 	letter 		::= "a" ... "z" | "A" ... "Z"
 	digit 		::= "0" ... "9"
 \end{lstlisting}
@@ -115,17 +115,25 @@ Een message kan enkel een symbol zijn, maar arguments kunnen worden doorgegeven.
 \end{lstlisting}
 \subsection{Operatoren}
 Voor het gemak van de programmeur zijn er enkele operatoren opgenomen in de taal. Zo is het mogenlijk om de infix-variant van de plus-operator te schrijven.
-\[6 + 4\]
+\begin{lstlisting}[frame=single]
+6 + 4;
+\end{lstlisting}
 Deze word voor de compilatie eerst door de parser vertaald naar de variant die aan de syntax voldoet:
-\[6 +(4)\]
+\begin{lstlisting}[frame=single]
+6 +(4);
+\end{lstlisting}
 Waar \(6\) en \(+\) messages zijn, en \( (4) \) het argument is van de message \(+\), zichzelf bestaand uit de message \(4\). Dezelfde vertaling van een bekende infix notatie naar de in de syntax correcte vorm word gebruikt voor assignments. Zo accepteert de parser de volgende expressies:
-\[x ::= 4;\]
-\[y := 5;\]
-\[z = 6;\]
+\begin{lstlisting}[frame=single]
+x ::= 4;
+y := 5;
+z = 6;
+\end{lstlisting}
 En vertaald deze eerst naar de volgens de syntax correcte vormen:
-\[newSlot(''x'', 4);\]
-\[setSlot(''y'', 5);\]
-\[updateSlot(''z'', 6);\]
+\begin{lstlisting}[frame=single]
+newSlot("x", 4);
+setSlot("y", 5);
+updateSlot("z", 6);
+\end{lstlisting}
 
 De volledige syntax is te vinden op: \url{http://iolanguage.org/guide/guide.html#Appendix}
 
@@ -137,8 +145,17 @@ In Io is alles een message. Elke message word doorgegeven in het programma. Zo k
 \begin{lstlisting}[frame=single]
 getNumber +(3) print;
 \end{lstlisting}
-Waarbij \('getNumber'\) een arbitraire manier is om een nummer te genereren. Dit nummer word dan als message doorgegeven aan volgende message \('+(3)'\) Deze telt \(3\) aan de doorgegeven message op, en geeft het resultaat door aan de volgende message. Deze leest dit doorgegeven message, en print deze uit.
-In deze sectie zullen we de semantiek van het doorgeven van messages uitleggen.
+Waarbij \('getNumber'\) een arbitraire manier is om een nummer te genereren. Dit nummer word dan als message doorgegeven aan volgende message \('+(3)'\) Deze telt \(3\) aan de doorgegeven message op, en geeft het resultaat door aan de volgende message. Deze leest dit doorgegeven message, en print deze uit.\\
+In deze sectie zullen we de semantiek van het doorgeven van messages uitleggen.\par
+Standaard in de natuurlijke semantiek is de state-transitie.
+\[\langle S,s \rangle \rightarrow \prime s\] Echter is het voor Io belangrijk dat een message toegang heeft tot het resultaat van de vorige message. We zouden dit kunnen toevoegen door een speciale variabele te reserveren in de state. Netter is om de state-transitie uit te bereiden. We stellen voor een extra stuk informatie toe te voegen die de informatie van de voorgaande message bevat.
+\[\langle m,S,s \rangle \rightarrow \langle \prime m,\prime s \rangle\]
+En we m defineren als of een message, of als een 'Nil' waarde; Waarmee we vastleggen dat er geen vorige message is, of de vorige message niets doorgeeft.
+\begin{lstlisting}
+	m		::= message | Nil
+\end{lstlisting}
+In deze sectie gaan wij kijken of wij de semantiek van Io kunnen beschrijven door middel van deze aanpassing op de natuurlijke semantiek.
+
 
 \subsection{Objecten}
 Objecten bestaan uit een lijst met key/value paren. Zo'n paar wordt een slot genoemd.
