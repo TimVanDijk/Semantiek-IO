@@ -13,7 +13,7 @@
 
 \documentclass[12pt]{article}
 \usepackage{listings} 
-\usepackage{hyperref}
+\PassOptionsToPackage{hyphens}{url}\usepackage{hyperref}
 \usepackage{graphicx}
 \usepackage[dutch]{babel}
 \usepackage[bottom]{footmisc}
@@ -25,12 +25,10 @@
 \begin{document}
 \maketitle
 
-%Laten we alles in de "we" vorm schrijven. Moet het eerste deel nog even omzetten naar die "we"-vorm.
-
 \begin{abstract}
 Dit werkstuk beschrijft de syntax en semantiek van Io, een puur objectge\"orienteerde programmeertaal.
-Hierbij wordt gebruik gemaakt van natuurlijke semantiek.
-Ook vergelijken we mogelijkheden van Io met die van While.
+Hierbij wordt gebruik gemaakt van natuurlijke semantiek. Vervolgens gebruiken we de beschreven syntax en semantiek om
+de mogelijkheden van Io te vergelijken met die van While.
 \end{abstract}
 
 %Zorg dat je een korte inleiding schrijft waarin je zo concreet mogelijk uitlegt wat je gaat doen.
@@ -39,7 +37,7 @@ Ook vergelijken we mogelijkheden van Io met die van While.
 %Zo'n programma helpt om duidelijk te krijgen hoe programma's in jullie taal er uitzien.
 \section{Introductie Io}
 Io, een programmeertaal, is in 2002 gemaakt door Steve Dekorte omdat hij zijn begrip over de werking programmeertalen wilde verbreden.
-Het bijzondere aan Io is dat het een heel minimalistische en puur objectge\"orienteerde programmeertaal is en gebaseerd op prototypes. Daarnaast is de taal geinspireerd op Smalltalk. Alles, inclusief objecten, bestaat uit 'messages' die worden doorgegeven. %Ik weet niet helemaal zeker of dit het nou zo bijzonder maakt
+Het bijzondere aan Io is dat het een heel minimalistische en puur objectge\"orienteerde programmeertaal is en gebaseerd op prototypes. Daarnaast is de taal geinspireerd op Smalltalk. Alles, inclusief objecten, bestaat uit 'messages' die worden doorgegeven.
 Dit houdt in dat er alleen maar objecten bestaan en dat overerving plaats vindt door bestaande objecten te clonen.
 Ook is Io een dynamische taal, dus objecten kunnen tijdens runtime uit worden gebreidt.
 
@@ -47,8 +45,6 @@ Het doel van dit werkstuk is om de mogelijkheden van Io te vergelijken met die v
 Om die vergelijking te kunnen maken moet eerst vast worden gelegd hoe de taal precies werkt.
 We leggen daarom eerst de syntax vast en daarna de semantiek. Bij het vastleggen van de semantiek gebruiken we natuurlijke semantiek.
 Daarna werken we de semantiek uit van een wat groter voorbeeld.
-%Nog iets over dat we constructies uit Io om willen zetten naar While (en/of andersom)?
-% concrete constructies horen denk ik meer onder het kopje syntax?
 
 Bij een objectge\"orienteerde taal zoals Io komen veel nieuwe concepten langs, zoals prototypen, inheritance etc. De kracht van ons project wordt dan ook om al de mogelijkheden van objecten 
 %en messages? 
@@ -56,7 +52,19 @@ zo goed mogelijk uit te werken.  Bovendien willen we kijken of we zonder keyword
 
 
 \subsection*{Voorbeeld}
-
+Om een idee te krijgen van hoe een programma eruit ziet in Io, volgt hier een voorbeeld:
+\begin{verbatim}
+Sheep := Object clone
+Sheep legCount := 4
+MutantSheep := Sheep clone
+MutantSheep legCount = 7
+dolly := MutantSheep clone
+MutantSheep growMoreLegs := method(n, legCount = legCount + n)
+dolly growMoreLegs(2)
+\end{verbatim}
+Dit voorbeeld is afkomstig van \url{andriybuday.com/2012/07/io-programming-language.html}.
+Dit voorbeeld gaan we (hoogstwaarschijnlijk) binnenkort vervangen door een voorbeeld dat we zelf hebben geschreven, want er komen in dit voorbeeld niet genoeg
+eigenschappen van Io aan bod. Ook vinden wij het lang niet uitdagend genoeg om uit te werken in het hoofdstuk Analyse.
 
 \section{Syntax}
 %Zorg dat je een beschrijving geeft van de syntax die je gaat gebruiken. Dat kan natuurlijk al een complete grammatica zijn, maar op dit moment is het voldoende om hier te beschrijven welke constructies uitgewerkt gaan worden. In het bijzonder geef je hier aan of je de hele taal gaat beschrijven of slechts een deel er van. Verwacht je nu al problemen bij de beschrijving van de syntax, benoem die hier dan al.
