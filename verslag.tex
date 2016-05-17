@@ -36,8 +36,8 @@ de mogelijkheden van Io te vergelijken met die van While.
 %Neem in de inleiding ook alvast een voorbeeldprogramma op waarin iets interessants gebeurt.
 %Zo'n programma helpt om duidelijk te krijgen hoe programma's in jullie taal er uitzien.
 \section{Introductie Io}
-Io, een programmeertaal, is in 2002 gemaakt door Steve Dekorte omdat hij zijn begrip over de werking programmeertalen wilde verbreden.
-Het bijzondere aan Io is dat het een heel minimalistische en puur objectge\"orienteerde programmeertaal is en gebaseerd op prototypes. Daarnaast is de taal geinspireerd op Smalltalk. Alles, inclusief objecten, bestaat uit 'messages' die worden doorgegeven.
+Io, een programmeertaal, is in 2002 gemaakt door Steve Dekorte omdat hij zijn begrip over de werking van programmeertalen wilde verbreden.
+Het bijzondere aan Io is dat het een heel minimalistische en puur objectge\"orienteerde programmeertaal is en gebaseerd op prototypes. De taal is ge\"inspireerd door Smalltalk. Alles, inclusief objecten, bestaat uit 'messages' die worden doorgegeven.
 Dit houdt in dat er alleen maar objecten bestaan en dat overerving plaats vindt door bestaande objecten te clonen.
 Ook is Io een dynamische taal, dus objecten kunnen tijdens runtime uit worden gebreidt.
 
@@ -50,7 +50,7 @@ Bij een objectge\"orienteerde taal zoals Io komen veel nieuwe concepten langs, z
 %en messages? 
 zo goed mogelijk uit te werken.  Bovendien willen we kijken of we zonder keywords zoals for en while toch dezelfde functionaliteit kunnen krijgen.
 
-
+%Misschien dat we dit voorbeeld dan toch wel moeten houden. Tim vond het volgens mij echt een heel leuk voorbeeld.
 \subsection*{Voorbeeld}
 Om een idee te krijgen van hoe een programma eruit ziet in Io, volgt hier een voorbeeld:
 \begin{verbatim}
@@ -171,7 +171,7 @@ in zo'n slot kun je zowel variabelen als messages zetten.
 % bijvoorbeeld:
 % method()
 Een van de methodes die we sowieso willen implementeren is de method functie. 
-Deze functie maakt nieuw object aan en initialiseerd, initialiseerd de slots en zet de proto pointer en self slot naar het doelwit van de message. 
+Deze functie maakt nieuw object aan, initialiseerd de slots en zet de proto pointer en self slot naar het doelwit van de message. 
 % block()
 %	return()
 % super()
