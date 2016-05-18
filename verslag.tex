@@ -53,7 +53,7 @@ zo goed mogelijk uit te werken.  Bovendien willen we kijken of we zonder keyword
 %Misschien dat we dit voorbeeld dan toch wel moeten houden. Tim vond het volgens mij echt een heel leuk voorbeeld.
 \subsection*{Voorbeeld}
 Om een idee te krijgen van hoe een programma eruit ziet in Io, volgt hier een voorbeeld:
-\begin{verbatim}
+\begin{lstlisting}[frame=single]
 Sheep := Object clone
 Sheep legCount := 4
 MutantSheep := Sheep clone
@@ -61,7 +61,7 @@ MutantSheep legCount = 7
 dolly := MutantSheep clone
 MutantSheep growMoreLegs := method(n, legCount = legCount + n)
 dolly growMoreLegs(2)
-\end{verbatim}
+\end{lstlisting}
 Dit voorbeeld is afkomstig van \url{andriybuday.com/2012/07/io-programming-language.html}.
 Dit voorbeeld gaan we (hoogstwaarschijnlijk) binnenkort vervangen door een voorbeeld dat we zelf hebben geschreven, want er komen in dit voorbeeld niet genoeg
 eigenschappen van Io aan bod. Ook vinden wij het lang niet uitdagend genoeg om uit te werken in het hoofdstuk Analyse.
@@ -149,21 +149,23 @@ De volledige syntax is te vinden op: \url{http://iolanguage.org/guide/guide.html
 %Zorg dat je een beschrijving geeft van de semantiek die je gaat gebruiken. Ga je voor ns, sos of nog heel iets anders? En waarom? Probeer ook vast iets te zeggen over de concepten die je nodig hebt: wat zijn je toestanden (als je toestanden gebruikt), wat zijn je transities, welke types spelen een rol, etcetera. Natuurlijk hoef je hier nog geen complete lijst met semantiekregels te geven, maar je moet al wel een idee hebben hoe je denkt te gaan werken. Verwacht je nu al problemen bij de beschrijving van de semantiek, benoem die hier dan al.
 
 \subsection{Messages}
-In Io is alles een message. Elke message word doorgegeven in het programma. Zo kunnen we bijvoorbeeld een simpel programma schrijven bestaande uit drie messages:
+Een belangrijk aspect van IO is het door Smalltalk geinspireerde message-passing. Een expressie geeft haar resultaat door aan de volgende expressie. Dit resultaat kan dan gebruikt worden door deze expressie. Op deze manier kunnen programmas worden opgebouwd uit opeenvolgingen van expressies. Neem bijvoorbeeld dit eenvoudig programma:
 \begin{lstlisting}[frame=single]
-getNumber +(3) print;
+6 +(3) print
 \end{lstlisting}
-Waarbij \('getNumber'\) een arbitraire manier is om een nummer te genereren. Dit nummer word dan als message doorgegeven aan volgende message \('+(3)'\) Deze telt \(3\) aan de doorgegeven message op, en geeft het resultaat door aan de volgende message. Deze leest dit doorgegeven message, en print deze uit.\\
-In deze sectie zullen we de semantiek van het doorgeven van messages uitleggen.\par
-Standaard in de natuurlijke semantiek is de state-transitie.
-\[\langle S,s \rangle \rightarrow \prime s\] Echter is het voor Io belangrijk dat een message toegang heeft tot het resultaat van de vorige message. We zouden dit kunnen toevoegen door een speciale variabele te reserveren in de state. Netter is om de state-transitie uit te bereiden. We stellen voor een extra stuk informatie toe te voegen die de informatie van de voorgaande message bevat.
-\[\langle m,S,s \rangle \rightarrow \langle \prime m,\prime s \rangle\]
-En we m defineren als of een message, of als een 'Nil' waarde; Waarmee we vastleggen dat er geen vorige message is, of de vorige message niets doorgeeft.
-\begin{lstlisting}
-	m		::= message | Nil
-\end{lstlisting}
-In deze sectie gaan wij kijken of wij de message-based semantiek van Io kunnen beschrijven door middel van deze aanpassing op de natuurlijke semantiek.
+De eerste expressie is eenvoudigerweg het nummer '6'. Dit nummer word als message doorgegeven aan de volgende expressie \('+(3)'\). Deze expressie telt 3 op bij aan deze doorgegeven message. Het resultaat daarvan, in dit geval het nummer '9', word daarna weer verder gegeven aan de volgende expressie. De laatste expressie, 'print', ontvangt deze message en zet deze op de standaard IOstream.\par
 
+In een eenvoudige taal als While kunnen we een state-transitie voorstellen op de volgende manier:
+\[\langle S,s \rangle \rightarrow \prime s\]
+Maar voor Io is het belangrijk dat het resultaat van de expressie doorgegeven moet worden aan de volgende expressie. Daarom introduceren we een message 'm'.
+%todo Willen we hier een -message-, of een -symbol-? message kan namelijk nog argumenten bevatten, is dat wel wat we willen? We moeten nog even kijken naar wat er mogenlijk is in Io.
+\begin{lstlisting}
+	m ::= symbol | Nil
+\end{lstlisting}
+Deze bevat of het resultaat van een expressie, ofwel een 'Nil' als er geen resultaat is, of als een expressie dit expliciet wil doorgeven. We moeten nu de standaard state-transitie aanpassen. We voegen het resultaat toe:
+\[\langle m,S,s \rangle \rightarrow \langle \prime m,\prime s \rangle\]
+Daarnaast moeten we ook vastleggen dat het programma begint met \[m = Nil\]. Het eenvoudigste voorbeeld is de semantiek van de terminator:
+\[[Terminator] = \langle m, terminator, s\rangle \rightarrow \langle Nil, s\rangle\]
 
 \subsection{Objecten}
 Objecten bestaan uit een lijst met key/value paren. Zo'n paar wordt een slot genoemd.
