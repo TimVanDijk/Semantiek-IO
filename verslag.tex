@@ -149,23 +149,31 @@ De volledige syntax is te vinden op: \url{http://iolanguage.org/guide/guide.html
 %Zorg dat je een beschrijving geeft van de semantiek die je gaat gebruiken. Ga je voor ns, sos of nog heel iets anders? En waarom? Probeer ook vast iets te zeggen over de concepten die je nodig hebt: wat zijn je toestanden (als je toestanden gebruikt), wat zijn je transities, welke types spelen een rol, etcetera. Natuurlijk hoef je hier nog geen complete lijst met semantiekregels te geven, maar je moet al wel een idee hebben hoe je denkt te gaan werken. Verwacht je nu al problemen bij de beschrijving van de semantiek, benoem die hier dan al.
 
 \subsection{Messages}
-Een belangrijk aspect van IO is het door Smalltalk geinspireerde message-passing. Een expressie geeft haar resultaat door aan de volgende expressie. Dit resultaat kan dan gebruikt worden door deze expressie. Op deze manier kunnen programmas worden opgebouwd uit opeenvolgingen van expressies. Neem bijvoorbeeld dit eenvoudig programma:
+%todo Zoek uit welke parseervolgorde Io gebruikt. 
+% Unaire methoden worden eerder uitgevoerd dan Binaire.
+% Bij clonen wordt in het prototype gezocht naar de goede functie. Dus als in de parent een functie verandert, verandert die functie in de clone ook.  
+Een belangrijk aspect van IO is het door Smalltalk geinspireerde message-passing. Er wordt een message gestuurd naar een object a. Deze geeft als resultaat een nieuw object a'. Het volgende message wordt naar a' gestuurd enzovoorts.  Op deze manier kunnen programmas worden opgebouwd uit opeenvolgingen van messages. Neem bijvoorbeeld dit eenvoudig programma:
+%6 +(3) print is incorrect. Dit moet 6 +((3) print)  zijn. Misschien dat een ander voorbeeld duidelijker is.
 \begin{lstlisting}[frame=single]
-6 +(3) print
+6 +(3)
 \end{lstlisting}
-De eerste expressie is eenvoudigerweg het nummer '6'. Dit nummer word als message doorgegeven aan de volgende expressie \('+(3)'\). Deze expressie telt 3 op bij aan deze doorgegeven message. Het resultaat daarvan, in dit geval het nummer '9', word daarna weer verder gegeven aan de volgende expressie. De laatste expressie, 'print', ontvangt deze message en zet deze op de standaard IOstream.\par
+De message 6 wordt aan de Lobby doorgegeven. Dit levert een object op van het nummer $6$. (De lobby is de nameSpace. Alle variabelen die je aanmaakt worden hierin opgeslagen.) Hier wordt het volgende message naartoe gestuurd: $+(3)$. Het object 6 heeft een methode + die wordt aangeroepen met de parameter 5 en een object oplevert met de 2 waarden opgeteld. Hier krijg je dus het nummer 9 uit.  
+
+%De eerste expressie is eenvoudigerweg het nummer '6'. Dit nummer wordt als message doorgegeven aan de volgende expressie \('+(3)'\). Deze expressie telt 3 op bij aan deze doorgegeven message. Het resultaat daarvan, in dit geval het nummer '9', word daarna weer verder gegeven aan de volgende expressie. De laatste expressie, 'print', ontvangt deze message en zet deze op de standaard IOstream.\par
 
 In een eenvoudige taal als While kunnen we een state-transitie voorstellen op de volgende manier:
 \[\langle S,s \rangle \rightarrow \prime s\]
-Maar voor Io is het belangrijk dat het resultaat van de expressie doorgegeven moet worden aan de volgende expressie. Daarom introduceren we een message 'm'.
+In ons geval is de state s de state van de nameSpace en dus de Lobby.
+Voor Io is het belangrijk dat het resultaat van de message doorgegeven moet worden aan de volgende message. Daarom introduceren we een object 'o'.
 %todo Willen we hier een -message-, of een -symbol-? message kan namelijk nog argumenten bevatten, is dat wel wat we willen? We moeten nog even kijken naar wat er mogenlijk is in Io.
+% ik zou hier objecten van maken.
 \begin{lstlisting}
-	m ::= symbol | Nil
+	o ::= object | Lobby
 \end{lstlisting}
-Deze bevat of het resultaat van een expressie, ofwel een 'Nil' als er geen resultaat is, of als een expressie dit expliciet wil doorgeven. We moeten nu de standaard state-transitie aanpassen. We voegen het resultaat toe:
-\[\langle m,S,s \rangle \rightarrow \langle \prime m,\prime s \rangle\]
-Daarnaast moeten we ook vastleggen dat het programma begint met \[m = Nil\]. Het eenvoudigste voorbeeld is de semantiek van de terminator:
-\[[Terminator] = \langle m, terminator, s\rangle \rightarrow \langle Nil, s\rangle\]
+Deze bevat of het resultaat van een message, ofwel de Lobby als er nog geen message is verstuurd, of als een expressie dit expliciet wil doorgeven. We moeten nu de standaard state-transitie aanpassen. We voegen het resultaat toe:
+\[\langle o,S,s \rangle \rightarrow \langle \prime o,\prime s \rangle\]
+Daarnaast moeten we ook vastleggen dat het programma begint met \[o = Lobby\]. Het eenvoudigste voorbeeld is de semantiek van de terminator:
+\[[Terminator] = \langle o, terminator, s\rangle \rightarrow \langle Nil, s\rangle\]
 
 \subsection{Objecten}
 Objecten bestaan uit een lijst met key/value paren. Zo'n paar wordt een slot genoemd.
