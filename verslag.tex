@@ -69,12 +69,28 @@ eigenschappen van Io aan bod. Ook vinden wij het lang niet uitdagend genoeg om u
 \section{Syntax}
 %Zorg dat je een beschrijving geeft van de syntax die je gaat gebruiken. Dat kan natuurlijk al een complete grammatica zijn, maar op dit moment is het voldoende om hier te beschrijven welke constructies uitgewerkt gaan worden. In het bijzonder geef je hier aan of je de hele taal gaat beschrijven of slechts een deel er van. Verwacht je nu al problemen bij de beschrijving van de syntax, benoem die hier dan al.
 
-De syntax van Io is relatief eenvoudig en beperkt, en bevat weinig gereserveerde termen zoals gebruikelijk in andere talen. Termen als 'if', 'while' en 'for' zijn bijvoorbeeld in veel talen gereserveerde termen, maar niet in Io. Wel gelijk aan de meeste talen is dat een programma simpelweg een expressie is. In Io bestaat een expressie uit messages en terminatoren.
+De syntax van Io is relatief eenvoudig en beperkt, en bevat weinig gereserveerde termen zoals gebruikelijk in andere talen. Termen als 'if', 'while' en 'for' zijn bijvoorbeeld in veel talen gereserveerde termen, maar niet in Io. Wel gelijk aan de meeste talen is dat een programma simpelweg een expressie is. In Io bestaat een expressie uit messages en terminatoren. 
+
+Om de syntax van Io te kunnen beschrijven definieren we de volgende syntax catagorieen met ieder zijn eigen meta-variabel:
+
+\begin{table}[]
+	\centering
+	\begin{tabular}{lllll}
+		\textbf{catagorie} & \textbf{beschrijving}                          & \textbf{meta-variabelen} &  &  \\
+		Sym                & Symbool waarmee naar een object verwezen wordt & symbol, v                      &  &  \\
+		Ter                & Terminatoren                                   & terminator, t                      &  &  \\
+		Mes                & Messages                                       & message, M                      &  &  \\
+		Exp                & Expressies                                     & expr, E                      &  & 
+	\end{tabular}
+	\label{catagorieen}
+	\caption{syntax catagorieen}
+\end{table} 
 
 % \[ expr ::= \{message | terminator\}\]
 \begin{lstlisting}
-	exp		::= { message | terminator }
-\end{lstlisting}
+	exp		::=  expr expr | terminator | message 
+	\end{lstlisting}
+	
 Waarbij we een terminator defineren als een newline, of een expliciet terminator karakter.
 %\[ terminator ::= ''\backslash n'' | '';''\]
 \begin{lstlisting}
@@ -83,44 +99,24 @@ Waarbij we een terminator defineren als een newline, of een expliciet terminator
 Meteen is te zien dat eigenlijk alles in Io een message is, aangezien buiten de terminator een expressie niets anders kan zijn dan een message. Een message defineren we als volgt:
 %\[ message ::= symbol [a	rguments]\]
 %\[ symbol ::= identifier | number | string\]
-\begin{lstlisting}
-	message		::= symbol [arguments]
-	symbol		::= identifier | number | string
-\end{lstlisting}
-
-%todo: Volgens de regels zouden we nu ook, net als in While, vast moeten leggen wat een identifier, number of string nou eigenlijk inhoud.
-Een identifier heeft de volgende syntax:
 %\[Identifier ::= \{ letter | digit | "_" \}\]
 %\[letter ::= ''a'' ... ''z'' | ''A'' ... ''Z''\]
 %\[digit ::= "0" ... "9"\]
+
 \begin{lstlisting}
-	identifier 	::= { letter | digit | "_" }
+	message		::= symbol 
+	| symbol (message [, message])
+	symbol		::= {digit} | {letter} 
+	| {operator}
+	
 	letter 		::= "a" ... "z" | "A" ... "Z"
 	digit 		::= "0" ... "9"
+	operator ::= { ":" | "." | "'" | "~" | "!" 
+	| "@" | "$" | "%" | "^" | "&" | "*" | "-" 
+	| "+" | "/"	| "=" | "{" | "}" | "[" | "]" 
+	| "|" | "\" | "<" | ">" | "?" }
 \end{lstlisting}
 
-Een string kan als volgt gerepresenteerd worden:
-% Triquote weglaten?
-\begin{lstlisting}
-	quote 		::= MonoQuote | TriQuote
-	MonoQuote 	::= """ [ "\"" | not(""")] """
-	TriQuote 	::= """"" [ not(""""")] """""
-\end{lstlisting}
-Een nummer ziet er als volgt uit:
-%todo: Wat voor getallen willen we hebben? Voor ons lijken me Ints genoeg. Dus dan zijn de .a an b.a notaties overbodig.
-% Hex getallen weggelaten net als .xxx en a.b notaties. 
-\begin{lstlisting}
-	number    	::= Decimal
-	Decimal  	::= digits | "." digits |digits "." digits ["e" [-] digits]
-	digit 		::= "0" ... "9"
-	digits 		::= { digit }
-\end{lstlisting}
-
-Een message kan enkel een symbol zijn, maar arguments kunnen worden doorgegeven. Arguments worden omvat door ronde haken, en opgedeelt door een komma.
-%\[ arguments ::= ''\left('' [ expr [ \{'','' expr \}] ] ''\right)''\]
-\begin{lstlisting}
-	arguments 	::= "(" [exp [{ "," exp }]] ")"
-\end{lstlisting}
 \subsection{Operatoren}
 Voor het gemak van de programmeur zijn er enkele operatoren opgenomen in de taal. Zo is het mogenlijk om de infix-variant van de plus-operator te schrijven.
 \begin{lstlisting}[frame=single]
@@ -148,11 +144,34 @@ De volledige syntax is te vinden op: \url{http://iolanguage.org/guide/guide.html
 \section{Semantiek}
 %Zorg dat je een beschrijving geeft van de semantiek die je gaat gebruiken. Ga je voor ns, sos of nog heel iets anders? En waarom? Probeer ook vast iets te zeggen over de concepten die je nodig hebt: wat zijn je toestanden (als je toestanden gebruikt), wat zijn je transities, welke types spelen een rol, etcetera. Natuurlijk hoef je hier nog geen complete lijst met semantiekregels te geven, maar je moet al wel een idee hebben hoe je denkt te gaan werken. Verwacht je nu al problemen bij de beschrijving van de semantiek, benoem die hier dan al.
 
+\subsection{syntactische functies}
+In de vorige paragraaf hebben we de syntax van Io beschreven. Deze bestaat uit verschillende soorten syntax, zoals beschreven in\ref{catagorieen}.
+Al deze catagorieen hebben ook hun eigen semantiek nodig. 
+In onze semantiek bestaat alles uit Objecten. Deze objecten zullen we als volgt definieren:
+
+%todo definieer wat een object is
+%				Object				
+%				|						
+%			_________________________________ _ _ _ 
+%			|	|	|		|			|
+%			Number	List	Sequence	Boolean (true false or nil) 
+%
+%In de namespace zitten alle objecten. Deze heet Lobby. Eigenlijk gelijk aan s. in <S,s>. 
+%
+% 
+
+de structuur van de Io objecten zien er als volgt uit.
+$\mathcal{N}: Sym \rightarrow Z $ \\
+$\mathcal{S}: Sym \rightarrow String $ \\
+$\mathcal{B}: Sym \rightarrow Boolean $ \\
+
+
+
 \subsection{Messages}
 %todo Zoek uit welke parseervolgorde Io gebruikt. 
 % Unaire methoden worden eerder uitgevoerd dan Binaire.
 % Bij clonen wordt in het prototype gezocht naar de goede functie. Dus als in de parent een functie verandert, verandert die functie in de clone ook.  
-Een belangrijk aspect van IO is het door Smalltalk geinspireerde message-passing. Er wordt een message gestuurd naar een object a. Deze geeft als resultaat een nieuw object a'. Het volgende message wordt naar a' gestuurd enzovoorts.  Op deze manier kunnen programmas worden opgebouwd uit opeenvolgingen van messages. Neem bijvoorbeeld dit eenvoudig programma:
+Een belangrijk aspect van IO is het door Smalltalk geinspireerde message-passing. Er wordt een message gestuurd naar een object a. Deze geeft als resultaat een nieuw object a'. Het volgende message zal naar a' gestuurd worden enzovoorts.  Op deze manier kunnen programmas worden opgebouwd uit opeenvolgingen van messages. Neem bijvoorbeeld dit eenvoudig programma:
 %6 +(3) print is incorrect. Dit moet 6 +((3) print)  zijn. Misschien dat een ander voorbeeld duidelijker is.
 \begin{lstlisting}[frame=single]
 6 +(3)
