@@ -62,9 +62,34 @@ dolly := MutantSheep clone
 MutantSheep growMoreLegs := method(n, legCount = legCount + n)
 dolly growMoreLegs(2)
 \end{lstlisting}
-Dit voorbeeld is afkomstig van \url{andriybuday.com/2012/07/io-programming-language.html}.
-Dit voorbeeld gaan we (hoogstwaarschijnlijk) binnenkort vervangen door een voorbeeld dat we zelf hebben geschreven, want er komen in dit voorbeeld niet genoeg
-eigenschappen van Io aan bod. Ook vinden wij het lang niet uitdagend genoeg om uit te werken in het hoofdstuk Analyse.
+Dit voorbeeld is afkomstig van \url{andriybuday.com/2012/07/io-programming-language.html} en laat een aantal interessante eigenschappen van Io aan bod komen. Laten we eens kijken wat er in dit voorbeeld gebeurt.\newline
+
+In de eerste regel maken we een clone van Object. Object is het prototype dat er altijd vanaf het begin al is,
+alle prototypes die er later bij komen zijn op Object gebaseerd.
+Zoals de naam al suggereert maak je, als je een prototype clonet, een nieuwe instantie van dat prototye.
+Deze nieuwe instantie heeft precies dezelfde structuur en kenmerken als het prototype waar het uit gecloned is.
+Als er later veranderingen worden gemaakt aan het prototype dat gecloned is, dan hebben die ook effect op het nieuwe prototype.
+Sheep is dus een nieuw prototype die precies hetzelfde kan en eruit ziet als Object.\newline
+
+Dan willen we zeggen dat het schaap vier poten heeft.
+We doen dit door Sheep een nieuw attribuut te geven ``legCount'' en dit attribuut stellen we gelijk aan 4.
+Hoewel Sheep een clone is van Object, zijn het verschillende instanties, en dus krijgt object er geen attribuut ``legCount'' bij.\newline
+
+Ons schaap is veel te saai. Dit gaan we oplossen door een gemuteerd schaap te maken door een clone te maken van Sheep. Vervolgens zeggen we door het attribuut ``legCount'' op 7 te zetten.\newline
+
+Vervolgens maken we weer een clone van ons gemuteerde schaap. Deze clone noemen we dolly. De naam dolly, is naar conventie zonder hoofdletter geschreven.
+Dit is om het idee te geven dat het een instantie is van het object MutantSheep.
+Dit is alleen om het programmeren overzichtelijker te maken, want Io maakt geen onderscheid tussen objecten en instanties: er zijn alleen maar prototypes.\newline
+
+Daarna gaan we een nieuwe methode maken en toevoegen aan MutantSheep, namelijk growMoreLegs.
+growMoreLegs neemt \'e\'en argument n en verhoogt ``legCount'' met die n. Zoals eerder gezegd worden veranderingen op een prototype ook overgedragen op prototypes die eruit gecloned zijn. dolly heeft deze methode nu dus ook en kan er gebruik van maken.\newline
+
+Ten slotte willen we dolly nog een paar extra poten geven; twee om precies te zijn.
+Om dit te doen maken we gebruik van de nieuwe functie growMoreLegs.
+We roepen de methode growMoreLegs van dolly aan met argument 2.
+De methode verhoogt het attribuut legCount van dolly met 2.
+Uiteindelijk heeft dolly dus 9 poten.
+
 
 \section{Syntax}
 %Zorg dat je een beschrijving geeft van de syntax die je gaat gebruiken. Dat kan natuurlijk al een complete grammatica zijn, maar op dit moment is het voldoende om hier te beschrijven welke constructies uitgewerkt gaan worden. In het bijzonder geef je hier aan of je de hele taal gaat beschrijven of slechts een deel er van. Verwacht je nu al problemen bij de beschrijving van de syntax, benoem die hier dan al.
@@ -229,7 +254,7 @@ Vrijdag 29 april: \\Het werkstuk voldoet aan de eisen van eerste versie.\newline
 Dinsdag 10 mei: \\Het hoofdstuk over de syntax van Io is helemaal klaar en willen we al aardig op weg zijn met de semantiek.\newline\newline
 Dinsdag 24 mei: \\Het hoofdstuk over de semantiek is compleet. We bedoelen hier niet mee dat dat hoofdstuk helemaal klaar en perfect is, maar
 dat het zodanig is dat we het kunnen gebruiken om de rest van het werkstuk te kunnen maken.\newline\newline
-Vrijdag 27 mei: \\Het werkstuk voldoet aan de eisen van de tweede versie. Dat wil zeggen: het inleidende hoofdstuk is af, het hoofdstuk over de syntax is af, het hoofdstuk over de semantiek is af, het hoofdstuk over de analyse bevat in elk geval het programma geanalyseerd gaat worden.\newline\newline
+Vrijdag 27 mei: \\Het werkstuk voldoet aan de eisen van de tweede versie. Dat wil zeggen: het inleidende hoofdstuk is af, het hoofdstuk over de syntax is af, het hoofdstuk over de semantiek is af, het hoofdstuk over de analyse bevat in elk geval het programma dat geanalyseerd gaat worden.\newline\newline
 Vrijdag 17 juni: \\De definitieve versie van het werkstuk is gereed en ingeleverd.
 
 
