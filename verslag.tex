@@ -185,7 +185,7 @@ In onze semantiek bestaat alles uit Objecten. Deze objecten zullen we als volgt 
 %
 % 
 
-de structuur van de Io objecten zien er als volgt uit.
+de structuur van de Io objecten zien er als volgt uit. \\
 $\mathcal{N}: Sym \rightarrow Z $ \\
 $\mathcal{S}: Sym \rightarrow String $ \\
 $\mathcal{B}: Sym \rightarrow Boolean $ \\
@@ -201,7 +201,7 @@ Een belangrijk aspect van IO is het door Smalltalk geinspireerde message-passing
 \begin{lstlisting}[frame=single]
 6 +(3)
 \end{lstlisting}
-De message 6 wordt aan de Lobby doorgegeven. Dit levert een object op van het nummer $6$. (De lobby is de nameSpace. Alle variabelen die je aanmaakt worden hierin opgeslagen.) Hier wordt het volgende message naartoe gestuurd: $+(3)$. Het object 6 heeft een methode + die wordt aangeroepen met de parameter 5 en een object oplevert met de 2 waarden opgeteld. Hier krijg je dus het nummer 9 uit.  
+De message 6 wordt aan de Lobby doorgegeven. Dit levert een object op van het nummer $6$. (De lobby is de nameSpace. Alle variabelen die je aanmaakt worden hierin opgeslagen.) Hier wordt het volgende message naartoe gestuurd: $+(3)$. Het object 6 heeft een methode + die wordt aangeroepen met de parameter 3 en een object oplevert met de 2 waarden opgeteld. Hier krijg je dus het nummer 9 uit.  
 
 %De eerste expressie is eenvoudigerweg het nummer '6'. Dit nummer wordt als message doorgegeven aan de volgende expressie \('+(3)'\). Deze expressie telt 3 op bij aan deze doorgegeven message. Het resultaat daarvan, in dit geval het nummer '9', word daarna weer verder gegeven aan de volgende expressie. De laatste expressie, 'print', ontvangt deze message en zet deze op de standaard IOstream.\par
 
@@ -216,8 +216,16 @@ Voor Io is het belangrijk dat het resultaat van de message doorgegeven moet word
 \end{lstlisting}
 Deze bevat of het resultaat van een message, ofwel de Lobby als er nog geen message is verstuurd, of als een expressie dit expliciet wil doorgeven. We moeten nu de standaard state-transitie aanpassen. We voegen het resultaat toe:
 \[\langle o,S,s \rangle \rightarrow \langle \prime o,\prime s \rangle\]
-Daarnaast moeten we ook vastleggen dat het programma begint met \[o = Lobby\]. Het eenvoudigste voorbeeld is de semantiek van de terminator:
-\[[Terminator] = \langle o, terminator, s\rangle \rightarrow \langle Nil, s\rangle\]
+Daarnaast moeten we ook vastleggen dat het programma begint met \[o = Lobby\].
+Het eenvoudigste voorbeeld is de semantiek van de terminator, die de volgende regel weer laat beginnen in de context van de Lobby.
+\[[Terminator] = \langle o, terminator, s\rangle \rightarrow \langle Lobby, s\rangle\]
+Op dezelfde manier kunnen we ook de semantiek van de eerder genoemde + methode defineeren:
+\[[+] = 
+\frac{
+	\langle Lobby, S_1, s \rangle \rightarrow \langle o\prime, s\prime \rangle \hspace{1cm}
+	\mathcal{N}(o\prime\prime) = (\mathcal{N}(o) + \mathcal{N}(o\prime))
+	}{ \langle o, +(S_1), s \rangle \rightarrow \langle o\prime\prime,s\prime \rangle}
+ \]
 
 \subsection{Objecten}
 Objecten bestaan uit een lijst met key/value paren. Zo'n paar wordt een slot genoemd.
