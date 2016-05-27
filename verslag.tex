@@ -58,9 +58,9 @@ Sheep := Object clone
 Sheep legCount := 4
 MutantSheep := Sheep clone
 MutantSheep legCount = 7
-dolly := MutantSheep clone
+Dolly := MutantSheep clone
 MutantSheep growMoreLegs := method(n, legCount = legCount + n)
-dolly growMoreLegs(2)
+Dolly growMoreLegs(2)
 \end{lstlisting}
 Dit voorbeeld is afkomstig van \url{andriybuday.com/2012/07/io-programming-language.html} en laat een aantal interessante eigenschappen van Io aan bod komen. Laten we eens kijken wat er in dit voorbeeld gebeurt.\newline
 
@@ -90,7 +90,7 @@ We roepen de methode growMoreLegs van dolly aan met argument 2.
 De methode verhoogt het attribuut legCount van dolly met 2.
 Uiteindelijk heeft dolly dus 9 poten.
 
-
+\pagebreak
 \section{Syntax}
 %Zorg dat je een beschrijving geeft van de syntax die je gaat gebruiken. Dat kan natuurlijk al een complete grammatica zijn, maar op dit moment is het voldoende om hier te beschrijven welke constructies uitgewerkt gaan worden. In het bijzonder geef je hier aan of je de hele taal gaat beschrijven of slechts een deel er van. Verwacht je nu al problemen bij de beschrijving van de syntax, benoem die hier dan al.
 
@@ -113,7 +113,7 @@ Om de syntax van Io te kunnen beschrijven definieren we de volgende syntax catag
 
 % \[ expr ::= \{message | terminator\}\]
 \begin{lstlisting}
-	exp		::=  expr expr | terminator | message 
+	expr		::=  expr expr | terminator | message 
 	\end{lstlisting}
 	
 Waarbij we een terminator defineren als een newline, of een expliciet terminator karakter.
@@ -166,10 +166,11 @@ updateSlot("z", 6);
 
 De volledige syntax is te vinden op: \url{http://iolanguage.org/guide/guide.html#Appendix}
 
+\pagebreak
 \section{Semantiek}
 %Zorg dat je een beschrijving geeft van de semantiek die je gaat gebruiken. Ga je voor ns, sos of nog heel iets anders? En waarom? Probeer ook vast iets te zeggen over de concepten die je nodig hebt: wat zijn je toestanden (als je toestanden gebruikt), wat zijn je transities, welke types spelen een rol, etcetera. Natuurlijk hoef je hier nog geen complete lijst met semantiekregels te geven, maar je moet al wel een idee hebben hoe je denkt te gaan werken. Verwacht je nu al problemen bij de beschrijving van de semantiek, benoem die hier dan al.
 
-\subsection{syntactische functies}
+\subsection{Syntactische functies}
 In de vorige paragraaf hebben we de syntax van Io beschreven. Deze bestaat uit verschillende soorten syntax, zoals beschreven in\ref{catagorieen}.
 Al deze catagorieen hebben ook hun eigen semantiek nodig. 
 In onze semantiek bestaat alles uit Objecten. Deze objecten zullen we als volgt definieren:
@@ -228,6 +229,14 @@ Op dezelfde manier kunnen we ook de semantiek van de eerder genoemde + methode d
 \subsection{Objecten}
 Objecten bestaan uit een lijst met key/value paren. Zo'n paar wordt een slot genoemd.
 in zo'n slot kun je zowel variabelen als messages zetten.
+Dit representeren we door vast te stellen dat een object eenvoudigerweg een set is van slots; Waar elke slot een functie is van het type:
+\[ Symbol \rightarrow Message \]
+Ons korte voorbeeld volgend betekent did dus dat aan het einde van het gegeven voorbeeldprogramma het object 'dolly' als volgende kan worden gerepresenteerd:
+\[
+Dolly = [
+	(proto \rightarrow MutantSheep),
+	(legCount \rightarrow 9)]
+\]
 % bijvoorbeeld:
 % method()
 Een van de methodes die we sowieso willen implementeren is de method functie. 
@@ -242,6 +251,7 @@ Deze functie maakt nieuw object aan, initialiseerd de slots en zet de proto poin
 % break en continue
 % Lists
 
+\pagebreak
 \section{Analyse}
 %Zorg dat je kort beschrijft wat voor een analyse je gaat doen. Heb je bijvoorbeeld al een mooi stuk voorbeeldcode waarvan je uiteindelijk wil laten zien dat het precies doet wat in je semantiekregels hebt vastgelegd, geef dat voorbeeld dan reeds expliciet aan. Dit mag natuurlijk het voorbeeld uit de inleiding zijn, maar het hoeft niet.
 Met het onderstaande programma gaan we onze semantiekregels op de proef stellen.
@@ -275,6 +285,7 @@ nsieve( 15 )
 
 \end{lstlisting}
 
+\pagebreak
 \section{Conclusie}
 
 \appendix
