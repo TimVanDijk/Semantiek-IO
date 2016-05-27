@@ -238,7 +238,36 @@ Deze functie maakt nieuw object aan, initialiseerd de slots en zet de proto poin
 
 \section{Analyse}
 %Zorg dat je kort beschrijft wat voor een analyse je gaat doen. Heb je bijvoorbeeld al een mooi stuk voorbeeldcode waarvan je uiteindelijk wil laten zien dat het precies doet wat in je semantiekregels hebt vastgelegd, geef dat voorbeeld dan reeds expliciet aan. Dit mag natuurlijk het voorbeeld uit de inleiding zijn, maar het hoeft niet.
-Na het vastleggen van de syntax en semantiek willen we hier een wat uitgebreider programma uitwerken. De bedoeling is om in ieder geval de behandelde aspecten van de taal Io te gebruiken (Het doorgeven van messages, en het gebruik van objecten). We zullen een programma moeten schrijven dat deze aspecten van de taal gebruikt en combineerd, zoals het doorgeven van een object als message.
+Met het onderstaande programma gaan we onze semantiekregels op de proef stellen.
+Het programma vindt priemgetallen door gebruik te maken van de \href{https://nl.wikipedia.org/wiki/Zeef_van_Eratosthenes}{Zeef van Eratosthenes}.
+
+\begin{lstlisting}[frame=single]
+mkbuf := method(n,
+	b := List clone
+	b preallocateToSize(n)
+	n repeat(b append(true))
+	return b
+)
+
+nsieve := method(n,
+	primes := mkbuf(n)
+	cnt := 0
+	for(i, 2, n,
+		if(primes at(i),
+			k := i + i
+			while (k < n,
+				primes atPut(k, false)
+				k = k + i
+			)
+			cnt = cnt + 1
+		)
+	)
+	writeln("Primes up to", n asString alignRight(9, " "), cnt asString alignRight(9, " "))
+)
+
+nsieve( 15 )
+
+\end{lstlisting}
 
 \section{Conclusie}
 
