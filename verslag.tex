@@ -209,8 +209,6 @@ In een eenvoudige taal als While kunnen we een state-transitie voorstellen op de
 \[\langle S,s \rangle \rightarrow \prime s\]
 In ons geval is de state s de state van de nameSpace en dus de Lobby.
 Voor Io is het belangrijk dat het resultaat van de message doorgegeven moet worden aan de volgende message. Daarom introduceren we een object 'o'.
-%todo Willen we hier een -message-, of een -symbol-? message kan namelijk nog argumenten bevatten, is dat wel wat we willen? We moeten nog even kijken naar wat er mogenlijk is in Io.
-% ik zou hier objecten van maken.
 \begin{lstlisting}
 	o ::= object | Lobby
 \end{lstlisting}
@@ -219,7 +217,7 @@ Deze bevat of het resultaat van een message, ofwel de Lobby als er nog geen mess
 Daarnaast moeten we ook vastleggen dat het programma begint met \[o = Lobby\].
 Het eenvoudigste voorbeeld is de semantiek van de terminator, die de volgende regel weer laat beginnen in de context van de Lobby.
 \[[Terminator] = \langle o, terminator, s\rangle \rightarrow \langle Lobby, s\rangle\]
-Op dezelfde manier kunnen we ook de semantiek van de eerder genoemde + methode defineeren:
+Op dezelfde manier kunnen we ook de semantiek van de eerder genoemde + methode definiëren:
 \[[+] = 
 \frac{
 	\langle Lobby, S_1, s \rangle \rightarrow \langle o\prime, s\prime \rangle \hspace{1cm}
@@ -251,26 +249,26 @@ Het programma vindt priemgetallen door gebruik te maken van de \href{https://nl.
 
 \begin{lstlisting}[frame=single]
 mkbuf := method(n,
-	b := List clone
-	b preallocateToSize(n)
-	n repeat(b append(true))
-	return b
+  b := List clone
+  b preallocateToSize(n)
+  n repeat(b append(true))
+  return b
 )
 
 nsieve := method(n,
-	primes := mkbuf(n)
-	cnt := 0
-	for(i, 2, n,
-		if(primes at(i),
-			k := i + i
-			while (k < n,
-				primes atPut(k, false)
-				k = k + i
-			)
-			cnt = cnt + 1
-		)
-	)
-	writeln("Primes up to", n asString alignRight(9, " "), cnt asString alignRight(9, " "))
+  primes := mkbuf(n)
+  cnt := 0
+  for(i, 2, n,
+    if(primes at(i),
+      k := i + i
+      while (k < n,
+        primes atPut(k, false)
+        k = k + i
+      )
+      cnt = cnt + 1
+    )
+  )
+  writeln("Primes up to", n asString alignRight(9, " "), cnt asString alignRight(9, " "))
 )
 
 nsieve( 15 )
