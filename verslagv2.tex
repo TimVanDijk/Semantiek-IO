@@ -93,6 +93,16 @@ Uiteindelijk heeft dolly dus 9 poten.
 \pagebreak
 \section{Syntax}
 
+a is een arithmetische expressie, Aexp.
+b is een booleaanse expressie, Bexp, en S is S is een statement, Stm.
+\begin{lstlisting}
+a ::= n | x | a1 + a2 | a1 * a2 | a1 - a2
+b ::= true | false | a1 = a2 | a1 <= a2 | ~b | b1 /\ b2
+
+S ::= Skip | S1;S2 | If b Then S1 | While B Do S1 | x := e1
+| Clone O_parent as O_child | From O Call x With V | Set O Slot x To C
+\end{lstlisting}
+
 \pagebreak
 \section{Semantiek}
 
