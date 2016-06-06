@@ -3,3 +3,7 @@ verslag.aux
 *.pdf
 verslag.out
 verslag.synctex.gz
+*.aux
+*.log
+verslagv2.out
+*.gz
