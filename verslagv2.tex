@@ -95,12 +95,23 @@ Uiteindelijk heeft dolly dus 9 poten.
 
 a is een arithmetische expressie, Aexp.
 b is een booleaanse expressie, Bexp, en S is S is een statement, Stm.
-\begin{lstlisting}
-a ::= n | x | a1 + a2 | a1 * a2 | a1 - a2
-b ::= true | false | a1 = a2 | a1 <= a2 | ~b | b1 /\ b2
+x is een variabelennaam, Var,
+i is inhoud Inh.
 
-S ::= Skip | S1;S2 | If b Then S1 | While B Do S1 | x := e1
-| Clone O_parent as O_child | From O Call x With V | Set O Slot x To C
+E is de lege declaratie.
+
+Semantiek:
+
+\begin{lstlisting}
+a  ::= n | var | a1 + a2 | a1 * a2 | a1 - a2 |   
+b ::= true | false | a1 = a2 | a1 <= a2 | ~b | b1 /\ b2 | var 
+var ::= x | FROM var CALL x
+i ::= a | b | m
+M ::= Dv S END 
+Dv ::= E | x VAR x := i; Dv
+S ::= SKIP | S1;S2 | IF b THEN S1 | WHILE b DO S1
+| CLONE var_p AS var_c | FROM var CALL x_i | SET var_o SLOT var_i TO i
+
 \end{lstlisting}
 
 \pagebreak
