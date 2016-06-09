@@ -18,6 +18,9 @@
 \usepackage[dutch]{babel}
 \usepackage[bottom]{footmisc}
 \usepackage{listings}
+\usepackage{stmaryrd}
+\usepackage{amsmath}
+
 \graphicspath{{images/}}
 
 \lstset{breaklines = true}
@@ -26,9 +29,7 @@
 \maketitle
 
 \begin{abstract}
-Dit werkstuk beschrijft de syntax en semantiek van Io, een puur objectge\"orienteerde programmeertaal.
-Hierbij wordt gebruik gemaakt van natuurlijke semantiek. Vervolgens gebruiken we de beschreven syntax en semantiek om
-de mogelijkheden van Io te vergelijken met die van While.
+In dit werkstuk kijken wij naar de semantiek van de taal Io. Een puur objectge\"orienteerde programmeertaal. Wij passen een simpele vorm van de taal While aan om equivalente objecten als in Io toe te voegen, en beschrijven de nieuwe semantiek van deze taal.
 \end{abstract}
 
 %Zorg dat je een korte inleiding schrijft waarin je zo concreet mogelijk uitlegt wat je gaat doen.
@@ -36,6 +37,7 @@ de mogelijkheden van Io te vergelijken met die van While.
 %Neem in de inleiding ook alvast een voorbeeldprogramma op waarin iets interessants gebeurt.
 %Zo'n programma helpt om duidelijk te krijgen hoe programma's in jullie taal er uitzien.
 \section{Introductie Io}
+%todo: Uitleggen dat we inspiratie nemen ui Io, en de syntax van While uit gaan bereiden.
 Io, een programmeertaal, is in 2002 gemaakt door Steve Dekorte omdat hij zijn begrip over de werking van programmeertalen wilde verbreden.
 Het bijzondere aan Io is dat het een heel minimalistische en puur objectge\"orienteerde programmeertaal is en gebaseerd op prototypes. De taal is ge\"inspireerd door Smalltalk. Alles, inclusief objecten, bestaat uit 'messages' die worden doorgegeven.
 Dit houdt in dat er alleen maar objecten bestaan en dat overerving plaats vindt door bestaande objecten te clonen.
@@ -90,6 +92,19 @@ We roepen de methode growMoreLegs van dolly aan met argument 2.
 De methode verhoogt het attribuut legCount van dolly met 2.
 Uiteindelijk heeft dolly dus 9 poten.
 
+%todo Dit vertalen we naar:
+\begin{lstlisting}[frame=single]
+CLONE this AS Sheep;
+SET Sheep SLOT legCount TO 4;
+CLONE Sheep AS MutantSheep;
+SET Sheep SLOT legCount TO 7;
+CLONE MutantSheep AS Dolly;
+SET MutantSheep SLOT growMoreLegs TO
+SET this SLOT legCount TO x + FROM this CALL legCount;
+END
+FROM Dolly CALL growMoreLegs VAR x := 2;
+\end{lstlisting}
+
 \pagebreak
 \section{Syntax}
 
@@ -107,15 +122,40 @@ a  ::= n | var | a1 + a2 | a1 * a2 | a1 - a2 |
 b ::= true | false | a1 = a2 | a1 <= a2 | ~b | b1 /\ b2 | var 
 var ::= x | FROM var CALL x
 i ::= a | b | m
-M ::= Dv S END 
-Dv ::= E | x VAR x := i; Dv
+M ::= S END 
+Dv ::= E | VAR x := i; Dv
 S ::= SKIP | S1;S2 | IF b THEN S1 | WHILE b DO S1
-| CLONE var_p AS var_c | FROM var CALL x_i | SET var_o SLOT var_i TO i
+| CLONE var_p AS var_c | FROM var CALL x_i Dv | SET var_o SLOT var_i TO i
 
 \end{lstlisting}
 
 \pagebreak
 \section{Semantiek}
+Om te beginnen passen we de basisovergang van While aan. Deze is normaal gedefineerd als:
+$ \langle S,s \rangle \rightarrow \langle s\prime \rangle $
+Waarbij s de state is: Een functie met het type
+$ x \rightarrow a $.
+Omdat wij in de syntax geen directe assignment $(x := a)$ meer toestaan, maken wij hier een aanpassing op.\\
+We gebruiken nog steeds dezelfde overgang, maar nu met een andere definitie voor de state, waarbij de state equivalent is aan een object:
+\[ \langle S,s \rangle \rightarrow \langle s\prime \rangle \]
+\[ s = x \rightarrow Inhoud \]
+Daarnaast moeten wij nog defineeren dat aan de start van een programma de state niet leeg is, maar de varnaam $ this $ bind aan het lege Object $ [\enspace] $.
+\[ s_{start} = [this \rightarrow [\enspace]]\]
+\\
+\par
+Daarnaast moeten we enkele veranderingen maken aan de manier waarop expressies (Beide arithmisch en booleaans) worden geevalueerd. Allereerst is het belangrijk om op de juiste manier een stuk inhoud op te halen. We defineeren een totale functie $ GET $ die een syntactisch construct (De varnaam), en een object neemt. De functionaliteit leggen we vast als:
+\[ x \rightarrow (Object \rightarrow Inhoud) \]
+\[
+GET\llbracket x \rrbracket_o =
+\begin{cases}
+\begin{matrix}
+o(x) & if x \in o\\
+GET\llbracket x \rrbracket_{o(proto)} & otherwise
+\end{matrix}
+
+
+\end{cases}
+\]
 
 \appendix
 
