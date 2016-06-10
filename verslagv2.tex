@@ -19,9 +19,10 @@
 \usepackage[bottom]{footmisc}
 \usepackage{listings}
 \usepackage{stmaryrd}
-\usepackage{amsmath}
+\usepackage[fleqn]{amsmath}
 \usepackage{amssymb}
 \usepackage{dsfont}
+\usepackage{ stmaryrd }
 
 \graphicspath{{images/}}
 
@@ -109,18 +110,18 @@ FROM Dolly CALL growMoreLegs VAR x := 2;
 
 \pagebreak
 \section{Syntax}
+Voor het definieren van de Syntax maken we gebruik van de volgende sets:
+$n$ is een cijfer, Num. \\
+$a$ is een arithmetische expressie, $Aexp$. \\
+$b$ is een booleaanse expressie, $Bexp$. \\
+$S$ is een statement, $Stm$. \\
+$x$ is een variabelennaam, $Var$. \\
 
-a is een arithmetische expressie, Aexp.
-b is een booleaanse expressie, Bexp, en S is S is een statement, Stm.
-x is een variabelennaam, Var,
-i is inhoud Inh.
-
-E is de lege declaratie.
-
-Semantiek:
+Het verschil met While is dat we ook de lege declaratie gebruiken:
+$E$ is de lege declaratie.
 
 \begin{lstlisting}
-a  ::= n | var | a1 + a2 | a1 * a2 | a1 - a2 |   
+a  ::= n | a1 + a2 | a1 * a2 | a1 - a2 | var
 b ::= true | false | a1 = a2 | a1 <= a2 | ~b | b1 /\ b2 | var 
 var ::= x | FROM var CALL x
 i ::= a | b | m
@@ -128,11 +129,26 @@ M ::= S END
 Dv ::= E | VAR x := i; Dv
 S ::= SKIP | S1;S2 | IF b THEN S1 | WHILE b DO S1
 | CLONE var_p AS var_c | FROM var CALL x_i Dv | SET var_o SLOT var_i TO i
-
 \end{lstlisting}
 
 \pagebreak
 \section{Semantiek}
+Als basis gebruiken we de semantiek van While, die we op een paar plekken uitbreiden en aanpassen.
+Zo blijven de booleaanse waarden en nummers gelijk aan while:
+
+We definieren nummers als:
+$n$ :== 0 | 1 | $n$0 | $n$1
+
+Om deze nummers om te zetten naar echte getallen gebruiken we de volgende functie:
+\begin{align*}
+\mathcal{N}: Num \rightarrow Z \\
+\mathcal{N}&\llbracket 0 \rrbracket &= &0  \\
+\mathcal{N}&\llbracket 1 \rrbracket &= &1 \\
+\mathcal{N}&\llbracket n0 \rrbracket &= &2 * \mathcal{N}\llbracket n \rrbracket \\
+\mathcal{N}&\llbracket n1 \rrbracket &= &2 * \mathcal{N}\llbracket n \rrbracket + 1 \\
+\end{align*}
+
+
 Om te beginnen passen we de basisovergang van While aan. Deze is normaal gedefineerd als:
 $ \langle S,s \rangle \rightarrow \langle s\prime \rangle $
 Waarbij s de state is: Een functie met het type
@@ -141,11 +157,12 @@ Omdat wij in de syntax geen directe assignment $(x := a)$ meer toestaan, maken w
 We gebruiken nog steeds dezelfde overgang, maar nu met een andere definitie voor de state, waarbij de state equivalent is aan een object:
 \[ \langle S,s \rangle \rightarrow \langle s\prime \rangle \]
 \[ s = x \rightarrow Inhoud \]
-Daarnaast moeten wij nog defineeren dat aan de start van een programma de state niet leeg is, maar de varnaam $ this $ bind aan het lege Object $ [\enspace] $.
+Daarnaast moeten wij nog definiëren dat aan de start van een programma de state niet leeg is, maar de varnaam $ this $ bind aan het lege Object $ [\enspace] $.
 \[ s_{start} = [this \rightarrow [\enspace]]\]
 \\
 \par
-Daarnaast moeten we enkele veranderingen maken aan de manier waarop expressies (Beide arithmisch en booleaans) worden geevalueerd. Allereerst is het belangrijk om op de juiste manier een stuk inhoud op te halen. We defineeren een totale functie $ GET $ die een syntactisch construct (De varnaam) en een object neemt. De functionaliteit leggen we vast als:
+Daarnaast moeten we enkele veranderingen maken aan de manier waarop expressies (Beide arithmisch en booleaans) worden geevalueerd. 
+Allereerst is het belangrijk om op de juiste manier een stuk inhoud op te halen. We defineeren een totale functie $ GET $ die een syntactisch construct (De varnaam) en een object neemt. De functionaliteit leggen we vast als:
 \[ GET: x \rightarrow (Object \rightarrow Inhoud) \]
 \[
 GET\llbracket x \rrbracket_o =
