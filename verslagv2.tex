@@ -227,14 +227,24 @@ RB\llbracket b_1 \wedge b_2 \rrbracket_o & = &
 \end{matrix}
 \]
 
-Semantiekregels:
-$[skip_{ns}] 	\hfill <skip, o> \rightarrow o$'\n\n
-$[comp_{ns}] 	\hfill \dfrac{<S1, o> \rightarrow o' <S2, o'> \rightarrow o''}{<S1;S2, o> \rightarrow o''}$\n\n
-$[if_{ns}^{tt}] \hfill \dfrac{<S1, o> \rightarrow o'}{<\mbox{IF b THEN S1 ELSE S2}, o> \rightarrow o'} \mbox{ als }\RB \llbracket b \rrbracket o = tt$\n\n
-$[if_{ns}^{ff}] \hfill \dfrac{<S2, o> \rightarrow o'}{<\mbox{IF b THEN S1 ELSE S2}, o> \rightarrow o'} \mbox{ als }\RB \llbracket b \rrbracket o = ff$\n\n
-$[while_{ns}^{tt}] \hfill \dfrac{<S, o> \rightarrow o' <\mbox{WHILE b DO S}, o'> \rightarrow o''}{\mbox{WHILE b DO S}, o> \rightarrow o''} \mbox{ als }\RB \llbracket b \rrbracket o = tt$\n\n
-$[while_{ns}^{ff}] \hfill <\mbox{WHILE b DO S}, o> \rightarrow o \mbox{ als }\RB \llbracket b \rrbracket o = ff$\n\n
+Semantiekregels:\\
+\renewcommand*{\arraystretch}{2.5}
+\[
+\begin{matrix}
+[skip_{ns}]  & <skip, o> \rightarrow o\\
+[comp_{ns}]  & \dfrac{<S1, o> \rightarrow o' <S2, o'> \rightarrow o''}{<S1;S2, o> \rightarrow o''}\\
+[if_{ns}^{tt}] & \dfrac{<S1, o> \rightarrow o'}{<\mbox{IF b THEN S1 ELSE S2}, o> \rightarrow o'} &&\mbox{ als }\RB \llbracket b \rrbracket o = tt\\
+[if_{ns}^{ff}] & \dfrac{<S2, o> \rightarrow o'}{<\mbox{IF b THEN S1 ELSE S2}, o> \rightarrow o'} &&\mbox{ als }\RB \llbracket b \rrbracket o = ff\\
+[while_{ns}^{tt}] & \dfrac{<S, o> \rightarrow o' <\mbox{WHILE b DO S}, o'> \rightarrow o''}{\mbox{WHILE b DO S}, o> \rightarrow o''} &&\mbox{ als }\RB \llbracket b \rrbracket o = tt\\
+[while_{ns}^{ff}] & <\mbox{WHILE b DO S}, o> \rightarrow o &&\mbox{ als }\RB \llbracket b \rrbracket o = ff\\
+\end{matrix}
+\]
 
+
+
+
+%\end{matrix}
+%\]
 \appendix
 
 \section{Planning}
