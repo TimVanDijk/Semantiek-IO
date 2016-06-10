@@ -20,6 +20,8 @@
 \usepackage{listings}
 \usepackage{stmaryrd}
 \usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{dsfont}
 
 \graphicspath{{images/}}
 
@@ -143,8 +145,8 @@ Daarnaast moeten wij nog defineeren dat aan de start van een programma de state 
 \[ s_{start} = [this \rightarrow [\enspace]]\]
 \\
 \par
-Daarnaast moeten we enkele veranderingen maken aan de manier waarop expressies (Beide arithmisch en booleaans) worden geevalueerd. Allereerst is het belangrijk om op de juiste manier een stuk inhoud op te halen. We defineeren een totale functie $ GET $ die een syntactisch construct (De varnaam), en een object neemt. De functionaliteit leggen we vast als:
-\[ x \rightarrow (Object \rightarrow Inhoud) \]
+Daarnaast moeten we enkele veranderingen maken aan de manier waarop expressies (Beide arithmisch en booleaans) worden geevalueerd. Allereerst is het belangrijk om op de juiste manier een stuk inhoud op te halen. We defineeren een totale functie $ GET $ die een syntactisch construct (De varnaam) en een object neemt. De functionaliteit leggen we vast als:
+\[ GET: x \rightarrow (Object \rightarrow Inhoud) \]
 \[
 GET\llbracket x \rrbracket_o =
 \begin{cases}
@@ -152,9 +154,21 @@ GET\llbracket x \rrbracket_o =
 o(x) & if x \in o\\
 GET\llbracket x \rrbracket_{o(proto)} & otherwise
 \end{matrix}
-
-
 \end{cases}
+\]
+
+Na dit te hebben gedefineerd kunnen we met behulp van de GET-functie enkele nieuwe functies defineeren, waarmee we syntactische constructen om kunnen zetten naar getallen en booleaanse variabelen. We defineeren de totale functie $ RA $ die een syntactisch construct (De varnaam) en een object neemt. De functionaliteit leggen we vast als volgt:
+
+\[ RA: x \rightarrow (Object \rightarrow \mathds{Z} ) \]
+\[
+\begin{matrix}
+RA\llbracket n \rrbracket_o & = & \mathcal{N}\llbracket x \rrbracket\\
+RA\llbracket x \rrbracket_o & = & RA\llbracket GET\llbracket x \rrbracket_o \rrbracket_o\\
+RA\llbracket FROM \enspace var \enspace CALL \enspace x \rrbracket_o & = & RA\llbracket GET\llbracket x \rrbracket_{GET\llbracket var \rrbracket_o} \rrbracket_o\\
+RA\llbracket a_1 + a_2 \rrbracket_o & = & RA\llbracket a_1 \rrbracket_o + RA\llbracket a_2 \rrbracket_o\\
+RA\llbracket a_1 * a_2 \rrbracket_o & = & RA\llbracket a_1 \rrbracket_o * RA\llbracket a_2 \rrbracket_o\\
+RA\llbracket a_1 - a_2 \rrbracket_o & = & RA\llbracket a_1 \rrbracket_o - RA\llbracket a_2 \rrbracket_o\\
+\end{matrix}
 \]
 
 \appendix
