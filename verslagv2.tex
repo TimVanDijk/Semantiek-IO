@@ -134,15 +134,26 @@ n ::= 0 | 1 | n0 | n1
 \end{lstlisting}
 
 Om deze nummers om te zetten naar echte getallen gebruiken we de volgende functie:
-\begin{align*}
+$$
+\begin{matrix}
 \mathcal{N}: Num \rightarrow Z \\
-\mathcal{N}&\llbracket 0 \rrbracket &= &0  \\
-\mathcal{N}&\llbracket 1 \rrbracket &= &1 \\
-\mathcal{N}&\llbracket n0 \rrbracket &= &2 * \mathcal{N}\llbracket n \rrbracket \\
-\mathcal{N}&\llbracket n1 \rrbracket &= &2 * \mathcal{N}\llbracket n \rrbracket + 1 \\
-\end{align*}
+\mathcal{N}\llbracket 0 \rrbracket &= &0  \\
+\mathcal{N}\llbracket 1 \rrbracket &= &1 \\
+\mathcal{N}\llbracket n0 \rrbracket &= &2 * \mathcal{N}\llbracket n \rrbracket \\
+\mathcal{N}\llbracket n1 \rrbracket &= &2 * \mathcal{N}\llbracket n \rrbracket + 1 \\
+\end{matrix}
+$$
 
-Om te beginnen passen we de basisovergang van While aan. Deze is normaal gedefineerd als:
+Onze eigen toevoeging is natuurlijk objecten. Deze definieren we als volgt:
+$$Object : Var \rightarrow Inhoud$$ 
+Hierbij is Inhoud alles watje in een object zou kunnen stoppen: 
+$$Inhoud = Z \cup \{tt,ff\} \cup Object \cup Stm$$ 
+
+Hierbij gebruiken we dezelfde notatie als bij WHile om de inhoud van zo'n object weer te geven.
+Neem een object o met als waarden x = 4 en y = true. Dit wordt als volgt gerepresenteerd:
+$$[x \mapsto 4, y \mapsto tt]$$
+
+Nu de basistypen gedefinieerd zijn kunnen we met de echte semantiek verder. Om te beginnen passen we de basisovergang van While aan. Deze is normaal gedefineerd als:
 $ \langle S,s \rangle \rightarrow \langle s\prime \rangle $
 Waarbij s de state is: Een functie met het type
 $ x \rightarrow a $.
@@ -239,9 +250,6 @@ Semantiekregels:\\
 [while_{ns}^{ff}] & <\mbox{WHILE b DO S}, o> \rightarrow o &&\mbox{ als }\RB \llbracket b \rrbracket o = ff\\
 \end{matrix}
 \]
-
-
-
 
 %\end{matrix}
 %\]
