@@ -24,6 +24,9 @@
 \usepackage{amssymb}
 \usepackage{dsfont}
 \usepackage{ stmaryrd }
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
 
 \graphicspath{{images/}}
 \lstset{breaklines = true}
@@ -34,9 +37,8 @@
 \maketitle
 
 \begin{abstract}
-Dit werkstuk beschrijft de syntax en semantiek van Io, een puur objectge\"orienteerde programmeertaal.
-Hierbij wordt gebruik gemaakt van natuurlijke semantiek. Vervolgens gebruiken we de beschreven syntax en semantiek om
-de mogelijkheden van Io te vergelijken met die van While.
+Dit werkstuk beschrijft de syntax en semantiek van een door Io geinspireerde uitbreiding van While, genaamd WhileIo. Io is een puur objectge\"orienteerde programmeertaal. Hierbij wordt WhileIo met natuurlijke semantiek beschreven. Vervolgens gebruiken we de beschreven syntax en semantiek om
+de mogelijkheden van Io te laten zien.
 \end{abstract}
 
 %Zorg dat je een korte inleiding schrijft waarin je zo concreet mogelijk uitlegt wat je gaat doen.
@@ -45,18 +47,14 @@ de mogelijkheden van Io te vergelijken met die van While.
 %Zo'n programma helpt om duidelijk te krijgen hoe programma's in jullie taal er uitzien.
 \section{Introductie Io}
 Io, een programmeertaal, is in 2002 gemaakt door Steve Dekorte omdat hij zijn begrip over de werking van programmeertalen wilde verbreden.
-Het bijzondere aan Io is dat het een heel minimalistische en puur objectge\"orienteerde programmeertaal is en gebaseerd op prototypes. De taal is ge\"inspireerd door Smalltalk. Alles, inclusief objecten, bestaat uit `messages' die worden doorgegeven.
+Het bijzondere aan Io is dat het een heel minimalistische en puur objectge\"orienteerde programmeertaal is die gebaseerd is op prototypes. De taal is ge\"inspireerd door Smalltalk. Alles, inclusief objecten, bestaat uit `messages' die worden doorgegeven.
 Dit houdt in dat er alleen maar objecten bestaan en dat overerving plaats vindt door bestaande objecten te clonen.
 Ook is Io een dynamische taal, dus objecten kunnen tijdens runtime uit worden gebreidt.
 
-Het doel van dit werkstuk is om de mogelijkheden van Io te vergelijken met die van de standaardtaal While.
-Om die vergelijking te kunnen maken moet eerst vast worden gelegd hoe de taal precies werkt.
-We leggen daarom eerst de syntax vast en daarna de semantiek. Bij het vastleggen van de semantiek gebruiken we natuurlijke semantiek.
-Daarna werken we de semantiek uit van een wat groter voorbeeld.
+Het doel van dit werkstuk is om de mogelijkheden van Io te verwerken in de standaardtaal While. Hierbij zullen we een eigen definitie geven van objecten en definieren we onze eigen manier om berichten door te geven aan objecten (message passing). Hierbij zullen we eerst vastsleggen hoe Io werkt en hoe dit verschilt met het door ons gemaakte WhileIo. Hierbij zullen we een voorbeeld gebruiken dat in Io geschreven is en vertalen naar ons eigen WhileIo. Vervolgens leggen we de syntax en semantiek van WhileIo vast door middel van natuurlijke semantiek. Tot slot werken we het hierboven genoemde voorbeeld uit met de door ons gedefinieerde semantiek. 
 
-Bij een objectge\"orienteerde taal zoals Io komen veel nieuwe concepten langs, zoals prototypen, inheritance etc. De kracht van ons project wordt dan ook om al de mogelijkheden van objecten 
-%en messages? 
-zo goed mogelijk uit te werken.  Bovendien willen we kijken of we zonder keywords zoals for en while toch dezelfde functionaliteit kunnen krijgen.
+Bij een objectge\"orienteerde taal zoals Io komen veel nieuwe concepten langs, zoals prototypen, inheritance etc. De kracht van ons project wordt dan ook om al de mogelijkheden van objecten zo goed mogelijk uit te werken.  Bovendien willen we kijken of we zonder keywords zoals for en while toch dezelfde functionaliteit kunnen krijgen.
+
 
 %Misschien dat we dit voorbeeld dan toch wel moeten houden. Tim vond het volgens mij echt een heel leuk voorbeeld.
 \subsection*{Voorbeeld}
