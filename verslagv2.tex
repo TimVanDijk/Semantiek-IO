@@ -22,6 +22,8 @@
 \usepackage{stmaryrd}
 \usepackage{amsmath}
 \lstset{breaklines = true}
+\newcommand{\RB}{\mathcal{RB}}
+\newcommand{\n}{\newline}
 
 \begin{document}
 \maketitle
@@ -107,14 +109,98 @@ S ::= Skip | S1;S2 | If b Then S1 | While B Do S1 | x := e1
 
 \pagebreak
 \section{Semantiek}
-\newcommand{\RB}{\mathcal{RB}}
-\newcommand{\n}{\newline}
+Semantiekregels:
 $[skip_{ns}] 	\hfill <skip, o> \rightarrow o$'\n\n
 $[comp_{ns}] 	\hfill \dfrac{<S1, o> \rightarrow o' <S2, o'> \rightarrow o''}{<S1;S2, o> \rightarrow o''}$\n\n
 $[if_{ns}^{tt}] \hfill \dfrac{<S1, o> \rightarrow o'}{<\mbox{IF b THEN S1 ELSE S2}, o> \rightarrow o'} \mbox{ als }\RB \llbracket b \rrbracket o = tt$\n\n
 $[if_{ns}^{ff}] \hfill \dfrac{<S2, o> \rightarrow o'}{<\mbox{IF b THEN S1 ELSE S2}, o> \rightarrow o'} \mbox{ als }\RB \llbracket b \rrbracket o = ff$\n\n
 $[while_{ns}^{tt}] \hfill \dfrac{<S, o> \rightarrow o' <\mbox{WHILE b DO S}, o'> \rightarrow o''}{\mbox{WHILE b DO S}, o> \rightarrow o''} \mbox{ als }\RB \llbracket b \rrbracket o = tt$\n\n
 $[while_{ns}^{ff}] \hfill <\mbox{WHILE b DO S}, o> \rightarrow o \mbox{ als }\RB \llbracket b \rrbracket o = ff$\n\n
+
+
+Om te beginnen passen we de basisovergang van While aan. Deze is normaal gedefineerd als:
+$ \langle S,s \rangle \rightarrow \langle s\prime \rangle $
+Waarbij s de state is: Een functie met het type
+$ x \rightarrow a $.
+Omdat wij in de syntax geen directe assignment $(x := a)$ meer toestaan, maken wij hier een aanpassing op.\\
+We gebruiken nog steeds dezelfde overgang, maar nu met een andere definitie voor de state, waarbij de state equivalent is aan een object:
+\[ \langle S,s \rangle \rightarrow \langle s\prime \rangle \]
+\[ s = x \rightarrow Inhoud \]
+Daarnaast moeten wij nog defineeren dat aan de start van een programma de state niet leeg is, maar de varnaam $ this $ bind aan het lege Object $ [\enspace] $.
+\[ s_{start} = [this \rightarrow [\enspace]]\]
+\\
+\par
+Daarnaast moeten we enkele veranderingen maken aan de manier waarop expressies (Beide arithmisch en booleaans) worden geevalueerd. Allereerst is het belangrijk om op de juiste manier een stuk inhoud op te halen. We defineeren een totale functie $ GET $ die een syntactisch construct (De varnaam) en een object neemt. De functionaliteit leggen we vast als:
+\[ GET: x \rightarrow (Object \rightarrow Inhoud) \]
+\[
+GET\llbracket x \rrbracket_o =
+\begin{cases}
+\begin{matrix}
+o(x) & if \enspace x \in o\\
+GET\llbracket x \rrbracket_{o(proto)} & otherwise
+\end{matrix}
+\end{cases}
+\]
+
+Na dit te hebben gedefineerd kunnen we met behulp van de GET-functie enkele nieuwe functies defineeren, waarmee we syntactische constructen om kunnen zetten naar getallen en booleaanse variabelen. We defineeren de totale functie $ RA $ die een syntactisch construct (De varnaam) en een object neemt. De functionaliteit leggen we vast als volgt:
+
+\[ RA: x \rightarrow (Object \rightarrow \mathds{Z} ) \]
+\[
+\begin{matrix}
+RA\llbracket n \rrbracket_o & = & \mathcal{N}\llbracket x \rrbracket\\
+RA\llbracket x \rrbracket_o & = & RA\llbracket GET\llbracket x \rrbracket_o \rrbracket_o\\
+RA\llbracket FROM \enspace var \enspace CALL \enspace x \rrbracket_o & = & RA\llbracket GET\llbracket x \rrbracket_{GET\llbracket var \rrbracket_o} \rrbracket_o\\
+RA\llbracket a_1 + a_2 \rrbracket_o & = & RA\llbracket a_1 \rrbracket_o + RA\llbracket a_2 \rrbracket_o\\
+RA\llbracket a_1 * a_2 \rrbracket_o & = & RA\llbracket a_1 \rrbracket_o * RA\llbracket a_2 \rrbracket_o\\
+RA\llbracket a_1 - a_2 \rrbracket_o & = & RA\llbracket a_1 \rrbracket_o - RA\llbracket a_2 \rrbracket_o\\
+\end{matrix}
+\]
+
+We defineeren ook eenzelfde totale functie $ RB $:
+\[ RB: x \rightarrow (Object \rightarrow {\boldsymbol{tt},\boldsymbol{ff}} ) \]
+\[
+\begin{matrix}
+RB\llbracket true \rrbracket_o & = & \boldsymbol{tt}\\
+RB\llbracket false \rrbracket_o & = & \boldsymbol{ff}\\
+
+RB\llbracket x \rrbracket_o & = & RB\llbracket GET\llbracket x \rrbracket_o \rrbracket_o\\
+
+RB\llbracket FROM \enspace var \enspace CALL \enspace x \rrbracket_o & = & RB\llbracket GET\llbracket x \rrbracket_{GET\llbracket var \rrbracket_o} \rrbracket_o\\
+
+RB\llbracket a_1 = a_2 \rrbracket_o & = &
+\begin{cases}
+\begin{matrix}
+\boldsymbol{tt} & if \enspace RA\llbracket a_1 \rrbracket_o = RA\llbracket a_2 \rrbracket_o \\
+\boldsymbol{ff} & if \enspace RA\llbracket a_1 \rrbracket_o \not= RA\llbracket a_2 \rrbracket_o
+\end{matrix}
+\end{cases}\\
+
+RB\llbracket a_1 \leq a_2 \rrbracket_o & = &
+\begin{cases}
+\begin{matrix}
+\boldsymbol{tt} & if \enspace RA\llbracket a_1 \rrbracket_o \leq RA\llbracket a_2 \rrbracket_o \\
+\boldsymbol{ff} & if \enspace RA\llbracket a_1 \rrbracket_o > RA\llbracket a_2 \rrbracket_o
+\end{matrix}
+\end{cases}\\
+
+RB\llbracket \neg b \rrbracket_o & = &
+\begin{cases}
+\begin{matrix}
+\boldsymbol{tt} & if \enspace RB\llbracket b \rrbracket_o = \boldsymbol{ff} \\
+\boldsymbol{ff} & if \enspace RB\llbracket b \rrbracket_o = \boldsymbol{tt}
+\end{matrix}
+\end{cases}\\
+
+RB\llbracket b_1 \wedge b_2 \rrbracket_o & = &
+\begin{cases}
+\begin{matrix}
+\boldsymbol{tt} & if \enspace RB\llbracket b_1 \rrbracket_o = \boldsymbol{tt} and RB\llbracket b_2 \rrbracket_o = \boldsymbol{tt}\\
+\boldsymbol{ff} & if \enspace RB\llbracket b_1 \rrbracket_o = \boldsymbol{ff} or RB\llbracket b_2 \rrbracket_o = \boldsymbol{ff}
+\end{matrix}
+\end{cases}\\
+
+\end{matrix}
+\]
 \appendix
 
 \section{Planning}
