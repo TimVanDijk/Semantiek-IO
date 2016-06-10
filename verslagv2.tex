@@ -151,7 +151,7 @@ Daarnaast moeten we enkele veranderingen maken aan de manier waarop expressies (
 GET\llbracket x \rrbracket_o =
 \begin{cases}
 \begin{matrix}
-o(x) & if x \in o\\
+o(x) & if \enspace x \in o\\
 GET\llbracket x \rrbracket_{o(proto)} & otherwise
 \end{matrix}
 \end{cases}
@@ -168,6 +168,52 @@ RA\llbracket FROM \enspace var \enspace CALL \enspace x \rrbracket_o & = & RA\ll
 RA\llbracket a_1 + a_2 \rrbracket_o & = & RA\llbracket a_1 \rrbracket_o + RA\llbracket a_2 \rrbracket_o\\
 RA\llbracket a_1 * a_2 \rrbracket_o & = & RA\llbracket a_1 \rrbracket_o * RA\llbracket a_2 \rrbracket_o\\
 RA\llbracket a_1 - a_2 \rrbracket_o & = & RA\llbracket a_1 \rrbracket_o - RA\llbracket a_2 \rrbracket_o\\
+\end{matrix}
+\]
+
+We defineeren ook eenzelfde totale functie $ RB $:
+\[ RB: x \rightarrow (Object \rightarrow {\boldsymbol{tt},\boldsymbol{ff}} ) \]
+\[
+\begin{matrix}
+RB\llbracket true \rrbracket_o & = & \boldsymbol{tt}\\
+RB\llbracket false \rrbracket_o & = & \boldsymbol{ff}\\
+
+RB\llbracket x \rrbracket_o & = & RB\llbracket GET\llbracket x \rrbracket_o \rrbracket_o\\
+
+RB\llbracket FROM \enspace var \enspace CALL \enspace x \rrbracket_o & = & RB\llbracket GET\llbracket x \rrbracket_{GET\llbracket var \rrbracket_o} \rrbracket_o\\
+
+RB\llbracket a_1 = a_2 \rrbracket_o & = &
+\begin{cases}
+\begin{matrix}
+\boldsymbol{tt} & if \enspace RA\llbracket a_1 \rrbracket_o = RA\llbracket a_2 \rrbracket_o \\
+\boldsymbol{ff} & if \enspace RA\llbracket a_1 \rrbracket_o \not= RA\llbracket a_2 \rrbracket_o
+\end{matrix}
+\end{cases}\\
+
+RB\llbracket a_1 \leq a_2 \rrbracket_o & = &
+\begin{cases}
+\begin{matrix}
+\boldsymbol{tt} & if \enspace RA\llbracket a_1 \rrbracket_o \leq RA\llbracket a_2 \rrbracket_o \\
+\boldsymbol{ff} & if \enspace RA\llbracket a_1 \rrbracket_o > RA\llbracket a_2 \rrbracket_o
+\end{matrix}
+\end{cases}\\
+
+RB\llbracket \neg b \rrbracket_o & = &
+\begin{cases}
+\begin{matrix}
+\boldsymbol{tt} & if \enspace RB\llbracket b \rrbracket_o = \boldsymbol{ff} \\
+\boldsymbol{ff} & if \enspace RB\llbracket b \rrbracket_o = \boldsymbol{tt}
+\end{matrix}
+\end{cases}\\
+
+RB\llbracket b_1 \wedge b_2 \rrbracket_o & = &
+\begin{cases}
+\begin{matrix}
+\boldsymbol{tt} & if \enspace RB\llbracket b_1 \rrbracket_o = \boldsymbol{tt} and RB\llbracket b_2 \rrbracket_o = \boldsymbol{tt}\\
+\boldsymbol{ff} & if \enspace RB\llbracket b_1 \rrbracket_o = \boldsymbol{ff} or RB\llbracket b_2 \rrbracket_o = \boldsymbol{ff}
+\end{matrix}
+\end{cases}\\
+
 \end{matrix}
 \]
 
