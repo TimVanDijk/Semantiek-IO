@@ -18,6 +18,7 @@
 \usepackage[dutch]{babel}
 \usepackage[bottom]{footmisc}
 \usepackage{listings}
+\graphicspath{{images/}}
 \usepackage{stmaryrd}
 \usepackage[fleqn]{amsmath}
 \usepackage{amssymb}
@@ -25,14 +26,17 @@
 \usepackage{ stmaryrd }
 
 \graphicspath{{images/}}
-
 \lstset{breaklines = true}
+\newcommand{\RB}{\mathcal{RB}}
+\newcommand{\n}{\newline}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-In dit werkstuk kijken wij naar de semantiek van de taal Io. Een puur objectge\"orienteerde programmeertaal. Wij passen een simpele vorm van de taal While aan om equivalente objecten als in Io toe te voegen, en beschrijven de nieuwe semantiek van deze taal.
+Dit werkstuk beschrijft de syntax en semantiek van Io, een puur objectge\"orienteerde programmeertaal.
+Hierbij wordt gebruik gemaakt van natuurlijke semantiek. Vervolgens gebruiken we de beschreven syntax en semantiek om
+de mogelijkheden van Io te vergelijken met die van While.
 \end{abstract}
 
 %Zorg dat je een korte inleiding schrijft waarin je zo concreet mogelijk uitlegt wat je gaat doen.
@@ -40,9 +44,8 @@ In dit werkstuk kijken wij naar de semantiek van de taal Io. Een puur objectge\"
 %Neem in de inleiding ook alvast een voorbeeldprogramma op waarin iets interessants gebeurt.
 %Zo'n programma helpt om duidelijk te krijgen hoe programma's in jullie taal er uitzien.
 \section{Introductie Io}
-%todo: Uitleggen dat we inspiratie nemen ui Io, en de syntax van While uit gaan bereiden.
 Io, een programmeertaal, is in 2002 gemaakt door Steve Dekorte omdat hij zijn begrip over de werking van programmeertalen wilde verbreden.
-Het bijzondere aan Io is dat het een heel minimalistische en puur objectge\"orienteerde programmeertaal is en gebaseerd op prototypes. De taal is ge\"inspireerd door Smalltalk. Alles, inclusief objecten, bestaat uit 'messages' die worden doorgegeven.
+Het bijzondere aan Io is dat het een heel minimalistische en puur objectge\"orienteerde programmeertaal is en gebaseerd op prototypes. De taal is ge\"inspireerd door Smalltalk. Alles, inclusief objecten, bestaat uit `messages' die worden doorgegeven.
 Dit houdt in dat er alleen maar objecten bestaan en dat overerving plaats vindt door bestaande objecten te clonen.
 Ook is Io een dynamische taal, dus objecten kunnen tijdens runtime uit worden gebreidt.
 
@@ -86,6 +89,7 @@ Vervolgens maken we weer een clone van ons gemuteerde schaap. Deze clone noemen 
 Dit is om het idee te geven dat het een instantie is van het object MutantSheep.
 Dit is alleen om het programmeren overzichtelijker te maken, want Io maakt geen onderscheid tussen objecten en instanties: er zijn alleen maar prototypes.\newline
 
+
 Daarna gaan we een nieuwe methode maken en toevoegen aan MutantSheep, namelijk growMoreLegs.
 growMoreLegs neemt \'e\'en argument n en verhoogt ``legCount'' met die n. Zoals eerder gezegd worden veranderingen op een prototype ook overgedragen op prototypes die eruit gecloned zijn. dolly heeft deze methode nu dus ook en kan er gebruik van maken.\newline
 
@@ -94,19 +98,6 @@ Om dit te doen maken we gebruik van de nieuwe functie growMoreLegs.
 We roepen de methode growMoreLegs van dolly aan met argument 2.
 De methode verhoogt het attribuut legCount van dolly met 2.
 Uiteindelijk heeft dolly dus 9 poten.
-
-%todo Dit vertalen we naar:
-\begin{lstlisting}[frame=single]
-CLONE this AS Sheep;
-SET Sheep SLOT legCount TO 4;
-CLONE Sheep AS MutantSheep;
-SET Sheep SLOT legCount TO 7;
-CLONE MutantSheep AS Dolly;
-SET MutantSheep SLOT growMoreLegs TO
-SET this SLOT legCount TO x + FROM this CALL legCount;
-END
-FROM Dolly CALL growMoreLegs VAR x := 2;
-\end{lstlisting}
 
 \pagebreak
 \section{Syntax}
@@ -133,11 +124,14 @@ S ::= SKIP | S1;S2 | IF b THEN S1 | WHILE b DO S1
 
 \pagebreak
 \section{Semantiek}
+
 Als basis gebruiken we de semantiek van While, die we op een paar plekken uitbreiden en aanpassen.
 Zo blijven de booleaanse waarden en nummers gelijk aan while:
 
 We definieren nummers als:
-$n$ :== 0 | 1 | $n$0 | $n$1
+\begin{lstlisting}
+n ::= 0 | 1 | n0 | n1
+\end{lstlisting}
 
 Om deze nummers om te zetten naar echte getallen gebruiken we de volgende functie:
 \begin{align*}
@@ -147,7 +141,6 @@ Om deze nummers om te zetten naar echte getallen gebruiken we de volgende functi
 \mathcal{N}&\llbracket n0 \rrbracket &= &2 * \mathcal{N}\llbracket n \rrbracket \\
 \mathcal{N}&\llbracket n1 \rrbracket &= &2 * \mathcal{N}\llbracket n \rrbracket + 1 \\
 \end{align*}
-
 
 Om te beginnen passen we de basisovergang van While aan. Deze is normaal gedefineerd als:
 $ \langle S,s \rangle \rightarrow \langle s\prime \rangle $
@@ -233,6 +226,14 @@ RB\llbracket b_1 \wedge b_2 \rrbracket_o & = &
 
 \end{matrix}
 \]
+
+Semantiekregels:
+$[skip_{ns}] 	\hfill <skip, o> \rightarrow o$'\n\n
+$[comp_{ns}] 	\hfill \dfrac{<S1, o> \rightarrow o' <S2, o'> \rightarrow o''}{<S1;S2, o> \rightarrow o''}$\n\n
+$[if_{ns}^{tt}] \hfill \dfrac{<S1, o> \rightarrow o'}{<\mbox{IF b THEN S1 ELSE S2}, o> \rightarrow o'} \mbox{ als }\RB \llbracket b \rrbracket o = tt$\n\n
+$[if_{ns}^{ff}] \hfill \dfrac{<S2, o> \rightarrow o'}{<\mbox{IF b THEN S1 ELSE S2}, o> \rightarrow o'} \mbox{ als }\RB \llbracket b \rrbracket o = ff$\n\n
+$[while_{ns}^{tt}] \hfill \dfrac{<S, o> \rightarrow o' <\mbox{WHILE b DO S}, o'> \rightarrow o''}{\mbox{WHILE b DO S}, o> \rightarrow o''} \mbox{ als }\RB \llbracket b \rrbracket o = tt$\n\n
+$[while_{ns}^{ff}] \hfill <\mbox{WHILE b DO S}, o> \rightarrow o \mbox{ als }\RB \llbracket b \rrbracket o = ff$\n\n
 
 \appendix
 
