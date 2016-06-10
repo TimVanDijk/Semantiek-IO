@@ -18,20 +18,18 @@
 \usepackage[dutch]{babel}
 \usepackage[bottom]{footmisc}
 \usepackage{listings}
+\graphicspath{{images/}}
 \usepackage{stmaryrd}
 \usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{dsfont}
-
-\graphicspath{{images/}}
-
 \lstset{breaklines = true}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-In dit werkstuk kijken wij naar de semantiek van de taal Io. Een puur objectge\"orienteerde programmeertaal. Wij passen een simpele vorm van de taal While aan om equivalente objecten als in Io toe te voegen, en beschrijven de nieuwe semantiek van deze taal.
+Dit werkstuk beschrijft de syntax en semantiek van Io, een puur objectge\"orienteerde programmeertaal.
+Hierbij wordt gebruik gemaakt van natuurlijke semantiek. Vervolgens gebruiken we de beschreven syntax en semantiek om
+de mogelijkheden van Io te vergelijken met die van While.
 \end{abstract}
 
 %Zorg dat je een korte inleiding schrijft waarin je zo concreet mogelijk uitlegt wat je gaat doen.
@@ -39,9 +37,8 @@ In dit werkstuk kijken wij naar de semantiek van de taal Io. Een puur objectge\"
 %Neem in de inleiding ook alvast een voorbeeldprogramma op waarin iets interessants gebeurt.
 %Zo'n programma helpt om duidelijk te krijgen hoe programma's in jullie taal er uitzien.
 \section{Introductie Io}
-%todo: Uitleggen dat we inspiratie nemen ui Io, en de syntax van While uit gaan bereiden.
 Io, een programmeertaal, is in 2002 gemaakt door Steve Dekorte omdat hij zijn begrip over de werking van programmeertalen wilde verbreden.
-Het bijzondere aan Io is dat het een heel minimalistische en puur objectge\"orienteerde programmeertaal is en gebaseerd op prototypes. De taal is ge\"inspireerd door Smalltalk. Alles, inclusief objecten, bestaat uit 'messages' die worden doorgegeven.
+Het bijzondere aan Io is dat het een heel minimalistische en puur objectge\"orienteerde programmeertaal is en gebaseerd op prototypes. De taal is ge\"inspireerd door Smalltalk. Alles, inclusief objecten, bestaat uit `messages' die worden doorgegeven.
 Dit houdt in dat er alleen maar objecten bestaan en dat overerving plaats vindt door bestaande objecten te clonen.
 Ook is Io een dynamische taal, dus objecten kunnen tijdens runtime uit worden gebreidt.
 
@@ -85,6 +82,7 @@ Vervolgens maken we weer een clone van ons gemuteerde schaap. Deze clone noemen 
 Dit is om het idee te geven dat het een instantie is van het object MutantSheep.
 Dit is alleen om het programmeren overzichtelijker te maken, want Io maakt geen onderscheid tussen objecten en instanties: er zijn alleen maar prototypes.\newline
 
+
 Daarna gaan we een nieuwe methode maken en toevoegen aan MutantSheep, namelijk growMoreLegs.
 growMoreLegs neemt \'e\'en argument n en verhoogt ``legCount'' met die n. Zoals eerder gezegd worden veranderingen op een prototype ook overgedragen op prototypes die eruit gecloned zijn. dolly heeft deze methode nu dus ook en kan er gebruik van maken.\newline
 
@@ -94,83 +92,29 @@ We roepen de methode growMoreLegs van dolly aan met argument 2.
 De methode verhoogt het attribuut legCount van dolly met 2.
 Uiteindelijk heeft dolly dus 9 poten.
 
-%todo Dit vertalen we naar:
-\begin{lstlisting}[frame=single]
-CLONE this AS Sheep;
-SET Sheep SLOT legCount TO 4;
-CLONE Sheep AS MutantSheep;
-SET Sheep SLOT legCount TO 7;
-CLONE MutantSheep AS Dolly;
-SET MutantSheep SLOT growMoreLegs TO
-SET this SLOT legCount TO x + FROM this CALL legCount;
-END
-FROM Dolly CALL growMoreLegs VAR x := 2;
-\end{lstlisting}
-
 \pagebreak
 \section{Syntax}
 
 a is een arithmetische expressie, Aexp.
 b is een booleaanse expressie, Bexp, en S is S is een statement, Stm.
-x is een variabelennaam, Var,
-i is inhoud Inh.
-
-E is de lege declaratie.
-
-Semantiek:
-
 \begin{lstlisting}
-a  ::= n | var | a1 + a2 | a1 * a2 | a1 - a2 |   
-b ::= true | false | a1 = a2 | a1 <= a2 | ~b | b1 /\ b2 | var 
-var ::= x | FROM var CALL x
-i ::= a | b | m
-M ::= S END 
-Dv ::= E | VAR x := i; Dv
-S ::= SKIP | S1;S2 | IF b THEN S1 | WHILE b DO S1
-| CLONE var_p AS var_c | FROM var CALL x_i Dv | SET var_o SLOT var_i TO i
+a ::= n | x | a1 + a2 | a1 * a2 | a1 - a2
+b ::= true | false | a1 = a2 | a1 <= a2 | ~b | b1 /\ b2
 
+S ::= Skip | S1;S2 | If b Then S1 | While B Do S1 | x := e1
+| Clone O_parent as O_child | From O Call x With V | Set O Slot x To C
 \end{lstlisting}
 
 \pagebreak
 \section{Semantiek}
-Om te beginnen passen we de basisovergang van While aan. Deze is normaal gedefineerd als:
-$ \langle S,s \rangle \rightarrow \langle s\prime \rangle $
-Waarbij s de state is: Een functie met het type
-$ x \rightarrow a $.
-Omdat wij in de syntax geen directe assignment $(x := a)$ meer toestaan, maken wij hier een aanpassing op.\\
-We gebruiken nog steeds dezelfde overgang, maar nu met een andere definitie voor de state, waarbij de state equivalent is aan een object:
-\[ \langle S,s \rangle \rightarrow \langle s\prime \rangle \]
-\[ s = x \rightarrow Inhoud \]
-Daarnaast moeten wij nog defineeren dat aan de start van een programma de state niet leeg is, maar de varnaam $ this $ bind aan het lege Object $ [\enspace] $.
-\[ s_{start} = [this \rightarrow [\enspace]]\]
-\\
-\par
-Daarnaast moeten we enkele veranderingen maken aan de manier waarop expressies (Beide arithmisch en booleaans) worden geevalueerd. Allereerst is het belangrijk om op de juiste manier een stuk inhoud op te halen. We defineeren een totale functie $ GET $ die een syntactisch construct (De varnaam) en een object neemt. De functionaliteit leggen we vast als:
-\[ GET: x \rightarrow (Object \rightarrow Inhoud) \]
-\[
-GET\llbracket x \rrbracket_o =
-\begin{cases}
-\begin{matrix}
-o(x) & if x \in o\\
-GET\llbracket x \rrbracket_{o(proto)} & otherwise
-\end{matrix}
-\end{cases}
-\]
-
-Na dit te hebben gedefineerd kunnen we met behulp van de GET-functie enkele nieuwe functies defineeren, waarmee we syntactische constructen om kunnen zetten naar getallen en booleaanse variabelen. We defineeren de totale functie $ RA $ die een syntactisch construct (De varnaam) en een object neemt. De functionaliteit leggen we vast als volgt:
-
-\[ RA: x \rightarrow (Object \rightarrow \mathds{Z} ) \]
-\[
-\begin{matrix}
-RA\llbracket n \rrbracket_o & = & \mathcal{N}\llbracket x \rrbracket\\
-RA\llbracket x \rrbracket_o & = & RA\llbracket GET\llbracket x \rrbracket_o \rrbracket_o\\
-RA\llbracket FROM \enspace var \enspace CALL \enspace x \rrbracket_o & = & RA\llbracket GET\llbracket x \rrbracket_{GET\llbracket var \rrbracket_o} \rrbracket_o\\
-RA\llbracket a_1 + a_2 \rrbracket_o & = & RA\llbracket a_1 \rrbracket_o + RA\llbracket a_2 \rrbracket_o\\
-RA\llbracket a_1 * a_2 \rrbracket_o & = & RA\llbracket a_1 \rrbracket_o * RA\llbracket a_2 \rrbracket_o\\
-RA\llbracket a_1 - a_2 \rrbracket_o & = & RA\llbracket a_1 \rrbracket_o - RA\llbracket a_2 \rrbracket_o\\
-\end{matrix}
-\]
-
+\newcommand{\RB}{\mathcal{RB}}
+\newcommand{\n}{\newline}
+$[skip_{ns}] 	\hfill <skip, o> \rightarrow o$'\n\n
+$[comp_{ns}] 	\hfill \dfrac{<S1, o> \rightarrow o' <S2, o'> \rightarrow o''}{<S1;S2, o> \rightarrow o''}$\n\n
+$[if_{ns}^{tt}] \hfill \dfrac{<S1, o> \rightarrow o'}{<\mbox{IF b THEN S1 ELSE S2}, o> \rightarrow o'} \mbox{ als }\RB \llbracket b \rrbracket o = tt$\n\n
+$[if_{ns}^{ff}] \hfill \dfrac{<S2, o> \rightarrow o'}{<\mbox{IF b THEN S1 ELSE S2}, o> \rightarrow o'} \mbox{ als }\RB \llbracket b \rrbracket o = ff$\n\n
+$[while_{ns}^{tt}] \hfill \dfrac{<S, o> \rightarrow o' <\mbox{WHILE b DO S}, o'> \rightarrow o''}{\mbox{WHILE b DO S}, o> \rightarrow o''} \mbox{ als }\RB \llbracket b \rrbracket o = tt$\n\n
+$[while_{ns}^{ff}] \hfill <\mbox{WHILE b DO S}, o> \rightarrow o \mbox{ als }\RB \llbracket b \rrbracket o = ff$\n\n
 \appendix
 
 \section{Planning}
