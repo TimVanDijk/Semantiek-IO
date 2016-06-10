@@ -36,6 +36,7 @@
 \begin{document}
 \maketitle
 
+%TODO: kijk hier nog even goed naar.
 \begin{abstract}
 Dit werkstuk beschrijft de syntax en semantiek van een door Io geinspireerde uitbreiding van While, genaamd WhileIo. Io is een puur objectge\"orienteerde programmeertaal. Hierbij wordt WhileIo met natuurlijke semantiek beschreven. Vervolgens gebruiken we de beschreven syntax en semantiek om
 de mogelijkheden van Io te laten zien.
@@ -51,12 +52,18 @@ Het bijzondere aan Io is dat het een heel minimalistische en puur objectge\"orie
 Dit houdt in dat er alleen maar objecten bestaan en dat overerving plaats vindt door bestaande objecten te clonen.
 Ook is Io een dynamische taal, dus objecten kunnen tijdens runtime uit worden gebreidt.
 
-Het doel van dit werkstuk is om de mogelijkheden van Io te verwerken in de standaardtaal While. Hierbij zullen we een eigen definitie geven van objecten en definieren we onze eigen manier om berichten door te geven aan objecten (message passing). Hierbij zullen we eerst vastsleggen hoe Io werkt en hoe dit verschilt met het door ons gemaakte WhileIo. Hierbij zullen we een voorbeeld gebruiken dat in Io geschreven is en vertalen naar ons eigen WhileIo. Vervolgens leggen we de syntax en semantiek van WhileIo vast door middel van natuurlijke semantiek. Tot slot werken we het hierboven genoemde voorbeeld uit met de door ons gedefinieerde semantiek. 
+Hoewel de syntax van Io heel minimalistisch is, gebeurt er veel achter de schermen - meer dan we in dit project kunnen beschrijven.
+Het doel van dit werkstuk is om de standaardtaal While uit te breiden met de belangrijkste mogelijkheden van Io.
+Deze uitbreiding noemen we WhileIo.
+Aangezien het bij Io allemaal draait om objecten en hoe die met elkaar communiceren, zal de kracht van ons project vooral zitten in het uitwerken van die twee concepten.
+Verder laten we zien dat hoewel Io geen keywords, zoals `if' en `for', het nog steeds dezelfde uitdrukkingskracht heeft als While. %Of willen we While en WhileIO vergelijken?
 
-Bij een objectge\"orienteerde taal zoals Io komen veel nieuwe concepten langs, zoals prototypen, inheritance etc. De kracht van ons project wordt dan ook om al de mogelijkheden van objecten zo goed mogelijk uit te werken.  Bovendien willen we kijken of we zonder keywords zoals for en while toch dezelfde functionaliteit kunnen krijgen.
+Hierbij zullen we een eigen definitie geven van objecten en definieren we onze eigen manier om berichten door te geven aan objecten (message passing).
+Hierbij zullen we eerst vastsleggen hoe Io werkt en hoe dit verschilt met het door ons gemaakte WhileIo.
+Hierbij zullen we een voorbeeld gebruiken dat in Io geschreven is dat voorbeeld vertalen we naar WhileIo.
+Vervolgens leggen we de syntax en semantiek van WhileIo vast door middel van natuurlijke semantiek.
+Tot slot werken we het hierboven genoemde voorbeeldprogramma uit met de door ons gedefinieerde semantiek. 
 
-
-%Misschien dat we dit voorbeeld dan toch wel moeten houden. Tim vond het volgens mij echt een heel leuk voorbeeld.
 \subsection*{Voorbeeld}
 Om een idee te krijgen van hoe een programma eruit ziet in Io, volgt hier een voorbeeld:
 \begin{lstlisting}[frame=single]
@@ -92,10 +99,27 @@ Daarna gaan we een nieuwe methode maken en toevoegen aan MutantSheep, namelijk g
 growMoreLegs neemt \'e\'en argument n en verhoogt ``legCount'' met die n. Zoals eerder gezegd worden veranderingen op een prototype ook overgedragen op prototypes die eruit gecloned zijn. dolly heeft deze methode nu dus ook en kan er gebruik van maken.\newline
 
 Ten slotte willen we dolly nog een paar extra poten geven; twee om precies te zijn.
-Om dit te doen maken we gebruik van de nieuwe functie growMoreLegs.
+Om dit te doen maken we gebruik van de nieuwe methode growMoreLegs.
 We roepen de methode growMoreLegs van dolly aan met argument 2.
 De methode verhoogt het attribuut legCount van dolly met 2.
 Uiteindelijk heeft dolly dus 9 poten.
+
+We hebben de code van het bovenstaande voorbeeld zo letterlijk mogelijk vertaald naar WhileIo.
+Het vertaalde voorbeeld is het volgende:
+%Dit was best crappy vertaald. Ik heb hem daarom maar opnieuw vertaald. Ik ben er vrij zeker van dat ik fouten heb gemaakt.
+%TODO: fix dit
+\begin{lstlisting}[frame=single]
+Clone this as Sheep;
+Set Sheep Slot legCount To 4;
+Clone Sheep as MutantSheep;
+SET MutantSheep Slot legCount To 7;
+Clone MutantSheep as Dolly;
+SET MutantSheep Slot growMoreLegs To Set this Slot legCount To x + From this CALL legCount;
+FROM Dolly CALL growMoreLegs WITH x := 2;
+\end{lstlisting}
+%Als we het voorbeeld houden zoals het hierboven staat dan moeten we assignment toevoegen.
+Nadat we de syntax en semantiek van WhileIo uit hebben gewerkt, komen we terug op dit voorbeeld.
+We gaan dan met een analyse laten zien dat het inderdaad het verwachte resultaat opleverd.
 
 \pagebreak
 \section{Syntax}
@@ -109,6 +133,8 @@ $x$ is een variabelennaam, $Var$. \\
 Het verschil met While is dat we ook de lege declaratie gebruiken:
 $E$ is de lege declaratie.
 
+%Wilde we M niet wegdoen?
+%Klopt de FROM regel en klopt die me het voorbeeld? Moet er niet nog een WITH bij ofzo
 \begin{lstlisting}
 a  ::= n | a1 + a2 | a1 * a2 | a1 - a2 | var
 b ::= true | false | a1 = a2 | a1 <= a2 | ~b | b1 /\ b2 | var 
@@ -124,7 +150,7 @@ S ::= SKIP | S1;S2 | IF b THEN S1 | WHILE b DO S1
 \section{Semantiek}
 
 Als basis gebruiken we de semantiek van While, die we op een paar plekken uitbreiden en aanpassen.
-Zo blijven de booleaanse waarden en nummers gelijk aan while:
+Zo blijven de booleaanse waarden en nummers gelijk aan While:
 
 We definieren nummers als:
 \begin{lstlisting}
