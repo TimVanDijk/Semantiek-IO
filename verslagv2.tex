@@ -36,7 +36,7 @@
 \begin{document}
 \maketitle
 
-%TODO: kijk hier nog even goed naar.
+%TODO: loop tekst na op woordherhaling
 \begin{abstract}
 Dit werkstuk beschrijft de syntax en semantiek van een door Io geinspireerde uitbreiding van While, genaamd WhileIo. Io is een puur objectge\"orienteerde programmeertaal. Hierbij wordt WhileIo met natuurlijke semantiek beschreven. Vervolgens gebruiken we de beschreven syntax en semantiek om
 de mogelijkheden van Io te laten zien.
@@ -57,7 +57,6 @@ Het doel van dit werkstuk is om de standaardtaal While uit te breiden met de bel
 Deze uitbreiding noemen we WhileIo.
 Aangezien het bij Io allemaal draait om objecten en hoe die met elkaar communiceren, zal de kracht van ons project vooral zitten in het uitwerken van die twee concepten.
 Verder laten we zien dat hoewel Io geen keywords, zoals `if' en `for', het nog steeds dezelfde uitdrukkingskracht heeft als While. %Of willen we While en WhileIO vergelijken?
-
 Hierbij zullen we een eigen definitie geven van objecten en definieren we onze eigen manier om berichten door te geven aan objecten (message passing).
 Hierbij zullen we eerst vastsleggen hoe Io werkt en hoe dit verschilt met het door ons gemaakte WhileIo.
 Hierbij zullen we een voorbeeld gebruiken dat in Io geschreven is dat voorbeeld vertalen we naar WhileIo.
@@ -80,6 +79,7 @@ Dit voorbeeld is afkomstig van \url{andriybuday.com/2012/07/io-programming-langu
 In de eerste regel maken we een clone van Object. Object is het prototype dat er altijd vanaf het begin al is,
 alle prototypes die er later bij komen zijn op Object gebaseerd.
 Zoals de naam al suggereert maak je, als je een prototype clonet, een nieuwe instantie van dat prototye.
+%todo: clone maakt een nieuw (leeg) object aan met als prototype het orginele object
 Deze nieuwe instantie heeft precies dezelfde structuur en kenmerken als het prototype waar het uit gecloned is.
 Als er later veranderingen worden gemaakt aan het prototype dat gecloned is, dan hebben die ook effect op het nieuwe prototype.
 Sheep is dus een nieuw prototype die precies hetzelfde kan en eruit ziet als Object.\newline
@@ -96,7 +96,8 @@ Dit is alleen om het programmeren overzichtelijker te maken, want Io maakt geen 
 
 
 Daarna gaan we een nieuwe methode maken en toevoegen aan MutantSheep, namelijk growMoreLegs.
-growMoreLegs neemt \'e\'en argument n en verhoogt ``legCount'' met die n. Zoals eerder gezegd worden veranderingen op een prototype ook overgedragen op prototypes die eruit gecloned zijn. dolly heeft deze methode nu dus ook en kan er gebruik van maken.\newline
+growMoreLegs neemt \'e\'en argument n en verhoogt ``legCount'' met die n. 
+Zoals eerder gezegd worden veranderingen op een prototype ook overgedragen op prototypes die eruit gecloned zijn. dolly heeft deze methode nu dus ook en kan er gebruik van maken.\newline
 
 Ten slotte willen we dolly nog een paar extra poten geven; twee om precies te zijn.
 Om dit te doen maken we gebruik van de nieuwe methode growMoreLegs.
@@ -117,35 +118,82 @@ Clone MutantSheep as Dolly;
 SET MutantSheep Slot growMoreLegs To Set this Slot legCount To x + From this CALL legCount;
 FROM Dolly CALL growMoreLegs WITH x := 2;
 \end{lstlisting}
-%Als we het voorbeeld houden zoals het hierboven staat dan moeten we assignment toevoegen.
+%TODO: Als we het voorbeeld houden zoals het hierboven staat dan moeten we assignment toevoegen.
 Nadat we de syntax en semantiek van WhileIo uit hebben gewerkt, komen we terug op dit voorbeeld.
 We gaan dan met een analyse laten zien dat het inderdaad het verwachte resultaat opleverd.
 
 \pagebreak
 \section{Syntax}
+%todo: opmaak misschien nog verbeteren
+In het hoofdstuk hierboven staat al een voorbeeldprogramma in WhileIo. Maar hoe zit de syntax er precies uit? Dat zullen we in dit hoofdstuk definiëren. Voor WhileIo hebben we de standaardtaal While als uitgangspunt genomen. Daarom komt een groot deel van de syntax ook overeen met deze taal.
+
 Voor het definieren van de Syntax maken we gebruik van de volgende sets:
+
 $n$ is een cijfer, Num. \\
-$a$ is een arithmetische expressie, $Aexp$. \\
+$a$ is een aritmetisch expressie, $Aexp$. \\
 $b$ is een booleaanse expressie, $Bexp$. \\
 $S$ is een statement, $Stm$. \\
-$x$ is een variabelennaam, $Var$. \\
+$x$ is een variabele-naam, $Var$. \\
 
-Het verschil met While is dat we ook de lege declaratie gebruiken:
+
+
+Hierbij kan een variabele-naam naar verschillende typen waarde kan verwijzen, zoals een getal en een object.
+
+We voegen ook een extra type toe:
 $E$ is de lege declaratie.
 
-%Wilde we M niet wegdoen?
-%Klopt de FROM regel en klopt die me het voorbeeld? Moet er niet nog een WITH bij ofzo
+%todo: Wilde we M niet wegdoen?
+%todo: Klopt de FROM regel en klopt die me het voorbeeld? Moet er niet nog een WITH bij ofzo
+
+De definities voor aritmetische en booleaanse expressies blijven gelijk: 
 \begin{lstlisting}
 a  ::= n | a1 + a2 | a1 * a2 | a1 - a2 | var
 b ::= true | false | a1 = a2 | a1 <= a2 | ~b | b1 /\ b2 | var 
+\end{lstlisting}
+
+Het verschil met While is dat een variabel niet alleen uit de standaard state kunnen komen, maar dat deze ook uit een object gehaald kan worden. 
+\begin{lstlisting}
 var ::= x | FROM var CALL x
-i ::= a | b | m
-M ::= S END 
-Dv ::= E | VAR x := i; Dv
+\end{lstlisting}
+
+Onze statements zien er als volgt uit: 
+\begin{lstlisting}
 S ::= SKIP | S1;S2 | IF b THEN S1 | WHILE b DO S1
 | CLONE var_p AS var_c | FROM var CALL x_i Dv | SET var_o SLOT var_i TO i
 \end{lstlisting}
 
+Met de volgende hulpdefinities: 
+\begin{lstlisting}
+i ::= a | b | m
+M ::= S END 
+Dv ::= E | VAR x := i; Dv
+\end{lstlisting}
+
+We hebben dus de volgende drie statements toegevoegd: 
+\begin{lstlisting}
+	CLONE var_p AS var_c
+\end{lstlisting} 
+Dit maakt een clone van var\_p met als naam var\_c. 
+
+\begin{lstlisting}
+	FROM var CALL x_i Dv
+	Dv ::= E | VAR x := i; Dv
+\end{lstlisting}
+Dit levert het resultaat op als je slot x\_i van object var aanroept met de variabelen Dv. In een slot kan natuurlijk ook een getal of booleaanse waarde zitten, dus Dv kan ook leeg zijn. 
+
+\begin{lstlisting}
+	SET var_o SLOT var_i TO i
+\end{lstlisting} 
+Dit maakt in object var\_o een slot aan met daarin i. i kan zowel een booleaanse expressie, een aritmetische expressie als een methode zijn. 
+
+%todo: constructie woord?
+Zoals je kunt zien eindigen niet alle statements in een constructiewoord. Hierdoor is het niet altijd duidelijk wanneer het ene statement is afgelopen en het andere begint. Kijk maar naar:
+\begin{lstlisting}
+	WHILE x <= 2 DO
+	x := x+1;
+	x := x+3
+\end{lstlisting}
+Moet dit geparseerd worden als While b DO (S1;S2) of als (While b DO S1); S2. Om dit probleem tegen te gaan, nemen wij aan dat je door middel van haakjes statements mag groeperen, net zoals bij While.
 \pagebreak
 \section{Semantiek}
 
