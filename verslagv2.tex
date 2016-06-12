@@ -322,6 +322,43 @@ Semantiekregels:\\
 [while_{ns}^{ff}] & <\mbox{WHILE b DO S}, o> \rightarrow o &&\mbox{ als }\RB \llbracket b \rrbracket o = ff\\
 \end{matrix}
 \]
+\[
+\begin{matrix}
+[clone_{ns}] &
+\langle CLONE \enspace var_p \enspace AS \enspace var_c, o\rangle 
+\rightarrow
+\langle o[var_c \mapsto [proto \mapsto GET\llbracket var_p \rrbracket_o]]\rangle\\
+[set_{ns}] &
+\langle SET \enspace var_t \enspace SLOT \enspace var_i \enspace TO \enspace i, o \rangle
+\rightarrow
+\langle o[var_t \mapsto GET\llbracket var_t \rrbracket_o[var_i \mapsto i]]\rangle\\
+[call_{ns}] &
+\dfrac
+{
+	\langle Dv, GET\llbracket var \rrbracket_o \rangle \rightarrow var\prime
+	\quad
+	\langle  GET\llbracket x_i \rrbracket_{var\prime}, var\prime \rangle
+	\rightarrow
+	\langle o\prime \rangle
+}
+{
+	\langle FROM \enspace var \enspace CALL \enspace x_i \enspace Dv,o \rangle
+	\rightarrow
+	\langle o\prime \rangle
+}\\
+[DvSkip_{ns}] &
+\langle E,o \rangle \rightarrow \langle o \rangle\\
+[DvVar_{ns}] &
+\dfrac
+{	\langle Dv,o[x \mapsto i] \rangle \rightarrow \langle o\prime \rangle }
+{
+	\langle VAR \enspace x \enspace := \enspace i; \enspace Dv, o \rangle
+	\rightarrow
+	\langle o\prime \rangle
+}
+
+\end{matrix}
+\]
 
 %\end{matrix}
 %\]
