@@ -333,28 +333,28 @@ Semantiekregels:\\
 [clone_{ns}] &
 \langle CLONE \enspace var_p \enspace AS \enspace var_c, o\rangle 
 \rightarrow
-\langle o[var_c \mapsto [proto \mapsto GET\llbracket var_p \rrbracket_o]]\rangle\\
+o[var_c \mapsto [proto \mapsto GET\llbracket var_p \rrbracket_o]]\\
 [set_{ns}^{a}] &
 \begin{matrix}
 \langle SET \enspace var_t \enspace SLOT \enspace var_i \enspace TO \enspace i, o \rangle\\
 \rightarrow
-\langle o[var_t \mapsto GET\llbracket var_t \rrbracket_o[var_i \mapsto \RA 
- \llbracket i \rrbracket_o]]\rangle
+o[var_t \mapsto GET\llbracket var_t \rrbracket_o[var_i \mapsto \RA 
+ \llbracket i \rrbracket_o]]
 \end{matrix}
 & \mbox{ als } i \in a \\
 [set_{ns}^{b}] &
 \begin{matrix}
 \langle SET \enspace var_t \enspace SLOT \enspace var_i \enspace TO \enspace i, o \rangle\\
 \rightarrow
-\langle o[var_t \mapsto GET\llbracket var_t \rrbracket_o[var_i \mapsto \RB 
-\llbracket i \rrbracket_o]]\rangle
+o[var_t \mapsto GET\llbracket var_t \rrbracket_o[var_i \mapsto \RB 
+\llbracket i \rrbracket_o]]
 \end{matrix}
 & \mbox{ als } i \in b \\
 [set_{ns}^{M}] &
 \begin{matrix}
 \langle SET \enspace var_t \enspace SLOT \enspace var_i \enspace TO \enspace i, o \rangle\\
 \rightarrow
-\langle o[var_t \mapsto GET\llbracket var_t \rrbracket_o[var_i \mapsto i]]\rangle
+o[var_t \mapsto GET\llbracket var_t \rrbracket_o[var_i \mapsto i]]
 \end{matrix}
 & \mbox{ als } i \not\in a \cup b \\
 [call_{ns}] &
@@ -364,40 +364,40 @@ Semantiekregels:\\
 	\quad
 	\langle  GET\llbracket x_i \rrbracket_{var}, var\prime[this \mapsto var\prime] \rangle
 	\rightarrow
-	\langle var\prime\prime \rangle
+	var\prime\prime
 }
 {
 	\langle FROM \enspace var \enspace CALL \enspace x_i \enspace Dv,o \rangle
 	\rightarrow
-	\langle o[var \mapsto var\prime\prime] \rangle
+	o[var \mapsto var\prime\prime]
 }\\
 [DvSkip_{ns}] &
-\langle E,o \rangle \rightarrow \langle o \rangle\\
+\langle E,o \rangle \rightarrow o \\
 [DvVar_{ns}^{a}] &
 \dfrac
-{	\langle Dv,o[x \mapsto \RA \llbracket i \rrbracket_o] \rangle \rightarrow \langle o\prime \rangle }
+{	\langle Dv,o[x \mapsto \RA \llbracket i \rrbracket_o] \rangle \rightarrow o\prime }
 {
 	\langle VAR \enspace x \enspace := \enspace i; \enspace Dv, o \rangle
 	\rightarrow
-	\langle o\prime \rangle
+	o\prime
 } &
 \mbox{ als } i \in a \\
 [DvVar_{ns}^{b}] &
 \dfrac
-{	\langle Dv,o[x \mapsto \RB \llbracket i \rrbracket_o] \rangle \rightarrow \langle o\prime \rangle }
+{	\langle Dv,o[x \mapsto \RB \llbracket i \rrbracket_o] \rangle \rightarrow  o\prime }
 {
 	\langle VAR \enspace x \enspace := \enspace i; \enspace Dv, o \rangle
 	\rightarrow
-	\langle o\prime \rangle
+	o\prime
 } &
 \mbox{ als } i \in a \\
 [DvVar_{ns}^{M}] &
 \dfrac
-{	\langle Dv,o[x \mapsto i] \rangle \rightarrow \langle o\prime \rangle }
+{	\langle Dv,o[x \mapsto i] \rangle \rightarrow o\prime }
 {
 	\langle VAR \enspace x \enspace := \enspace i; \enspace Dv, o \rangle
 	\rightarrow
-	\langle o\prime \rangle
+	o\prime
 } &
 \mbox{ als } i \not\in a \cup b \\
 
