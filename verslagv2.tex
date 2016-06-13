@@ -221,9 +221,9 @@ $$
 Omdat we dit vaak moeten herhalen, zetten we nu de set booleaanse variabelen vast:
 $$ \mathds{B} = \{\boldsymbol{tt},\boldsymbol{ff}\} $$
 Onze eigen toevoeging is natuurlijk objecten. Deze definieren we als volgt:
-$$\mathcal{O} : Var \rightarrow Inhoud$$ 
+$$\mathcal{O} : Var \rightarrow \mathcal{I}$$ 
 Hierbij is Inhoud alles wat je in een object zou kunnen stoppen: 
-$$Inhoud = Z \cup \mathds{B} \cup \mathcal{O} \cup Stm$$ 
+$$\mathcal{I} = Z \cup \mathds{B} \cup \mathcal{O} \cup Stm$$ 
 
 Hierbij gebruiken we dezelfde notatie als bij While om de inhoud van zo'n object weer te geven.
 Neem een object o met als waarden x = 4 en y = true. Dit wordt als volgt gerepresenteerd:
@@ -242,7 +242,7 @@ $$ s_{start} = [this \rightarrow [\enspace]]$$
 \par
 Daarnaast moeten we enkele veranderingen maken aan de manier waarop expressies (Beide arithmisch en booleaans) worden geevalueerd. 
 Allereerst is het belangrijk om op de juiste manier een stuk inhoud op te halen. We defineeren een totale functie $ GET $ die een syntactisch construct (De varnaam), een gewenst type en een object neemt. De functionaliteit leggen we vast als:
-\[ GET: (x,t) \rightarrow (\mathcal{O} \rightarrow Inhoud) \]
+\[ GET: (x,t) \rightarrow (\mathcal{O} \rightarrow \mathcal{I}) \]
 \[
 \begin{matrix}
 GET\llbracket (x,t) \rrbracket_o & = & 
@@ -333,12 +333,12 @@ Semantiekregels:\\
 [clone_{ns}] &
 \langle CLONE \enspace var_p \enspace AS \enspace var_c, o\rangle 
 \rightarrow
-o[var_c \mapsto [proto \mapsto GET\llbracket var_p \rrbracket_o]]\\
+o[var_c \mapsto [proto \mapsto GET\llbracket (var_p, \mathcal{O}) \rrbracket_o]]\\
 [set_{ns}^{a}] &
 \begin{matrix}
 \langle SET \enspace var_t \enspace SLOT \enspace var_i \enspace TO \enspace i, o \rangle\\
 \rightarrow
-o[var_t \mapsto GET\llbracket var_t \rrbracket_o[var_i \mapsto \RA 
+o[var_t \mapsto GET\llbracket (var_t, \mathcal{O}) \rrbracket_o[var_i \mapsto \RA 
  \llbracket i \rrbracket_o]]
 \end{matrix}
 & \mbox{ als } i \in a \\
@@ -346,7 +346,7 @@ o[var_t \mapsto GET\llbracket var_t \rrbracket_o[var_i \mapsto \RA
 \begin{matrix}
 \langle SET \enspace var_t \enspace SLOT \enspace var_i \enspace TO \enspace i, o \rangle\\
 \rightarrow
-o[var_t \mapsto GET\llbracket var_t \rrbracket_o[var_i \mapsto \RB 
+o[var_t \mapsto GET\llbracket (var_t, \mathcal{O}) \rrbracket_o[var_i \mapsto \RB 
 \llbracket i \rrbracket_o]]
 \end{matrix}
 & \mbox{ als } i \in b \\
@@ -354,15 +354,15 @@ o[var_t \mapsto GET\llbracket var_t \rrbracket_o[var_i \mapsto \RB
 \begin{matrix}
 \langle SET \enspace var_t \enspace SLOT \enspace var_i \enspace TO \enspace i, o \rangle\\
 \rightarrow
-o[var_t \mapsto GET\llbracket var_t \rrbracket_o[var_i \mapsto i]]
+o[var_t \mapsto GET\llbracket (var_t, \mathcal{O}) \rrbracket_o[var_i \mapsto i]]
 \end{matrix}
 & \mbox{ als } i \not\in a \cup b \\
 [call_{ns}] &
 \dfrac
 {
-	\langle Dv, GET\llbracket var \rrbracket_o \rangle \rightarrow var\prime
+	\langle Dv, GET\llbracket (var_t, \mathcal{O}) \rrbracket_o \rangle \rightarrow var\prime
 	\quad
-	\langle  GET\llbracket x_i \rrbracket_{var}, var\prime[this \mapsto var\prime] \rangle
+	\langle  GET\llbracket (var_t, \mathcal{I}) \rrbracket_{var}, var\prime[this \mapsto var\prime] \rangle
 	\rightarrow
 	var\prime\prime
 }
