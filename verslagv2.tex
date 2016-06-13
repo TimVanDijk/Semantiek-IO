@@ -360,16 +360,16 @@ o[var_t \mapsto GET\llbracket (var_t, \mathcal{O}) \rrbracket_o[var_i \mapsto i]
 [call_{ns}] &
 \dfrac
 {
-	\langle Dv, GET\llbracket (var_t, \mathcal{O}) \rrbracket_o \rangle \rightarrow var\prime
+	\langle Dv, GET\llbracket (var, \mathcal{O}) \rrbracket_o \rangle \rightarrow var\prime
 	\quad
-	\langle  GET\llbracket (var_t, \mathcal{I}) \rrbracket_{var}, var\prime[this \mapsto var\prime] \rangle
+	\langle  GET\llbracket (x_i, \mathcal{I}) \rrbracket_{var}, var\prime[this \mapsto var] \rangle
 	\rightarrow
 	var\prime\prime
 }
 {
 	\langle FROM \enspace var \enspace CALL \enspace x_i \enspace Dv,o \rangle
 	\rightarrow
-	o[var \mapsto var\prime\prime]
+	o[var \mapsto GET\llbracket (this, \mathcal{O}) \rrbracket_{var\prime\prime}]
 }\\
 [DvSkip_{ns}] &
 \langle E,o \rangle \rightarrow o \\
