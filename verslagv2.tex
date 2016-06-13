@@ -254,7 +254,7 @@ GET\llbracket (x,t) \rrbracket_o & = &
 \begin{cases}
 \begin{matrix}
 o(x) & \mbox{ als } x \in domein(o) \mbox{ en } o(x) \in t\\
-GET\llbracket x \rrbracket_{o(proto)} & anders
+GET\llbracket x,t \rrbracket_{o(proto)} & anders
 \end{matrix}
 \end{cases}\\
 %GET\llbracket \enspace FROM \enspace var \enspace CALL \enspace x \rrbracket_o & = & GET\llbracket GET\llbracket x  \rrbracket_{GET\llbracket var \rrbracket_o} \rrbracket_o\\
@@ -348,37 +348,42 @@ Semantiekregels:\\
 \begin{matrix}
 \langle CLONE \enspace var_p \enspace AS \enspace var_c, o, l\rangle 
 \rightarrow\\
-\langle o[var_c \mapsto r_{|l|+1}] \rangle, l[ r_{|l|+1} \mapsto [ proto \mapsto GET \llbracket var_p, Ref \rrbracket_o ] \rangle \\
+\langle o[var_c \mapsto r_{|l|+1}], l[GET \llbracket this, Ref \rrbracket_o \mapsto \RO \llbracket GET \llbracket this, Ref \rrbracket_o \rrbracket_l[var_c \mapsto r_{|l|+1}] ,\\ r_{|l|+1} \mapsto [ proto \mapsto GET \llbracket var_p, Ref \rrbracket_o]]\rangle
 \end{matrix}\\
-[set_{ns}^{a}] &
+\begin{matrix}
+[set_{ns}^{a,not}]\\
+\mbox{ als } i \in a\\
+\end{matrix} &
 \begin{matrix}
 \langle SET \enspace var_t \enspace SLOT \enspace x \enspace TO \enspace i, o, l \rangle\\
 \rightarrow
-\langle o[ \RO \llbracket GET \llbracket var_t \rrbracket_o \rrbracket_l[x \mapsto \RA 
-\llbracket i \rrbracket_{(o,l)} ] ], l \rangle
-\end{matrix}
-& \mbox{ als } i \in a \\
-[set_{ns}^{b}] &
+\langle o, l[GET \llbracket var_t, Ref \rrbracket_o \mapsto \RO \llbracket GET \llbracket var_t, Ref \rrbracket_o \rrbracket_l[x \mapsto \RA 
+\llbracket i \rrbracket_{(o,l)}]] \rangle
+\end{matrix}\\
+\begin{matrix}
+[set_{ns}^{a,not}]\\
+\mbox{ als } i \in b\\
+\end{matrix} &
 \begin{matrix}
 \langle SET \enspace var_t \enspace SLOT \enspace x \enspace TO \enspace i, o, l \rangle\\
 \rightarrow
-\langle o[ \RO \llbracket GET \llbracket var_t \rrbracket_o \rrbracket_l[x \mapsto \RB 
-\llbracket i \rrbracket_{(o,l)} ] ], l \rangle
-\end{matrix}
-& \mbox{ als } i \in b \\
-[set_{ns}^{S}] &
+\langle o, l[GET \llbracket var_t, Ref \rrbracket_o \mapsto \RO \llbracket GET \llbracket var_t, Ref \rrbracket_o \rrbracket_l[x \mapsto \RB 
+\llbracket i \rrbracket_{(o,l)}]] \rangle
+\end{matrix}\\\begin{matrix}
+[set_{ns}^{a,not}]\\
+\mbox{ als } i \not\in a \cup b\\
+\end{matrix} &
 \begin{matrix}
 \langle SET \enspace var_t \enspace SLOT \enspace x \enspace TO \enspace i, o, l \rangle\\
 \rightarrow
-\langle o[ \RO \llbracket GET \llbracket var_t \rrbracket_o \rrbracket_l [x \mapsto i ] ], l \rangle
-\end{matrix}
-& \mbox{ als } i \not\in a \cup b \\
+\langle o, l[GET \llbracket var_t, Ref \rrbracket_o \mapsto \RO \llbracket GET \llbracket var_t, Ref \rrbracket_o \rrbracket_l[x \mapsto i ]] \rangle
+\end{matrix}\\
 [call_{ns}] &
 \dfrac
 {
-	\langle Dv, \RO \llbracket GET\llbracket (var, Ref) \rrbracket_o \rrbracket_l, l \rangle \rightarrow \langle o\prime, l\prime \rangle
+	\langle Dv, o, l \rangle \rightarrow \langle o\prime, l\prime \rangle
 	\quad
-	\langle S, o\prime, l\prime \rangle
+	\langle GET \llbracket x, \mathcal{I} \rrbracket_{\RO \llbracket GET\llbracket var, \mathcal{O} \rrbracket_o \rrbracket_l}, o\prime [proto \mapsto GET\llbracket var, \mathcal{O} \rrbracket_o, this \mapsto GET\llbracket var \rrbracket_o], l\prime \rangle
 	\rightarrow
 	\langle o\prime\prime, l\prime\prime \rangle
 }
@@ -388,34 +393,42 @@ Semantiekregels:\\
 	\langle o, l\prime\prime \rangle
 }\\
 [DvSkip_{ns}] &
-\langle E,o,l \rangle \rightarrow \langle o,l \rangle \\
-[DvVar_{ns}^{a}] &
+\langle E,o,l \rangle \rightarrow \langle [],l \rangle \\
+\begin{matrix}
+[DvVar_{ns}^{a}]\\
+\mbox{ als } i \in a 
+\end{matrix}
+ &
 \dfrac
-{	\langle Dv,o[x \mapsto \RA \llbracket i \rrbracket_o] \rangle \rightarrow o\prime }
+{	\langle Dv,o,l \rangle \rightarrow \langle o\prime, l \rangle }
 {
-	\langle VAR \enspace x \enspace := \enspace i; \enspace Dv, o \rangle
+	\langle VAR \enspace x \enspace := \enspace i; \enspace Dv, o, l \rangle
 	\rightarrow
-	o\prime
-} &
-\mbox{ als } i \in a \\
-[DvVar_{ns}^{b}] &
+	\langle o\prime[x \mapsto \RA \llbracket i \rrbracket_o], l \rangle
+}\\
+\begin{matrix}
+[DvVar_{ns}^{b}]\\
+\mbox{ als } i \in b 
+\end{matrix}
+&
 \dfrac
-{	\langle Dv,o[x \mapsto \RB \llbracket i \rrbracket_o] \rangle \rightarrow  o\prime }
+{	\langle Dv,o,l \rangle \rightarrow \langle o\prime, l \rangle }
 {
-	\langle VAR \enspace x \enspace := \enspace i; \enspace Dv, o \rangle
+	\langle VAR \enspace x \enspace := \enspace i; \enspace Dv, o, l \rangle
 	\rightarrow
-	o\prime
-} &
-\mbox{ als } i \in a \\
-[DvVar_{ns}^{M}] &
+	\langle o\prime[x \mapsto \RB \llbracket i \rrbracket_o], l \rangle
+}\\\begin{matrix}
+[DvVar_{ns}^{S}]\\
+\mbox{ als } i \not\in a \cup b 
+\end{matrix}
+&
 \dfrac
-{	\langle Dv,o[x \mapsto i] \rangle \rightarrow o\prime }
+{	\langle Dv,o,l \rangle \rightarrow \langle o\prime, l \rangle }
 {
-	\langle VAR \enspace x \enspace := \enspace i; \enspace Dv, o \rangle
+	\langle VAR \enspace x \enspace := \enspace i; \enspace Dv, o, l \rangle
 	\rightarrow
-	o\prime
-} &
-\mbox{ als } i \not\in a \cup b \\
+	\langle o\prime[x \mapsto i ], l \rangle
+}\\
 
 \end{matrix}
 \]
