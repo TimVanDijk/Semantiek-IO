@@ -57,7 +57,7 @@ Hoewel de syntax van Io heel minimalistisch is, gebeurt er veel achter de scherm
 Het doel van dit werkstuk is om de standaardtaal While uit te breiden met de belangrijkste mogelijkheden van Io.
 Deze uitbreiding noemen we WhileIo.
 Aangezien het bij Io allemaal draait om objecten en hoe die met elkaar communiceren, zal de kracht van ons project vooral zitten in het uitwerken van die twee concepten.
-Verder laten we zien dat hoewel Io geen keywords, zoals `if' en `for', het nog steeds dezelfde uitdrukkingskracht heeft als While. %Of willen we While en WhileIO vergelijken?
+%Verder laten we zien dat hoewel Io geen keywords, zoals `if' en `for', het nog steeds dezelfde uitdrukkingskracht heeft als While. %Of willen we While en WhileIO vergelijken?
 Hierbij zullen we een eigen definitie geven van objecten en definieren we onze eigen manier om berichten door te geven aan objecten (message passing).
 Hierbij zullen we eerst vastsleggen hoe Io werkt en hoe dit verschilt met het door ons gemaakte WhileIo.
 Hierbij zullen we een voorbeeld gebruiken dat in Io geschreven is dat voorbeeld vertalen we naar WhileIo.
@@ -141,7 +141,8 @@ $x$ is een variabele-naam, $Var$. \\
 Hierbij kan een variabele-naam naar verschillende typen waarde kan verwijzen, zoals een getal en een object.
 
 We voegen ook een extra type toe:
-$E$ is de lege declaratie.
+$E$ is de lege declaratie. E doet helemaal niets en is nodig om functies aan te kunnen roepen zonder argument.
+In een programma wordt E weggelaten.
 
 %todo: Wilde we M niet wegdoen?
 %todo: Klopt de FROM regel en klopt die me het voorbeeld? Moet er niet nog een WITH bij ofzo
@@ -165,7 +166,7 @@ S ::= SKIP | S1;S2 | IF b THEN S1 | WHILE b DO S1
 
 Met de volgende hulpdefinities: 
 \begin{lstlisting}
-i ::= a | b | m
+i ::= a | b | M
 M ::= S END 
 Dv ::= E | VAR x := i; Dv
 \end{lstlisting}
@@ -279,32 +280,32 @@ RB\llbracket FROM \enspace var \enspace CALL \enspace x \rrbracket_o & = & RB\ll
 RB\llbracket a_1 = a_2 \rrbracket_o & = &
 \begin{cases}
 \begin{matrix}
-\boldsymbol{tt} & if \enspace \RA\llbracket a_1 \rrbracket_o = \RA\llbracket a_2 \rrbracket_o \\
-\boldsymbol{ff} & if \enspace \RA\llbracket a_1 \rrbracket_o \not= \RA\llbracket a_2 \rrbracket_o
+\boldsymbol{tt} & als \enspace \RA\llbracket a_1 \rrbracket_o = \RA\llbracket a_2 \rrbracket_o \\
+\boldsymbol{ff} & als \enspace \RA\llbracket a_1 \rrbracket_o \not= \RA\llbracket a_2 \rrbracket_o
 \end{matrix}
 \end{cases}\\
 
 RB\llbracket a_1 \leq a_2 \rrbracket_o & = &
 \begin{cases}
 \begin{matrix}
-\boldsymbol{tt} & if \enspace \RA\llbracket a_1 \rrbracket_o \leq \RA\llbracket a_2 \rrbracket_o \\
-\boldsymbol{ff} & if \enspace \RA\llbracket a_1 \rrbracket_o > \RA\llbracket a_2 \rrbracket_o
+\boldsymbol{tt} & als \enspace \RA\llbracket a_1 \rrbracket_o \leq \RA\llbracket a_2 \rrbracket_o \\
+\boldsymbol{ff} & als \enspace \RA\llbracket a_1 \rrbracket_o > \RA\llbracket a_2 \rrbracket_o
 \end{matrix}
 \end{cases}\\
 
 RB\llbracket \neg b \rrbracket_o & = &
 \begin{cases}
 \begin{matrix}
-\boldsymbol{tt} & if \enspace \RB\llbracket b \rrbracket_o = \boldsymbol{ff} \\
-\boldsymbol{ff} & if \enspace \RB\llbracket b \rrbracket_o = \boldsymbol{tt}
+\boldsymbol{tt} & als \enspace \RB\llbracket b \rrbracket_o = \boldsymbol{ff} \\
+\boldsymbol{ff} & als \enspace \RB\llbracket b \rrbracket_o = \boldsymbol{tt}
 \end{matrix}
 \end{cases}\\
 
 RB\llbracket b_1 \wedge b_2 \rrbracket_o & = &
 \begin{cases}
 \begin{matrix}
-\boldsymbol{tt} & if \enspace \RB\llbracket b_1 \rrbracket_o = \boldsymbol{tt} and RB\llbracket b_2 \rrbracket_o = \boldsymbol{tt}\\
-\boldsymbol{ff} & if \enspace \RB\llbracket b_1 \rrbracket_o = \boldsymbol{ff} or RB\llbracket b_2 \rrbracket_o = \boldsymbol{ff}
+\boldsymbol{tt} & als \enspace \RB\llbracket b_1 \rrbracket_o = \boldsymbol{tt} and RB\llbracket b_2 \rrbracket_o = \boldsymbol{tt}\\
+\boldsymbol{ff} & als \enspace \RB\llbracket b_1 \rrbracket_o = \boldsymbol{ff} or RB\llbracket b_2 \rrbracket_o = \boldsymbol{ff}
 \end{matrix}
 \end{cases}\\
 
