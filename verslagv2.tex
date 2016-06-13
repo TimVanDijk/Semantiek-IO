@@ -111,12 +111,12 @@ Het vertaalde voorbeeld is het volgende:
 %Dit was best crappy vertaald. Ik heb hem daarom maar opnieuw vertaald. Ik ben er vrij zeker van dat ik fouten heb gemaakt.
 %TODO: fix dit
 \begin{lstlisting}[frame=single]
-Clone this as Sheep;
-Set Sheep Slot legCount To 4;
-Clone Sheep as MutantSheep;
-SET MutantSheep Slot legCount To 7;
-Clone MutantSheep as Dolly;
-SET MutantSheep Slot growMoreLegs To Set this Slot legCount To x + From this CALL legCount;
+CLONE this AS Sheep;
+SET Sheep SLOT legCount TO 4;
+CLONE Sheep AS MutantSheep;
+SET MutantSheep SLOT legCount TO 7;
+CLONE MutantSheep AS Dolly;
+SET MutantSheep SLOT growMoreLegs TO SET this SLOT legCount To x + FROM this CALL legCount;
 FROM Dolly CALL growMoreLegs WITH x := 2;
 \end{lstlisting}
 %TODO: Als we het voorbeeld houden zoals het hierboven staat dan moeten we assignment toevoegen.
