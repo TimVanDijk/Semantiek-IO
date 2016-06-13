@@ -1,4 +1,4 @@
-\title{Semantiek van Io}
+\title{Semantiek van WhIole}
 \author{
           Tim van Dijk
           S4477073
@@ -39,7 +39,7 @@
 
 %TODO: loop tekst na op woordherhaling
 \begin{abstract}
-Dit werkstuk beschrijft de syntax en semantiek van een door Io geinspireerde uitbreiding van While, genaamd WhileIo. Io is een puur objectge\"orienteerde programmeertaal. Hierbij wordt WhileIo met natuurlijke semantiek beschreven. Vervolgens gebruiken we de beschreven syntax en semantiek om
+Dit werkstuk beschrijft de syntax en semantiek van een door Io geinspireerde uitbreiding van While, genaamd WhIole. Io is een puur objectge\"orienteerde programmeertaal. Hierbij wordt WhIole met natuurlijke semantiek beschreven. Vervolgens gebruiken we de beschreven syntax en semantiek om
 de mogelijkheden van Io te laten zien.
 \end{abstract}
 
@@ -55,13 +55,13 @@ Ook is Io een dynamische taal, dus objecten kunnen tijdens runtime uit worden ge
 
 Hoewel de syntax van Io heel minimalistisch is, gebeurt er veel achter de schermen - meer dan we in dit project kunnen beschrijven.
 Het doel van dit werkstuk is om de standaardtaal While uit te breiden met de belangrijkste mogelijkheden van Io.
-Deze uitbreiding noemen we WhileIo.
+Deze uitbreiding noemen we WhIole.
 Aangezien het bij Io allemaal draait om objecten en hoe die met elkaar communiceren, zal de kracht van ons project vooral zitten in het uitwerken van die twee concepten.
 %Verder laten we zien dat hoewel Io geen keywords, zoals `if' en `for', het nog steeds dezelfde uitdrukkingskracht heeft als While. %Of willen we While en WhileIO vergelijken?
 Hierbij zullen we een eigen definitie geven van objecten en definieren we onze eigen manier om berichten door te geven aan objecten (message passing).
-Hierbij zullen we eerst vastsleggen hoe Io werkt en hoe dit verschilt met het door ons gemaakte WhileIo.
-Hierbij zullen we een voorbeeld gebruiken dat in Io geschreven is dat voorbeeld vertalen we naar WhileIo.
-Vervolgens leggen we de syntax en semantiek van WhileIo vast door middel van natuurlijke semantiek.
+Hierbij zullen we eerst vastsleggen hoe Io werkt en hoe dit verschilt met het door ons gemaakte WhIole.
+Hierbij zullen we een voorbeeld gebruiken dat in Io geschreven is dat voorbeeld vertalen we naar WhIole.
+Vervolgens leggen we de syntax en semantiek van WhIole vast door middel van natuurlijke semantiek.
 Tot slot werken we het hierboven genoemde voorbeeldprogramma uit met de door ons gedefinieerde semantiek. 
 
 \subsection*{Voorbeeld}
@@ -106,7 +106,7 @@ We roepen de methode growMoreLegs van dolly aan met argument 2.
 De methode verhoogt het attribuut legCount van dolly met 2.
 Uiteindelijk heeft dolly dus 9 poten.
 
-We hebben de code van het bovenstaande voorbeeld zo letterlijk mogelijk vertaald naar WhileIo.
+We hebben de code van het bovenstaande voorbeeld zo letterlijk mogelijk vertaald naar WhIole.
 Het vertaalde voorbeeld is het volgende:
 %Dit was best crappy vertaald. Ik heb hem daarom maar opnieuw vertaald. Ik ben er vrij zeker van dat ik fouten heb gemaakt.
 %TODO: fix dit
@@ -120,13 +120,13 @@ SET MutantSheep Slot growMoreLegs To Set this Slot legCount To x + From this CAL
 FROM Dolly CALL growMoreLegs WITH x := 2;
 \end{lstlisting}
 %TODO: Als we het voorbeeld houden zoals het hierboven staat dan moeten we assignment toevoegen.
-Nadat we de syntax en semantiek van WhileIo uit hebben gewerkt, komen we terug op dit voorbeeld.
+Nadat we de syntax en semantiek van WhIole uit hebben gewerkt, komen we terug op dit voorbeeld.
 We gaan dan met een analyse laten zien dat het inderdaad het verwachte resultaat opleverd.
 
 \pagebreak
 \section{Syntax}
 %todo: opmaak misschien nog verbeteren
-In het hoofdstuk hierboven staat al een voorbeeldprogramma in WhileIo. Maar hoe zit de syntax er precies uit? Dat zullen we in dit hoofdstuk definiëren. Voor WhileIo hebben we de standaardtaal While als uitgangspunt genomen. Daarom komt een groot deel van de syntax ook overeen met deze taal.
+In het hoofdstuk hierboven staat al een voorbeeldprogramma in WhIole. Maar hoe zit de syntax er precies uit? Dat zullen we in dit hoofdstuk definiëren. Voor WhIole hebben we de standaardtaal While als uitgangspunt genomen. Daarom komt een groot deel van de syntax ook overeen met deze taal.
 
 Voor het definieren van de Syntax maken we gebruik van de volgende sets:
 
