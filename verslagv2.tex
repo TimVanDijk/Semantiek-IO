@@ -30,6 +30,7 @@
 
 \graphicspath{{images/}}
 \lstset{breaklines = true}
+\newcommand{\RA}{\mathcal{RA}}
 \newcommand{\RB}{\mathcal{RB}}
 \newcommand{\n}{\newline}
 
@@ -202,17 +203,17 @@ GET\llbracket x \rrbracket_{o(proto)} & otherwise
 \end{cases}
 \]
 
-Na dit te hebben gedefineerd kunnen we met behulp van de GET-functie enkele nieuwe functies defineeren, waarmee we syntactische constructen om kunnen zetten naar getallen en booleaanse variabelen. We defineeren de totale functie $ RA $ die een syntactisch construct (De varnaam) en een object neemt. De functionaliteit leggen we vast als volgt:
+Na dit te hebben gedefineerd kunnen we met behulp van de GET-functie enkele nieuwe functies defineeren, waarmee we syntactische constructen om kunnen zetten naar getallen en booleaanse variabelen. We defineeren de totale functie $ \RA $ die een syntactisch construct (De varnaam) en een object neemt. De functionaliteit leggen we vast als volgt:
 
 \[ RA: x \rightarrow (Object \rightarrow \mathds{Z} ) \]
 \[
 \begin{matrix}
-RA\llbracket n \rrbracket_o & = & \mathcal{N}\llbracket x \rrbracket\\
-RA\llbracket x \rrbracket_o & = & RA\llbracket GET\llbracket x \rrbracket_o \rrbracket_o\\
-RA\llbracket FROM \enspace var \enspace CALL \enspace x \rrbracket_o & = & RA\llbracket GET\llbracket x \rrbracket_{GET\llbracket var \rrbracket_o} \rrbracket_o\\
-RA\llbracket a_1 + a_2 \rrbracket_o & = & RA\llbracket a_1 \rrbracket_o + RA\llbracket a_2 \rrbracket_o\\
-RA\llbracket a_1 * a_2 \rrbracket_o & = & RA\llbracket a_1 \rrbracket_o * RA\llbracket a_2 \rrbracket_o\\
-RA\llbracket a_1 - a_2 \rrbracket_o & = & RA\llbracket a_1 \rrbracket_o - RA\llbracket a_2 \rrbracket_o\\
+\RA\llbracket n \rrbracket_o & = & \mathcal{N}\llbracket x \rrbracket\\
+\RA\llbracket x \rrbracket_o & = & \RA\llbracket GET\llbracket x \rrbracket_o \rrbracket_o\\
+\RA\llbracket FROM \enspace var \enspace CALL \enspace x \rrbracket_o & = & \RA\llbracket GET\llbracket x \rrbracket_{GET\llbracket var \rrbracket_o} \rrbracket_o\\
+\RA\llbracket a_1 + a_2 \rrbracket_o & = & \RA\llbracket a_1 \rrbracket_o + \RA\llbracket a_2 \rrbracket_o\\
+\RA\llbracket a_1 * a_2 \rrbracket_o & = & \RA\llbracket a_1 \rrbracket_o * \RA\llbracket a_2 \rrbracket_o\\
+\RA\llbracket a_1 - a_2 \rrbracket_o & = & \RA\llbracket a_1 \rrbracket_o - \RA\llbracket a_2 \rrbracket_o\\
 \end{matrix}
 \]
 
@@ -230,32 +231,32 @@ RB\llbracket FROM \enspace var \enspace CALL \enspace x \rrbracket_o & = & RB\ll
 RB\llbracket a_1 = a_2 \rrbracket_o & = &
 \begin{cases}
 \begin{matrix}
-\boldsymbol{tt} & if \enspace RA\llbracket a_1 \rrbracket_o = RA\llbracket a_2 \rrbracket_o \\
-\boldsymbol{ff} & if \enspace RA\llbracket a_1 \rrbracket_o \not= RA\llbracket a_2 \rrbracket_o
+\boldsymbol{tt} & if \enspace \RA\llbracket a_1 \rrbracket_o = \RA\llbracket a_2 \rrbracket_o \\
+\boldsymbol{ff} & if \enspace \RA\llbracket a_1 \rrbracket_o \not= \RA\llbracket a_2 \rrbracket_o
 \end{matrix}
 \end{cases}\\
 
 RB\llbracket a_1 \leq a_2 \rrbracket_o & = &
 \begin{cases}
 \begin{matrix}
-\boldsymbol{tt} & if \enspace RA\llbracket a_1 \rrbracket_o \leq RA\llbracket a_2 \rrbracket_o \\
-\boldsymbol{ff} & if \enspace RA\llbracket a_1 \rrbracket_o > RA\llbracket a_2 \rrbracket_o
+\boldsymbol{tt} & if \enspace \RA\llbracket a_1 \rrbracket_o \leq \RA\llbracket a_2 \rrbracket_o \\
+\boldsymbol{ff} & if \enspace \RA\llbracket a_1 \rrbracket_o > \RA\llbracket a_2 \rrbracket_o
 \end{matrix}
 \end{cases}\\
 
 RB\llbracket \neg b \rrbracket_o & = &
 \begin{cases}
 \begin{matrix}
-\boldsymbol{tt} & if \enspace RB\llbracket b \rrbracket_o = \boldsymbol{ff} \\
-\boldsymbol{ff} & if \enspace RB\llbracket b \rrbracket_o = \boldsymbol{tt}
+\boldsymbol{tt} & if \enspace \RB\llbracket b \rrbracket_o = \boldsymbol{ff} \\
+\boldsymbol{ff} & if \enspace \RB\llbracket b \rrbracket_o = \boldsymbol{tt}
 \end{matrix}
 \end{cases}\\
 
 RB\llbracket b_1 \wedge b_2 \rrbracket_o & = &
 \begin{cases}
 \begin{matrix}
-\boldsymbol{tt} & if \enspace RB\llbracket b_1 \rrbracket_o = \boldsymbol{tt} and RB\llbracket b_2 \rrbracket_o = \boldsymbol{tt}\\
-\boldsymbol{ff} & if \enspace RB\llbracket b_1 \rrbracket_o = \boldsymbol{ff} or RB\llbracket b_2 \rrbracket_o = \boldsymbol{ff}
+\boldsymbol{tt} & if \enspace \RB\llbracket b_1 \rrbracket_o = \boldsymbol{tt} and RB\llbracket b_2 \rrbracket_o = \boldsymbol{tt}\\
+\boldsymbol{ff} & if \enspace \RB\llbracket b_1 \rrbracket_o = \boldsymbol{ff} or RB\llbracket b_2 \rrbracket_o = \boldsymbol{ff}
 \end{matrix}
 \end{cases}\\
 
