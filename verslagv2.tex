@@ -136,9 +136,6 @@ $a$ is een aritmetisch expressie, $Aexp$. \\
 $b$ is een booleaanse expressie, $Bexp$. \\
 $S$ is een statement, $Stm$. \\
 $x$ is een variabele-naam, $Var$. \\
-$r$ is een referentie, $Ref$. \\
-
-
 
 Hierbij kan een variabele-naam naar verschillende typen waarde kan verwijzen, zoals een getal en een object.
 
@@ -163,7 +160,7 @@ var ::= x | FROM var CALL x
 Onze statements zien er als volgt uit: 
 \begin{lstlisting}
 S ::= SKIP | S1;S2 | IF b THEN S1 | WHILE b DO S1
-| CLONE var_p AS var_c | FROM var CALL x_i Dv | SET var_o SLOT var_i TO i
+| CLONE var_p AS var_c | FROM var CALL x_i Dv | SET var_o SLOT x TO i
 \end{lstlisting}
 
 Met de volgende hulpdefinities: 
@@ -176,19 +173,16 @@ We hebben dus de volgende drie statements toegevoegd:
 \begin{lstlisting}
 	CLONE var_p AS var_c
 \end{lstlisting} 
-Dit maakt een clone van var\_p met als naam var\_c. 
-
+Dit maakt een slot in het huidige object met als naam $var_c$. Hierin komt een clone van $var_p$. 
 \begin{lstlisting}
 	FROM var CALL x_i Dv
 	Dv ::= E | WITH x := i; Dv
 \end{lstlisting}
-Dit levert het resultaat op als je slot x\_i van object var aanroept met de variabelen Dv. In een slot kan natuurlijk ook een getal of booleaanse waarde zitten, dus Dv kan ook leeg zijn. 
-
+Dit levert het resultaat op als je slot $x_i$ van object var aanroept met de variabelen Dv. In een slot kan natuurlijk ook een getal of booleaanse waarde zitten, dus Dv kan ook leeg zijn. 
 \begin{lstlisting}
-	SET var_o SLOT var_i TO i
+	SET var_o SLOT x TO i
 \end{lstlisting} 
-Dit maakt in object var\_o een slot aan met daarin i. i kan zowel een booleaanse expressie, een aritmetische expressie als een methode zijn. 
-
+Dit maakt in object $var_o$ een slot aan met daarin i. i kan zowel een booleaanse expressie, een aritmetische expressie als een methode zijn. 
 %todo: constructie woord?
 Zoals je kunt zien eindigen niet alle statements in een constructiewoord. Hierdoor is het niet altijd duidelijk wanneer het ene statement is afgelopen en het andere begint. Kijk maar naar:
 \begin{lstlisting}
@@ -198,6 +192,7 @@ Zoals je kunt zien eindigen niet alle statements in een constructiewoord. Hierdo
 \end{lstlisting}
 Moet dit geparseerd worden als While b DO (S1;S2) of als (While b DO S1); S2. Om dit probleem tegen te gaan, nemen wij aan dat je door middel van haakjes statements mag groeperen, net zoals bij While.
 \pagebreak
+
 \section{Semantiek}
 
 Als basis gebruiken we de semantiek van While, die we op een paar plekken uitbreiden en aanpassen.
@@ -221,22 +216,27 @@ $$
 
 Omdat we dit vaak moeten herhalen, zetten we nu de set booleaanse variabelen vast:
 $$ \mathds{B} = \{\boldsymbol{tt},\boldsymbol{ff}\} $$
-Onze eigen toevoeging is natuurlijk objecten. Deze definieren we als volgt:
+
+Onze eigen toevoeging is natuurlijk objecten. Omdat we objecten graag by-reference willen kunnen aanspreken gebruiken we een extra set referentienummers $Ref$ met als meta-variabele $r$. Hierbij zijn referenties unieke waarden. Om deze waarden makkelijk te genereren zien we referenties als natuurlijke getallen. 
+$$ r \in \mathcal{N}$$
+Om referenties makkelijk op te kunnen schrijven zullen we de volgende afkorting gebruiken, :
+$$r_x = x, x \in \mathcal{Ref}$$
+
+Objecten zelf definiëren we als volgt:
 $$\mathcal{O} : Var \rightarrow \mathcal{I}$$ 
 Hierbij is Inhoud alles wat je in een object zou kunnen stoppen: 
 $$\mathcal{I} = Z \cup \mathds{B} \cup Ref \cup Stm$$ 
-
 Hierbij gebruiken we dezelfde notatie als bij While om de inhoud van zo'n object weer te geven.
 Neem een object o met als waarden x = 4 en y = true. Dit wordt als volgt gerepresenteerd:
 $$[x \mapsto 4, y \mapsto tt]$$
 
 Om naar objecten te kunnen refereren hebben we ook een referentiefunctie nodig. De signatuur van deze functie is:
 $$\mathcal{L} : Ref \rightarrow \mathcal{O}$$
-
-Nu de basistypen gedefinieerd zijn kunnen we met de echte semantiek verder. Om te beginnen passen we de basisovergang van While aan. Deze is normaal gedefineerd als:
-$ \langle S,s \rangle \rightarrow \langle s\prime \rangle $
+	
+Nu de basistypen gedefinieerd zijn kunnen we met de echte semantiek verder. Om te beginnen passen we de basisovergang van While aan. Deze is normaal gedefinieerd als:
+$$ \langle S,s \rangle \rightarrow \langle s\prime \rangle $$
 Waarbij s de state is: Een functie met het type
-$ x \rightarrow a $.
+$$ Var \rightarrow \mathcal{Z} $$.
 Omdat wij in de syntax geen directe assignment $(x := a)$ meer toestaan, maken wij hier een aanpassing op.\\
 We gebruiken nog steeds dezelfde overgang, maar nu met een andere definitie voor de state, waarbij de state equivalent is aan een object. Ook moeten we een lijst met referenties bijhouden. Dit duiden we aan als:
 $$ \langle S,o,l \rangle \rightarrow \langle o\prime, l\prime \rangle $$
@@ -245,8 +245,8 @@ $$ o_{start} = [this \rightarrow r_0]$$
 $$ l_{start} = [r_0 \mapsto [ \enspace ]]$$
 \\
 \par
-Daarnaast moeten we enkele veranderingen maken aan de manier waarop expressies (Beide arithmisch en booleaans) worden geevalueerd. 
-Allereerst is het belangrijk om op de juiste manier een stuk inhoud op te halen. We defineeren een totale functie $ GET $ die een syntactisch construct (De varnaam), een gewenst type en een object neemt. De functionaliteit leggen we vast als:
+Daarnaast moeten we enkele veranderingen maken aan de manier waarop aritmetische en booleaanse expressies worden geëvalueerd. 
+Allereerst is het belangrijk om op de juiste manier een stuk inhoud op te halen. We definiëren een totale functie $GET$ die een syntactisch construct (De varnaam), een gewenst type en een object neemt. De functionaliteit leggen we vast als:
 \[ GET: (x,t) \rightarrow (\mathcal{O} \rightarrow \mathcal{I}) \]
 \[
 \begin{matrix}
@@ -261,13 +261,13 @@ GET\llbracket x,t \rrbracket_{o(proto)} & anders
 \end{matrix}
 \]
 
-Na dit te hebben gedefineerd kunnen we met behulp van de GET-functie enkele nieuwe functies defineeren, waarmee we syntactische constructen om kunnen zetten naar getallen en booleaanse variabelen. We defineeren de totale functie $ \RA $ die een syntactisch construct (De varnaam), een object en een referentielijst neemt. De functionaliteit leggen we vast als volgt:
+Na dit te hebben gedefinieerd kunnen we met behulp van de GET-functie enkele nieuwe functies definiëren, waarmee we syntactische constructen om kunnen zetten naar getallen en booleaanse variabelen. We definiëren de totale functie $ \RA $ die een syntactisch construct (De varnaam), een object en een referentielijst neemt. De functionaliteit leggen we vast als volgt:
 
 \[ \RA : Aexp \rightarrow ((\mathcal{O}, \mathcal{L}) \rightarrow \mathds{Z} ) \]
 \[
 \begin{matrix}
 \RA\llbracket n \rrbracket_{(o,l)} & = & \mathcal{N}\llbracket n \rrbracket\\
-\RA\llbracket x \rrbracket_{(o,l)} & = & \RA\llbracket GET\llbracket (x,\mathds{Z}) \rrbracket_{(o,l)} \rrbracket_{(o,l)}\\
+\RA\llbracket x \rrbracket_{(o,l)} & = & GET\llbracket (x,\mathds{Z}) \rrbracket_{o}\\
 \RA\llbracket FROM \enspace var \enspace CALL \enspace x \rrbracket_{(o,l)} & = & GET\llbracket (x,\mathds{Z}) \rrbracket_{\RO \llbracket GET\llbracket (var,Ref) \rrbracket_o \rrbracket_l }\\
 \RA\llbracket a_1 + a_2 \rrbracket_{(o,l)} & = & \RA\llbracket a_1 \rrbracket_{(o,l)} + \RA\llbracket a_2 \rrbracket_{(o,l)}\\
 \RA\llbracket a_1 * a_2 \rrbracket_{(o,l)} & = & \RA\llbracket a_1 \rrbracket_{(o,l)} * \RA\llbracket a_2 \rrbracket_{(o,l)}\\
@@ -275,14 +275,14 @@ Na dit te hebben gedefineerd kunnen we met behulp van de GET-functie enkele nieu
 \end{matrix}
 \]
 
-We defineeren ook eenzelfde totale functie $ \RB $:
+We definiëren ook eenzelfde totale functie $ \RB $:
 \[ \RB : Bexp \rightarrow ((\mathcal{O},\mathcal{L}) \rightarrow \mathds{B} ) \]
 \[
 \begin{matrix}
 \RB \llbracket true \rrbracket_{(o,l)} & = & \boldsymbol{tt}\\
 \RB \llbracket false \rrbracket_{(o,l)} & = & \boldsymbol{ff}\\
 
-\RB \llbracket x \rrbracket_{(o,l)} & = & \RB \llbracket GET\llbracket (x,\mathds{B}) \rrbracket_o \rrbracket_{(o,l)}\\
+\RB \llbracket x \rrbracket_{(o,l)} & = & GET\llbracket (x,\mathds{B}) \rrbracket_o \\
 
 \RB \llbracket FROM \enspace var \enspace CALL \enspace x \rrbracket_{(o,l)} & = & GET\llbracket (x,\mathds{B}) \rrbracket_{\RO \llbracket GET\llbracket (var,Ref) \rrbracket_o \rrbracket_l}\\
 
@@ -342,6 +342,20 @@ Semantiekregels:\\
 [while_{ns}^{ff}] & <\mbox{WHILE b DO S}, o, l> \rightarrow <o,l> &&\mbox{ als }\RB \llbracket b \rrbracket_{(o,l)} = ff\\
 \end{matrix}
 \]
+$
+\begin{matrix}
+[clone_{ns}] & <CLONE \enspace var_p \enspace AS \enspace var_c, o, l> \rightarrow <o\prime, l\prime> \\ 
+\end{matrix}
+$
+\begin{align*}
+	waar: \\
+	o\prime &= o[var_c \mapsto r_{|l|+1}] &&\\
+	l\prime &= l[ref_{this} \mapsto this[var_c \mapsto r_{|l|+1}] , r_{|l|+1} \mapsto [ proto \mapsto ref_p]]&&\\
+	ref_p &= GET \llbracket var_p, Ref \rrbracket_o &&\\
+	ref_{this} &= GET \llbracket this, Ref \rrbracket_o &&\\
+	this &= GET \llbracket this, Ref \rrbracket_o &&\\	
+\end{align*}
+
 \[
 \begin{matrix}
 [clone_{ns}] &
