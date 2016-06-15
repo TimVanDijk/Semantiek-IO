@@ -117,7 +117,7 @@ SET Sheep SLOT legCount TO 4;
 CLONE Sheep AS MutantSheep;
 SET MutantSheep SLOT legCount TO 7;
 CLONE MutantSheep AS Dolly;
-SET MutantSheep SLOT growMoreLegs TO SET this SLOT legCount To x + FROM this CALL legCount;
+SET MutantSheep SLOT growMoreLegs TO SET this SLOT legCount TO x + FROM this CALL legCount;
 FROM Dolly CALL growMoreLegs WITH x := 2;
 \end{lstlisting}
 %TODO: Als we het voorbeeld houden zoals het hierboven staat dan moeten we assignment toevoegen.
@@ -129,8 +129,7 @@ We gaan dan met een analyse laten zien dat het inderdaad het verwachte resultaat
 %todo: opmaak misschien nog verbeteren
 In het hoofdstuk hierboven staat al een voorbeeldprogramma in WhIole. Maar hoe zit de syntax er precies uit? Dat zullen we in dit hoofdstuk definiëren. Voor WhIole hebben we de standaardtaal While als uitgangspunt genomen. Daarom komt een groot deel van de syntax ook overeen met deze taal.
 
-Voor het definieren van de Syntax maken we gebruik van de volgende sets:
-
+Voor het definieren van de Syntax maken we gebruik van de volgende sets:\\
 $n$ is een cijfer, Num. \\
 $a$ is een aritmetisch expressie, $Aexp$. \\
 $b$ is een booleaanse expressie, $Bexp$. \\
@@ -148,25 +147,27 @@ In een programma wordt E weggelaten.
 
 De definities voor aritmetische en booleaanse expressies blijven gelijk: 
 \begin{lstlisting}
-a  ::= n | a1 + a2 | a1 * a2 | a1 - a2 | var
-b ::= true | false | a1 = a2 | a1 <= a2 | ~b | b1 /\ b2 | var 
+	a ::= n | a1 + a2 | a1 * a2 | a1 - a2 | var
+	b ::= true | false | a1 = a2 | a1 <= a2 | ~b
+	| b1 /\ b2 | var 
 \end{lstlisting}
 
-Het verschil met While is dat een variabel niet alleen uit de standaard state kunnen komen, maar dat deze ook uit een object gehaald kan worden. 
+Een groot verschil met While is dat een variabel niet alleen uit de standaard state kunnen komen, maar dat deze ook uit een object gehaald kan worden. 
 \begin{lstlisting}
-var ::= x | FROM var CALL x
+	var ::= x | FROM var CALL x
 \end{lstlisting}
 
 Onze statements zien er als volgt uit: 
 \begin{lstlisting}
-S ::= SKIP | S1;S2 | IF b THEN S1 | WHILE b DO S1
-| CLONE var_p AS var_c | FROM var CALL x_i Dv | SET var_o SLOT x TO i
+	S ::= SKIP | S1;S2 | IF b THEN S1
+	| WHILE b DO S1 | CLONE var_p AS var_c
+	| FROM var CALL x_i Dv | SET var_o SLOT x TO i
 \end{lstlisting}
 
 Met de volgende hulpdefinities: 
 \begin{lstlisting}
-i ::= a | b | S
-Dv ::= E | WITH x := i; Dv
+	i ::= a | b | S
+	Dv ::= E | WITH x := i; Dv
 \end{lstlisting}
 
 We hebben dus de volgende drie statements toegevoegd: 
@@ -200,13 +201,15 @@ Zo blijven de booleaanse waarden en nummers gelijk aan While:
 
 We definieren nummers als:
 \begin{lstlisting}
-n ::= 0 | 1 | n0 | n1
+	n ::= 0 | 1 | n0 | n1
 \end{lstlisting}
 
 Om deze nummers om te zetten naar echte getallen gebruiken we de volgende functie:
 $$
-\begin{matrix}
 \mathcal{N}: Num \rightarrow Z \\
+$$
+$$
+\begin{matrix}
 \mathcal{N}\llbracket 0 \rrbracket &= &0  \\
 \mathcal{N}\llbracket 1 \rrbracket &= &1 \\
 \mathcal{N}\llbracket n0 \rrbracket &= &2 * \mathcal{N}\llbracket n \rrbracket \\
@@ -220,7 +223,7 @@ $$ \mathds{B} = \{\boldsymbol{tt},\boldsymbol{ff}\} $$
 Onze eigen toevoeging is natuurlijk objecten. Omdat we objecten graag by-reference willen kunnen aanspreken gebruiken we een extra set referentienummers $Ref$ met als meta-variabele $r$. Hierbij zijn referenties unieke waarden. Om deze waarden makkelijk te genereren zien we referenties als natuurlijke getallen. 
 $$ r \in \mathcal{N}$$
 Om referenties makkelijk op te kunnen schrijven zullen we de volgende afkorting gebruiken, :
-$$r_x = x, x \in \mathcal{Ref}$$
+$$r_x = \{x, x \in Ref\}$$
 
 Objecten zelf definiëren we als volgt:
 $$\mathcal{O} : Var \rightarrow \mathcal{I}$$ 
@@ -234,7 +237,7 @@ Om naar objecten te kunnen refereren hebben we ook een referentiefunctie nodig. 
 $$\mathcal{L} : Ref \rightarrow \mathcal{O}$$
 	
 Nu de basistypen gedefinieerd zijn kunnen we met de echte semantiek verder. Om te beginnen passen we de basisovergang van While aan. Deze is normaal gedefinieerd als:
-$$ \langle S,s \rangle \rightarrow \langle s\prime \rangle $$
+$$ \langle S,s \rangle \rightarrow s\prime $$
 Waarbij s de state is: Een functie met het type
 $$ Var \rightarrow \mathcal{Z} $$.
 Omdat wij in de syntax geen directe assignment $(x := a)$ meer toestaan, maken wij hier een aanpassing op.\\
@@ -257,7 +260,6 @@ o(x) & \mbox{ als } x \in domein(o) \mbox{ en } o(x) \in t\\
 GET\llbracket x,t \rrbracket_{o(proto)} & anders
 \end{matrix}
 \end{cases}\\
-%GET\llbracket \enspace FROM \enspace var \enspace CALL \enspace x \rrbracket_o & = & GET\llbracket GET\llbracket x  \rrbracket_{GET\llbracket var \rrbracket_o} \rrbracket_o\\
 \end{matrix}
 \]
 
@@ -321,6 +323,8 @@ We definiëren ook eenzelfde totale functie $ \RB $:
 \end{matrix}
 \]
 
+\pagebreak
+
 En als laatste eenzelfde functie die een referentie aanneemt, en deze omzet in een object.
 \[ \RO : Ref \rightarrow ( \mathcal{L} \rightarrow \mathcal{O}) \]
 
@@ -334,36 +338,39 @@ Semantiekregels:\\
 \renewcommand*{\arraystretch}{2.5}
 \[
 \begin{matrix}
-[skip_{ns}]  & <skip, o, l> \rightarrow <o, l>\\
-[comp_{ns}]  & \dfrac{<S1, o, l> \rightarrow <o', l'> <S2, o', l'> \rightarrow <o'', l''>}{<S1;S2, o, l> \rightarrow <o'', l''>}\\
-[if_{ns}^{tt}] & \dfrac{<S1, o, l> \rightarrow <o', l'>}{<\mbox{IF b THEN S1 ELSE S2}, o, l> \rightarrow <o', l'>} &&\mbox{ als }\RB \llbracket b \rrbracket_{(o,l)} = tt\\
-[if_{ns}^{ff}] & \dfrac{<S2, o, l> \rightarrow <o', l'>}{<\mbox{IF b THEN S1 ELSE S2}, o, l> \rightarrow <o', l'>} &&\mbox{ als }\RB \llbracket b \rrbracket_{(o,l)} = ff\\
-[while_{ns}^{tt}] & \dfrac{<S, o, l> \rightarrow <o', l'> <\mbox{WHILE b DO S}, <o', l'> \rightarrow <o'',l''>}{\mbox{WHILE b DO S}, o, l> \rightarrow <o'',l''>} &&\mbox{ als }\RB \llbracket b \rrbracket_{(o,l)} = tt\\
-[while_{ns}^{ff}] & <\mbox{WHILE b DO S}, o, l> \rightarrow <o,l> &&\mbox{ als }\RB \llbracket b \rrbracket_{(o,l)} = ff\\
+[skip_{ns}]  & \langle skip, o, l \rangle \rightarrow \langle o, l \rangle\\
+[comp_{ns}]  & \dfrac{\langle S1, o, l \rangle \rightarrow \langle o', l' \rangle \langle S2, o', l' \rangle \rightarrow \langle o'', l'' \rangle}{\langle S1;S2, o, l \rangle \rightarrow \langle o'', l'' \rangle}\\
+[if_{ns}^{tt}] & \dfrac{\langle S1, o, l \rangle \rightarrow \langle o', l' \rangle}{\langle \mbox{IF b THEN S1 ELSE S2}, o, l \rangle \rightarrow \langle o', l' \rangle} &&\mbox{ als }\RB \llbracket b \rrbracket_{(o,l)} = \boldsymbol{tt}\\
+[if_{ns}^{ff}] & \dfrac{\langle S2, o, l \rangle \rightarrow \langle o', l' \rangle}{\langle \mbox{IF b THEN S1 ELSE S2}, o, l \rangle \rightarrow \langle o', l' \rangle} &&\mbox{ als }\RB \llbracket b \rrbracket_{(o,l)} = \boldsymbol{ff}\\
+[while_{ns}^{tt}] & \dfrac{\langle S, o, l \rangle \rightarrow \langle o', l' \rangle \langle \mbox{WHILE b DO S}, \langle o', l' \rangle \rightarrow \langle o'',l'' \rangle}{\mbox{WHILE b DO S}, o, l \rangle \rightarrow \langle o'',l'' \rangle} &&\mbox{ als }\RB \llbracket b \rrbracket_{(o,l)} = \boldsymbol{tt}\\
+[while_{ns}^{ff}] & \langle \mbox{WHILE b DO S}, o, l \rangle \rightarrow \langle o,l \rangle &&\mbox{ als }\RB \llbracket b \rrbracket_{(o,l)} = \boldsymbol{ff}\\
 \end{matrix}
 \]
-$
-\begin{matrix}
-[clone_{ns}] & <CLONE \enspace var_p \enspace AS \enspace var_c, o, l> \rightarrow <o\prime, l\prime> \\ 
-\end{matrix}
-$
-\begin{align*}
-	waar: \\
-	o\prime &= o[var_c \mapsto r_{|l|+1}] &&\\
-	l\prime &= l[ref_{this} \mapsto this[var_c \mapsto r_{|l|+1}] , r_{|l|+1} \mapsto [ proto \mapsto ref_p]]&&\\
-	ref_p &= GET \llbracket var_p, Ref \rrbracket_o &&\\
-	ref_{this} &= GET \llbracket this, Ref \rrbracket_o &&\\
-	this &= GET \llbracket this, Ref \rrbracket_o &&\\	
-\end{align*}
+%$
+%\begin{matrix}
+%S
+%[clone_{ns}] & \langle CLONE \enspace var_p \enspace AS \enspace var_c, o, l> %\rightarrow \langle o\prime, l\prime> \\ 
+%\end{matrix}
+%$
+%\begin{align*}
+%	waar: \\
+%	o\prime &= o[var_c \mapsto r_{|l|+1}] &&\\
+%	l\prime &= l[ref_{this} \mapsto this[var_c \mapsto r_{|l|+1}] , r_{|l|+1} \mapsto [ proto \mapsto ref_p]]&&\\
+%	ref_p &= GET \llbracket var_p, Ref \rrbracket_o &&\\
+%	ref_{this} &= GET \llbracket this, Ref \rrbracket_o &&\\
+%	this &= GET \llbracket this, Ref \rrbracket_o &&\\	
+%\end{align*}
 
 \[
 \begin{matrix}
+
 [clone_{ns}] &
 \begin{matrix}
 \langle CLONE \enspace var_p \enspace AS \enspace var_c, o, l\rangle 
 \rightarrow\\
 \langle o[var_c \mapsto r_{|l|+1}], l[GET \llbracket this, Ref \rrbracket_o \mapsto \RO \llbracket GET \llbracket this, Ref \rrbracket_o \rrbracket_l[var_c \mapsto r_{|l|+1}] ,\\ r_{|l|+1} \mapsto [ proto \mapsto GET \llbracket var_p, Ref \rrbracket_o]]\rangle
-\end{matrix}\\
+\end{matrix}\\[60pt]
+%\hline
 \begin{matrix}
 [set_{ns}^{a,not}]\\
 \mbox{ als } i \in a\\
@@ -373,7 +380,8 @@ $
 \rightarrow
 \langle o, l[GET \llbracket var_t, Ref \rrbracket_o \mapsto \RO \llbracket GET \llbracket var_t, Ref \rrbracket_o \rrbracket_l[x \mapsto \RA 
 \llbracket i \rrbracket_{(o,l)}]] \rangle
-\end{matrix}\\
+\end{matrix}\\[60pt]
+%\hline
 \begin{matrix}
 [set_{ns}^{a,not}]\\
 \mbox{ als } i \in b\\
@@ -383,7 +391,9 @@ $
 \rightarrow
 \langle o, l[GET \llbracket var_t, Ref \rrbracket_o \mapsto \RO \llbracket GET \llbracket var_t, Ref \rrbracket_o \rrbracket_l[x \mapsto \RB 
 \llbracket i \rrbracket_{(o,l)}]] \rangle
-\end{matrix}\\\begin{matrix}
+\end{matrix}\\[60pt]
+%\hline
+\begin{matrix}
 [set_{ns}^{a,not}]\\
 \mbox{ als } i \not\in a \cup b\\
 \end{matrix} &
@@ -392,22 +402,29 @@ $
 \rightarrow
 \langle o, l[GET \llbracket var_t, Ref \rrbracket_o \mapsto \RO \llbracket GET \llbracket var_t, Ref \rrbracket_o \rrbracket_l[x \mapsto i ]] \rangle
 \end{matrix}\\
+\end{matrix}\\
+\]
+\[
+\begin{matrix}
 [call_{ns}] &
 \dfrac
 {
-	\langle Dv, o, l \rangle \rightarrow \langle o\prime, l\prime \rangle
-	\quad
-	\langle GET \llbracket x, \mathcal{I} \rrbracket_{\RO \llbracket GET\llbracket var, \mathcal{O} \rrbracket_o \rrbracket_l}, o\prime [proto \mapsto GET\llbracket var, \mathcal{O} \rrbracket_o, this \mapsto GET\llbracket var \rrbracket_o], l\prime \rangle
+	\begin{matrix}
+	\langle Dv, o, l \rangle \rightarrow \langle o\prime, l\prime \rangle\\
+	\langle GET \llbracket x, \mathcal{I} \rrbracket_{\RO \llbracket GET\llbracket var, \mathcal{O} \rrbracket_o \rrbracket_l}, o\prime [proto \mapsto GET\llbracket var, \mathcal{O} \rrbracket_o, this \mapsto GET\llbracket var \rrbracket_o], l\prime \rangle\\
 	\rightarrow
 	\langle o\prime\prime, l\prime\prime \rangle
+	\end{matrix}	
 }
 {
 	\langle FROM \enspace var \enspace CALL \enspace x \enspace Dv,o,l \rangle
 	\rightarrow
 	\langle o, l\prime\prime \rangle
-}\\
+}\\[60pt]
+%\hline
 [DvSkip_{ns}] &
-\langle E,o,l \rangle \rightarrow \langle [],l \rangle \\
+\langle E,o,l \rangle \rightarrow \langle [],l \rangle \\[60pt]
+%\hline
 \begin{matrix}
 [DvVar_{ns}^{a}]\\
 \mbox{ als } i \in a 
@@ -419,7 +436,8 @@ $
 	\langle VAR \enspace x \enspace := \enspace i; \enspace Dv, o, l \rangle
 	\rightarrow
 	\langle o\prime[x \mapsto \RA \llbracket i \rrbracket_o], l \rangle
-}\\
+}\\[60pt]
+%\hline
 \begin{matrix}
 [DvVar_{ns}^{b}]\\
 \mbox{ als } i \in b 
@@ -431,7 +449,9 @@ $
 	\langle VAR \enspace x \enspace := \enspace i; \enspace Dv, o, l \rangle
 	\rightarrow
 	\langle o\prime[x \mapsto \RB \llbracket i \rrbracket_o], l \rangle
-}\\\begin{matrix}
+}\\[60pt]
+%\hline
+\begin{matrix}
 [DvVar_{ns}^{S}]\\
 \mbox{ als } i \not\in a \cup b 
 \end{matrix}
@@ -449,8 +469,12 @@ $
 
 %\end{matrix}
 %\]
-\appendix
 
+\pagebreak
+\section{Uitwerking}
+
+\iffalse
+\appendix
 \section{Planning}
 Vrijdag 29 april: \\Het werkstuk voldoet aan de eisen van eerste versie.\newline\newline %hebben we een alternatief voor 2x \newline?
 Dinsdag 10 mei: \\Het hoofdstuk over de syntax van Io is helemaal klaar en willen we al aardig op weg zijn met de semantiek.\newline\newline
@@ -458,5 +482,5 @@ Dinsdag 24 mei: \\Het hoofdstuk over de semantiek is compleet. We bedoelen hier 
 dat het zodanig is dat we het kunnen gebruiken om de rest van het werkstuk te kunnen maken.\newline\newline
 Vrijdag 27 mei: \\Het werkstuk voldoet aan de eisen van de tweede versie. Dat wil zeggen: het inleidende hoofdstuk is af, het hoofdstuk over de syntax is af, het hoofdstuk over de semantiek is af, het hoofdstuk over de analyse bevat in elk geval het programma dat geanalyseerd gaat worden.\newline\newline
 Vrijdag 17 juni: \\De definitieve versie van het werkstuk is gereed en ingeleverd.
-
+\fi
 \end{document}  
