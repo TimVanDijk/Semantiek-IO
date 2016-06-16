@@ -52,56 +52,52 @@ de mogelijkheden van Io te laten zien.
 %Zo'n programma helpt om duidelijk te krijgen hoe programma's in jullie taal er uitzien.
 \section{Introductie Io}
 Io is in 2002 gemaakt door Steve Dekorte omdat hij zijn begrip over de werking van programmeertalen wilde verbreden.
-Het bijzondere aan Io is dat het een heel minimalistische en puur objectge\"orienteerde programmeertaal is die gebaseerd is op prototypes. De taal is ge\"inspireerd door Smalltalk. Alles, inclusief objecten, bestaat uit `messages' die worden doorgegeven.
+Het bijzondere aan Io is dat het een heel minimalistische en puur objectgeoriënteerde programmeertaal is die gebaseerd is op prototypes. De taal is geïnspireerd door Smalltalk. Alles, inclusief objecten, bestaat uit `messages' die worden doorgegeven.
 Dit houdt in dat er alleen maar objecten bestaan en dat overerving plaats vindt door bestaande objecten te clonen.
-Ook is Io een dynamische taal, dus objecten kunnen tijdens runtime uit worden gebreidt.
+Ook is Io een dynamische taal, dus objecten kunnen tijdens runtime worden uitgebreid.
 
 Hoewel de syntax van Io heel minimalistisch is, gebeurt er veel achter de schermen - meer dan we in dit project kunnen beschrijven.
 Het doel van dit werkstuk is om de standaardtaal While uit te breiden met de belangrijkste mogelijkheden van Io.
 Deze uitbreiding noemen we WhIole.
 Aangezien het bij Io allemaal draait om objecten en hoe die met elkaar communiceren, zal de kracht van ons project vooral zitten in het uitwerken van die twee concepten.
 %Verder laten we zien dat hoewel Io geen keywords, zoals `if' en `for', het nog steeds dezelfde uitdrukkingskracht heeft als While. %Of willen we While en WhileIO vergelijken?
-Hierbij zullen we een eigen definitie geven van objecten en definieren we onze eigen manier om berichten door te geven aan objecten (message passing).
-Hierbij zullen we eerst vastsleggen hoe Io werkt en hoe dit verschilt met het door ons gemaakte WhIole.
-Hierbij zullen we een voorbeeld gebruiken dat in Io geschreven is dat voorbeeld vertalen we naar WhIole.
-Vervolgens leggen we de syntax en semantiek van WhIole vast door middel van natuurlijke semantiek.
-Tot slot werken we het hierboven genoemde voorbeeldprogramma uit met de door ons gedefinieerde semantiek. 
+Eerst leggen werken we uit hoe Io werkt en hoe dit verschilt met het door ons gemaakte WhIole. Hierbij zullen we een voorbeeld gebruiken dat in Io geschreven is dat voorbeeld vertalen we naar WhIole. Vervolgens leggen we de syntax en semantiek van WhIole vast door middel van natuurlijke semantiek. Tot slot werken we het hierboven genoemde voorbeeldprogramma uit met de door ons gedefinieerde semantiek. 
 
 \subsection*{Voorbeeld}
 Om een idee te krijgen van hoe een programma eruit ziet in Io, volgt hier een voorbeeld:
 \begin{lstlisting}[frame=single]
-Sheep := Object clone
-Sheep legCount := 4
-MutantSheep := Sheep clone
-MutantSheep legCount = 7
-Dolly := MutantSheep clone
-MutantSheep growMoreLegs := method(n, legCount = legCount + n)
-Dolly growMoreLegs(2)
+Sheep := Object clone;
+Sheep legCount := 4;
+MutantSheep := Sheep clone;
+MutantSheep legCount = 7;
+Dolly := MutantSheep clone;
+MutantSheep growMoreLegs := method(n, legCount = legCount + n);
+Dolly growMoreLegs(2);
 \end{lstlisting}
-Dit voorbeeld is afkomstig van \url{andriybuday.com/2012/07/io-programming-language.html} en laat een aantal interessante eigenschappen van Io aan bod komen. Laten we eens kijken wat er in dit voorbeeld gebeurt.\newline
+Dit voorbeeld is afkomstig van \url{andriybuday.com/2012/07/io-programming-language.html} en laat een aantal interessante eigenschappen van Io aan bod komen. Laten we eens kijken wat er in dit voorbeeld gebeurt.
 
-In de eerste regel maken we een clone van Object. Object is het prototype dat er altijd vanaf het begin al is,
-alle prototypes die er later bij komen zijn op Object gebaseerd.
-Zoals de naam al suggereert maak je, als je een prototype clonet, een nieuwe instantie van dat prototye.
+In de eerste regel maken we een kloon van Object. Object is het prototype dat er altijd vanaf het begin al is,
+alle objecten die er later bij komen zijn op Object gebaseerd.
+Zoals de naam al suggereert maak je, als je een prototype kloont, een nieuwe instantie van dat prototye.
 %todo: clone maakt een nieuw (leeg) object aan met als prototype het orginele object
-Deze nieuwe instantie heeft precies dezelfde structuur en kenmerken als het prototype waar het uit gecloned is.
-Als er later veranderingen worden gemaakt aan het prototype dat gecloned is, dan hebben die ook effect op het nieuwe prototype.
-Sheep is dus een nieuw prototype die precies hetzelfde kan en eruit ziet als Object.\newline
+Deze nieuwe instantie heeft precies dezelfde structuur en kenmerken als het prototype waar het uit gekloond is.
+Als er later veranderingen worden gemaakt aan het prototype dat gekloond is, dan hebben die ook effect op het nieuwe object.
+Sheep is dus een nieuw object dat precies hetzelfde kan en eruit ziet als Object.\newline
 
 Dan willen we zeggen dat het schaap vier poten heeft.
-We doen dit door Sheep een nieuw attribuut te geven ``legCount'' en dit attribuut stellen we gelijk aan 4.
-Hoewel Sheep een clone is van Object, zijn het verschillende instanties, en dus krijgt object er geen attribuut ``legCount'' bij.\newline
+We doen dit door Sheep een nieuw attribuut ``legCount'' te geven en dit attribuut stellen we gelijk aan 4.
+Hoewel Sheep een kloon is van Object, zijn het verschillende instanties, en dus krijgt Object er geen attribuut ``legCount'' bij.\newline
 
-Ons schaap is veel te saai. Dit gaan we oplossen door een gemuteerd schaap te maken door een clone te maken van Sheep. Vervolgens zeggen we door het attribuut ``legCount'' op 7 te zetten.\newline
+Ons schaap is veel te saai. Dit gaan we oplossen door een gemuteerd schaap te maken dat een kloon is van Sheep. Vervolgens zetten we het attribuut ``legCount'' van MutantSheep op 7.\newline
 
-Vervolgens maken we weer een clone van ons gemuteerde schaap. Deze clone noemen we dolly. De naam dolly, is naar conventie zonder hoofdletter geschreven.
+%todo: dolly met kleine letter als instantie van MutantSheep?
+In de volgende stap maken we weer een kloon van ons gemuteerde schaap. Deze kloon noemen we dolly. De naam dolly, is naar conventie zonder hoofdletter geschreven.
 Dit is om het idee te geven dat het een instantie is van het object MutantSheep.
-Dit is alleen om het programmeren overzichtelijker te maken, want Io maakt geen onderscheid tussen objecten en instanties: er zijn alleen maar prototypes.\newline
-
+Dit is alleen om het programmeren overzichtelijker te maken, want Io maakt geen onderscheid tussen klassen en instanties: er zijn alleen maar objecten.\newline
 
 Daarna gaan we een nieuwe methode maken en toevoegen aan MutantSheep, namelijk growMoreLegs.
-growMoreLegs neemt \'e\'en argument n en verhoogt ``legCount'' met die n. 
-Zoals eerder gezegd worden veranderingen op een prototype ook overgedragen op prototypes die eruit gecloned zijn. dolly heeft deze methode nu dus ook en kan er gebruik van maken.\newline
+growMoreLegs neemt één argument n en verhoogt ``legCount'' met die n. 
+Zoals eerder gezegd worden veranderingen op een prototype ook overgedragen op prototypes die eruit gekloond zijn. dolly heeft deze methode nu dus ook en kan er gebruik van maken.\newline
 
 Ten slotte willen we dolly nog een paar extra poten geven; twee om precies te zijn.
 Om dit te doen maken we gebruik van de nieuwe methode growMoreLegs.
@@ -111,8 +107,6 @@ Uiteindelijk heeft dolly dus 9 poten.
 
 We hebben de code van het bovenstaande voorbeeld zo letterlijk mogelijk vertaald naar WhIole.
 Het vertaalde voorbeeld is het volgende:
-%Dit was best crappy vertaald. Ik heb hem daarom maar opnieuw vertaald. Ik ben er vrij zeker van dat ik fouten heb gemaakt.
-%TODO: fix dit
 \begin{lstlisting}[frame=single]
 CLONE this AS Sheep;
 SET Sheep SLOT legCount TO 4;
@@ -122,13 +116,10 @@ CLONE MutantSheep AS Dolly;
 SET MutantSheep SLOT growMoreLegs TO SET this SLOT legCount TO x + FROM this CALL legCount;
 FROM Dolly CALL growMoreLegs WITH x := 2;
 \end{lstlisting}
-%TODO: Als we het voorbeeld houden zoals het hierboven staat dan moeten we assignment toevoegen.
-Nadat we de syntax en semantiek van WhIole uit hebben gewerkt, komen we terug op dit voorbeeld.
-We gaan dan met een analyse laten zien dat het inderdaad het verwachte resultaat opleverd.
+In het hoofdstuk Analyse zullen we laten zien dat de bovenstaande code precies hetzelfde doet als het originele Io programma.
 
 \pagebreak
 \section{Syntax}
-%todo: opmaak misschien nog verbeteren
 In het hoofdstuk hierboven staat al een voorbeeldprogramma in WhIole. Maar hoe zit de syntax er precies uit? Dat zullen we in dit hoofdstuk definiëren. Voor WhIole hebben we de standaardtaal While als uitgangspunt genomen. Daarom komt een groot deel van de syntax ook overeen met deze taal.
 
 Voor het definieren van de Syntax maken we gebruik van de volgende sets: 
@@ -137,19 +128,10 @@ Voor het definieren van de Syntax maken we gebruik van de volgende sets:
 	\item[] $a$ is een aritmetisch expressie, $Aexp$.
 	\item[] $b$ is een booleaanse expressie, $Bexp$. 
 	\item[] $S$ is een statement, $Stm$. 
-	\item[] $x$ is een variabele-naam, $Var$. 
+	\item[] $x$ is een variabel, $Var$. 
 \end{enumerate}	 
-	
 
-Hierbij kan een variabele-naam naar verschillende typen waarde kan verwijzen, zoals een getal en een object.
-
-We voegen ook een extra type toe:
-$E$ is de lege declaratie. E doet helemaal niets en is nodig om functies aan te kunnen roepen zonder argument.
-In een programma wordt E weggelaten.
-
-%todo: Wilde we M niet wegdoen?
-%todo: Klopt de FROM regel en klopt die me het voorbeeld? Moet er niet nog een WITH bij ofzo
-
+Hierbij kan een variabel naar verschillende typen waarde kan verwijzen, zoals een getal en een object.
 De definities voor aritmetische en booleaanse expressies blijven gelijk: 
 \begin{gather*}
 a ::= n 
@@ -185,9 +167,10 @@ Met de volgende hulpdefinities:
 i ::= a
 	\enspace|\enspace b 
 	\enspace|\enspace S \\
-Dv ::= E 
+Dv ::= \epsilon
 	\enspace|\enspace WITH \enspace x \enspace := \enspace i; Dv 
 \end{gather*}
+Hierbij is $\epsilon$ een lege declaratie. $\epsilon$ zelf zul je dus nooit in een programma tegenkomen. 
 
 We hebben dus de volgende drie statements toegevoegd: 
 \begin{flalign*}
@@ -208,7 +191,6 @@ Dit levert het resultaat op als je slot $x_i$ van object var aanroept met de var
 Dit maakt in object $var_o$ een slot aan met daarin $i$. $i$ kan zowel een booleaanse expressie, een aritmetische expressie als een methode zijn. 
 %todo: constructie woord?
 Zoals je kunt zien eindigen niet alle statements in een constructiewoord. Hierdoor is het niet altijd duidelijk wanneer het ene statement is afgelopen en het andere begint. Kijk maar naar:
-
 \begin{align*}
 WHILE \enspace x <= 2 \enspace DO \enspace SKIP; \enspace SKIP
 \end{align*}
@@ -237,7 +219,7 @@ Om deze nummers om te zetten naar echte getallen gebruiken we de volgende functi
 \mathcal{N}\llbracket n0 \rrbracket = 2 * \mathcal{N}\llbracket n \rrbracket \\
 \mathcal{N}\llbracket n1 \rrbracket = 2 * \mathcal{N}\llbracket n \rrbracket + 1 
 \end{gather*}
-Omdat we dit vaak moeten herhalen, zetten we nu de set booleaanse variabelen vast:
+Ook gebruiken we dezelfde booleaanse waarden. Omdat we deze op veel plekken gebruiken geven we deze set een naam:
 \begin{align*}
 \mathds{B} = \{\boldsymbol{tt},\boldsymbol{ff}\}
 \end{align*}
@@ -255,13 +237,14 @@ Objecten zelf definiëren we als volgt:
 \begin{gather*}\mathcal{O} : Var \rightarrow \mathcal{I} \end{gather*}
 Hierbij is Inhoud alles wat je in een object zou kunnen stoppen: 
 \begin{gather*}\mathcal{I} = Z \cup \mathds{B} \cup Ref \cup Stm \end{gather*} 
+
 Hierbij gebruiken we dezelfde notatie als bij While om de inhoud van zo'n object weer te geven.
 Neem een object o met als waarden x = 4 en y = true. Dit wordt als volgt gerepresenteerd:
 \begin{gather*}[x \mapsto 4, y \mapsto tt]\end{gather*}
-
 Om naar objecten te kunnen refereren hebben we ook een referentiefunctie nodig. De signatuur van deze functie is:
-\begin{gather*}\mathcal{L} : Ref \rightarrow \mathcal{O}\end{gather*}
-	
+\begin{gather*}\mathcal{L} : Ref \rightarrow \mathcal{O}\end{gather*}	
+
+
 Nu de basistypen gedefinieerd zijn kunnen we met de echte semantiek verder. Om te beginnen passen we de basisovergang van While aan. Deze is normaal gedefinieerd als:
 \begin{gather*}
  \langle S,s \rangle \rightarrow s\prime 
@@ -295,7 +278,7 @@ GET\llbracket x,t \rrbracket_{o(proto)} & anders
 \end{matrix}
 \]
 
-Na dit te hebben gedefinieerd kunnen we met behulp van de GET-functie enkele nieuwe functies definiëren, waarmee we syntactische constructen om kunnen zetten naar getallen en booleaanse variabelen. We definiëren de totale functie $ \RA $ die een syntactisch construct (De varnaam), een object en een referentielijst neemt. De functionaliteit leggen we vast als volgt:
+Na dit te hebben gedefinieerd kunnen we met behulp van de GET-functie enkele nieuwe functies definiëren, waarmee we syntactische constructen om kunnen zetten naar getallen en booleaanse variabelen. We definiëren de totale functie $ \RA $ die een variabel, een object en een referentielijst neemt. De functionaliteit leggen we vast als volgt:
 
 \[ \RA : Aexp \rightarrow ((\mathcal{O}, \mathcal{L}) \rightarrow \mathds{Z} ) \]
 \[
