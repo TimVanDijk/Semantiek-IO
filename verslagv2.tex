@@ -116,7 +116,7 @@ CLONE MutantSheep AS Dolly;
 SET MutantSheep SLOT growMoreLegs TO SET this SLOT legCount TO x + FROM this CALL legCount;
 FROM Dolly CALL growMoreLegs WITH x := 2;
 \end{lstlisting}
-In het hoofdstuk Analyse zullen we laten zien dat de bovenstaande code precies hetzelfde doet als het originele Io programma.
+In het hoofdstuk Uitwerking zullen we laten zien dat de bovenstaande code precies hetzelfde doet als het originele Io programma.
 
 \pagebreak
 \section{Syntax}
@@ -482,7 +482,31 @@ Semantiekregels:\\
 
 \pagebreak
 \section{Uitwerking}
+Hier volgt nogmaals het naar WhIole vertaalde voorbeeld programma.
 
+\begin{lstlisting}[frame=single]
+CLONE this AS Sheep;
+SET Sheep SLOT legCount TO 4;
+CLONE Sheep AS MutantSheep;
+SET MutantSheep SLOT legCount TO 7;
+CLONE MutantSheep AS Dolly;
+SET MutantSheep SLOT growMoreLegs TO SET this SLOT legCount TO x + FROM this CALL legCount;
+FROM Dolly CALL growMoreLegs WITH x := 2;
+\end{lstlisting}
+
+Dit programma werken we de ``boom'' uit te schrijven.
+Deze boom is echter veel te groot om op één blaadje te passen.
+Alle transities die in de boom voorkomen staan genummerd in de bijlage boom.txt.
+Deze nummers zijn in onderstaande boom gezet om de structuur aan te geven.
+
+NIET AF!!!!!!
+$
+\dfrac
+	{1 \dfrac{\dfrac{3 \dfrac{5 \dfrac{7 \dfrac{9}{\mbox{8 10}}{8}}{6}}{4}}{2}} {0}}
+$
+
+Volgens de boom heeft Dolly uiteindelijk negen poten, net zoals in het voolbeeld met Io.
+Onze semantiek lijkt dus te werken.
 \iffalse
 \appendix
 \section{Planning}
