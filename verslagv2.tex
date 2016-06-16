@@ -12,6 +12,8 @@
 \date{\today}
 
 \documentclass[12pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem}
 \usepackage{listings} 
 \PassOptionsToPackage{hyphens}{url}\usepackage{hyperref}
 \usepackage{graphicx}
@@ -40,7 +42,7 @@
 
 %TODO: loop tekst na op woordherhaling
 \begin{abstract}
-Dit werkstuk beschrijft de syntax en semantiek van een door Io geinspireerde uitbreiding van While, genaamd WhIole. Io is een puur objectge\"orienteerde programmeertaal. Hierbij wordt WhIole met natuurlijke semantiek beschreven. Vervolgens gebruiken we de beschreven syntax en semantiek om
+Dit werkstuk beschrijft de syntax en semantiek van WhIole, een door Io geinspireerde uitbreiding van While. Io is een puur objectge\"orienteerde programmeertaal. Hierbij wordt WhIole met natuurlijke semantiek beschreven. Vervolgens gebruiken we de beschreven syntax en semantiek om
 de mogelijkheden van Io te laten zien.
 \end{abstract}
 
@@ -49,7 +51,7 @@ de mogelijkheden van Io te laten zien.
 %Neem in de inleiding ook alvast een voorbeeldprogramma op waarin iets interessants gebeurt.
 %Zo'n programma helpt om duidelijk te krijgen hoe programma's in jullie taal er uitzien.
 \section{Introductie Io}
-Io, een programmeertaal, is in 2002 gemaakt door Steve Dekorte omdat hij zijn begrip over de werking van programmeertalen wilde verbreden.
+Io is in 2002 gemaakt door Steve Dekorte omdat hij zijn begrip over de werking van programmeertalen wilde verbreden.
 Het bijzondere aan Io is dat het een heel minimalistische en puur objectge\"orienteerde programmeertaal is die gebaseerd is op prototypes. De taal is ge\"inspireerd door Smalltalk. Alles, inclusief objecten, bestaat uit `messages' die worden doorgegeven.
 Dit houdt in dat er alleen maar objecten bestaan en dat overerving plaats vindt door bestaande objecten te clonen.
 Ook is Io een dynamische taal, dus objecten kunnen tijdens runtime uit worden gebreidt.
@@ -129,12 +131,15 @@ We gaan dan met een analyse laten zien dat het inderdaad het verwachte resultaat
 %todo: opmaak misschien nog verbeteren
 In het hoofdstuk hierboven staat al een voorbeeldprogramma in WhIole. Maar hoe zit de syntax er precies uit? Dat zullen we in dit hoofdstuk definiëren. Voor WhIole hebben we de standaardtaal While als uitgangspunt genomen. Daarom komt een groot deel van de syntax ook overeen met deze taal.
 
-Voor het definieren van de Syntax maken we gebruik van de volgende sets:\\
-$n$ is een cijfer, Num. \\
-$a$ is een aritmetisch expressie, $Aexp$. \\
-$b$ is een booleaanse expressie, $Bexp$. \\
-$S$ is een statement, $Stm$. \\
-$x$ is een variabele-naam, $Var$. \\
+Voor het definieren van de Syntax maken we gebruik van de volgende sets: 
+\begin{enumerate}[noitemsep]
+	\item[] $n$ is een cijfer, $Num$.
+	\item[] $a$ is een aritmetisch expressie, $Aexp$.
+	\item[] $b$ is een booleaanse expressie, $Bexp$. 
+	\item[] $S$ is een statement, $Stm$. 
+	\item[] $x$ is een variabele-naam, $Var$. 
+\end{enumerate}	 
+	
 
 Hierbij kan een variabele-naam naar verschillende typen waarde kan verwijzen, zoals een getal en een object.
 
@@ -146,52 +151,73 @@ In een programma wordt E weggelaten.
 %todo: Klopt de FROM regel en klopt die me het voorbeeld? Moet er niet nog een WITH bij ofzo
 
 De definities voor aritmetische en booleaanse expressies blijven gelijk: 
-\begin{lstlisting}
-	a ::= n | a1 + a2 | a1 * a2 | a1 - a2 | var
-	b ::= true | false | a1 = a2 | a1 <= a2 | ~b
-	| b1 /\ b2 | var 
-\end{lstlisting}
-
-Een groot verschil met While is dat een variabel niet alleen uit de standaard state kunnen komen, maar dat deze ook uit een object gehaald kan worden. 
-\begin{lstlisting}
-	var ::= x | FROM var CALL x
-\end{lstlisting}
-
-Onze statements zien er als volgt uit: 
-\begin{lstlisting}
-	S ::= SKIP | S1;S2 | IF b THEN S1
-	| WHILE b DO S1 | CLONE var_p AS var_c
-	| FROM var CALL x_i Dv | SET var_o SLOT x TO i
-\end{lstlisting}
-
-Met de volgende hulpdefinities: 
-\begin{lstlisting}
-	i ::= a | b | S
-	Dv ::= E | WITH x := i; Dv
-\end{lstlisting}
+\begin{gather*}
+a ::= n 
+	\enspace|\enspace a1 + a2 
+	\enspace|\enspace a1 * a2 
+	\enspace|\enspace a1 - a2 
+	\enspace|\enspace var \\
+b ::= true 
+	\enspace|\enspace false 
+	\enspace|\enspace a1 = a2
+	\enspace|\enspace a1 <= a2
+	\enspace|\enspace ~b
+	\enspace|\enspace b1 /\ b2 
+	\enspace|\enspace var 
+\end{gather*}
+Een groot verschil met While is dat een variabel niet alleen uit de standaard state kunnen komen, maar dat deze ook uit een object gehaald kan worden.
+\begin{gather*}
+var ::= x
+	\enspace|\enspace FROM \enspace var \enspace CALL \enspace x 
+\end{gather*}
+Onze statements zien er als volgt uit:
+\begin{align*}
+S ::=& SKIP 	
+	\enspace|\enspace  IF\enspace b \enspace THEN \enspace S1 
+	\enspace|\enspace  ROM\enspace var\enspace CALL\enspace x_i \enspace Dv
+	\enspace|\enspace S1;S2 	
+	\enspace|\enspace \\&  CLONE \enspace var_p\enspace AS\enspace var_c 
+	\enspace|\enspace SET \enspace var_o \enspace SLOT \enspace x \enspace TO \enspace i  
+	\enspace|\enspace WHILE\enspace b\enspace DO\enspace S1 \enspace
+\end{align*}
+Met de volgende hulpdefinities:	
+\begin{gather*}
+i ::= a
+	\enspace|\enspace b 
+	\enspace|\enspace S \\
+Dv ::= E 
+	\enspace|\enspace WITH \enspace x \enspace := \enspace i; Dv 
+\end{gather*}
 
 We hebben dus de volgende drie statements toegevoegd: 
-\begin{lstlisting}
-	CLONE var_p AS var_c
-\end{lstlisting} 
+\begin{flalign*}
+CLONE 	\enspace var_p	\enspace AS 	\enspace var_c
+\end{flalign*} 
 Dit maakt een slot in het huidige object met als naam $var_c$. Hierin komt een clone van $var_p$. 
-\begin{lstlisting}
-	FROM var CALL x_i Dv
-	Dv ::= E | WITH x := i; Dv
-\end{lstlisting}
+
+\begin{gather*}
+FROM \enspace var\enspace CALL\enspace x_i\enspace Dv \\
+Dv 	::= E
+	\enspace|\enspace WITH\enspace x\enspace :=\enspace i; Dv
+\end{gather*}
 Dit levert het resultaat op als je slot $x_i$ van object var aanroept met de variabelen Dv. In een slot kan natuurlijk ook een getal of booleaanse waarde zitten, dus Dv kan ook leeg zijn. 
-\begin{lstlisting}
-	SET var_o SLOT x TO i
-\end{lstlisting} 
-Dit maakt in object $var_o$ een slot aan met daarin i. i kan zowel een booleaanse expressie, een aritmetische expressie als een methode zijn. 
+
+\begin{align*}
+	 SET \enspace var_o\enspace SLOT\enspace x\enspace TO\enspace i
+\end{align*} 
+Dit maakt in object $var_o$ een slot aan met daarin $i$. $i$ kan zowel een booleaanse expressie, een aritmetische expressie als een methode zijn. 
 %todo: constructie woord?
 Zoals je kunt zien eindigen niet alle statements in een constructiewoord. Hierdoor is het niet altijd duidelijk wanneer het ene statement is afgelopen en het andere begint. Kijk maar naar:
-\begin{lstlisting}
-	WHILE x <= 2 DO
-	x := x+1;
-	x := x+3
-\end{lstlisting}
-Moet dit geparseerd worden als While b DO (S1;S2) of als (While b DO S1); S2. Om dit probleem tegen te gaan, nemen wij aan dat je door middel van haakjes statements mag groeperen, net zoals bij While.
+
+\begin{align*}
+WHILE \enspace x <= 2 \enspace DO \enspace SKIP; \enspace SKIP
+\end{align*}
+Dit kan op twee manieren geparseerd worden:
+\begin{gather*}
+WHILE\enspace b\enspace DO\enspace (S1;S2) \\
+(WHILE\enspace b\enspace DO\enspace S1); S2. 
+\end{gather*} 
+Om dit probleem tegen te gaan, nemen wij aan dat je door middel van haakjes statements mag groeperen, net zoals bij While.
 \pagebreak
 
 \section{Semantiek}
@@ -200,54 +226,60 @@ Als basis gebruiken we de semantiek van While, die we op een paar plekken uitbre
 Zo blijven de booleaanse waarden en nummers gelijk aan While:
 
 We definieren nummers als:
-\begin{lstlisting}
-	n ::= 0 | 1 | n0 | n1
-\end{lstlisting}
+\begin{align*}
+n ::= 0 \enspace|\enspace 1 \enspace|\enspace n0 \enspace|\enspace n1
+\end{align*}
 
 Om deze nummers om te zetten naar echte getallen gebruiken we de volgende functie:
-$$
-\mathcal{N}: Num \rightarrow Z \\
-$$
-$$
-\begin{matrix}
-\mathcal{N}\llbracket 0 \rrbracket &= &0  \\
-\mathcal{N}\llbracket 1 \rrbracket &= &1 \\
-\mathcal{N}\llbracket n0 \rrbracket &= &2 * \mathcal{N}\llbracket n \rrbracket \\
-\mathcal{N}\llbracket n1 \rrbracket &= &2 * \mathcal{N}\llbracket n \rrbracket + 1 \\
-\end{matrix}
-$$
-
+\begin{gather*} 
+\mathcal{N}\llbracket 0 \rrbracket = 0  \\
+\mathcal{N}\llbracket 1 \rrbracket = 1 \\
+\mathcal{N}\llbracket n0 \rrbracket = 2 * \mathcal{N}\llbracket n \rrbracket \\
+\mathcal{N}\llbracket n1 \rrbracket = 2 * \mathcal{N}\llbracket n \rrbracket + 1 
+\end{gather*}
 Omdat we dit vaak moeten herhalen, zetten we nu de set booleaanse variabelen vast:
-$$ \mathds{B} = \{\boldsymbol{tt},\boldsymbol{ff}\} $$
+\begin{align*}
+\mathds{B} = \{\boldsymbol{tt},\boldsymbol{ff}\}
+\end{align*}
 
 Onze eigen toevoeging is natuurlijk objecten. Omdat we objecten graag by-reference willen kunnen aanspreken gebruiken we een extra set referentienummers $Ref$ met als meta-variabele $r$. Hierbij zijn referenties unieke waarden. Om deze waarden makkelijk te genereren zien we referenties als natuurlijke getallen. 
-$$ r \in \mathcal{N}$$
-Om referenties makkelijk op te kunnen schrijven zullen we de volgende afkorting gebruiken, :
-$$r_x = \{x, x \in Ref\}$$
-
+\begin{gather*}
+r \in \mathcal{N}
+\end{gather*}
+Om referenties makkelijk op te kunnen schrijven zullen we de volgende afkorting gebruiken:
+%todo: juist geen set toch?
+\begin{gather*}
+r_x = \{x, x \in Ref\}
+\end{gather*}
 Objecten zelf definiëren we als volgt:
-$$\mathcal{O} : Var \rightarrow \mathcal{I}$$ 
+\begin{gather*}\mathcal{O} : Var \rightarrow \mathcal{I} \end{gather*}
 Hierbij is Inhoud alles wat je in een object zou kunnen stoppen: 
-$$\mathcal{I} = Z \cup \mathds{B} \cup Ref \cup Stm$$ 
+\begin{gather*}\mathcal{I} = Z \cup \mathds{B} \cup Ref \cup Stm \end{gather*} 
 Hierbij gebruiken we dezelfde notatie als bij While om de inhoud van zo'n object weer te geven.
 Neem een object o met als waarden x = 4 en y = true. Dit wordt als volgt gerepresenteerd:
-$$[x \mapsto 4, y \mapsto tt]$$
+\begin{gather*}[x \mapsto 4, y \mapsto tt]\end{gather*}
 
 Om naar objecten te kunnen refereren hebben we ook een referentiefunctie nodig. De signatuur van deze functie is:
-$$\mathcal{L} : Ref \rightarrow \mathcal{O}$$
+\begin{gather*}\mathcal{L} : Ref \rightarrow \mathcal{O}\end{gather*}
 	
 Nu de basistypen gedefinieerd zijn kunnen we met de echte semantiek verder. Om te beginnen passen we de basisovergang van While aan. Deze is normaal gedefinieerd als:
-$$ \langle S,s \rangle \rightarrow s\prime $$
+\begin{gather*}
+ \langle S,s \rangle \rightarrow s\prime 
+\end{gather*}
 Waarbij s de state is: Een functie met het type
-$$ Var \rightarrow \mathcal{Z} $$.
+\begin{gather*}
+Var \rightarrow \mathcal{Z}
+\end{gather*}
 Omdat wij in de syntax geen directe assignment $(x := a)$ meer toestaan, maken wij hier een aanpassing op.\\
 We gebruiken nog steeds dezelfde overgang, maar nu met een andere definitie voor de state, waarbij de state equivalent is aan een object. Ook moeten we een lijst met referenties bijhouden. Dit duiden we aan als:
-$$ \langle S,o,l \rangle \rightarrow \langle o\prime, l\prime \rangle $$
+\begin{gather*}
+ \langle S,o,l \rangle \rightarrow \langle o\prime, l\prime \rangle 
+\end{gather*}
 Daarnaast moeten wij nog definiëren dat aan de start van een programma de state niet leeg is, maar de varnaam $ this $ bind aan een leeg object $ [\enspace] $.
-$$ o_{start} = [this \rightarrow r_0]$$
-$$ l_{start} = [r_0 \mapsto [ \enspace ]]$$
-\\
-\par
+\begin{gather*}
+o_{start} = [this \rightarrow r_0]	
+l_{start} = [r_0 \mapsto [ \enspace ]]
+\end{gather*}
 Daarnaast moeten we enkele veranderingen maken aan de manier waarop aritmetische en booleaanse expressies worden geëvalueerd. 
 Allereerst is het belangrijk om op de juiste manier een stuk inhoud op te halen. We definiëren een totale functie $GET$ die een syntactisch construct (De varnaam), een gewenst type en een object neemt. De functionaliteit leggen we vast als:
 \[ GET: (x,t) \rightarrow (\mathcal{O} \rightarrow \mathcal{I}) \]
@@ -323,16 +355,11 @@ We definiëren ook eenzelfde totale functie $ \RB $:
 \end{matrix}
 \]
 
-\pagebreak
-
 En als laatste eenzelfde functie die een referentie aanneemt, en deze omzet in een object.
-\[ \RO : Ref \rightarrow ( \mathcal{L} \rightarrow \mathcal{O}) \]
-
-\[
-\begin{matrix}
-\RO \llbracket r \rrbracket_l & = & l(r)
-\end{matrix}
-\]
+\begin{align*} 
+\RO& : Ref \rightarrow ( \mathcal{L} \rightarrow \mathcal{O}) \\
+\RO& \llbracket r \rrbracket_l  =  l(r)
+\end{align*}
 
 Semantiekregels:\\
 \renewcommand*{\arraystretch}{2.5}
