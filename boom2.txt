@@ -14,8 +14,8 @@ Afkortingen:
 	B = 34567 (Alles na de tweede regel)
 	C = 4567 etc.
 	D = 567
-	E = 67
-	F = 7
+	E =	67
+
 [comp_ns]
 0 <CLONE this AS Sheep; A, o, l> -> <o6, l8>
 
@@ -23,14 +23,29 @@ Afkortingen:
 [clone_ns]
 <CLONE this AS Sheep, o_start, l_start> ->
 <	
-	o[	Sheep |-> r_|l|],
-	l[
-		GET[|this, Ref|]_o_start |-> RO[|GET[|this, Ref|]_o_start|]_l [Sheep |-> r_|l_start|],
-		r_|l| |-> [proto |-> GET[|this, Ref|]_o_start]
-	 ] 
+	o_start[	Sheep |-> r_|l|],
+	l_start
+	[
+		GET[|this, Ref|]_o_start |-> RO[|GET[|this, Ref|]_o_start|]_l_start [Sheep |-> r_|l_start|],
+		r_|l_start| |-> [proto |-> GET[|this, Ref|]_o_start]
+	] 
 >
 =
 <o1, l1>
+
+o1 	= o_start[	Sheep |-> r_|l_start|]
+	= [	Sheep |-> r_1]
+
+l1	= 
+	[
+		GET[|this, Ref|]_o_start |-> RO[|GET[|this, Ref|]_o_start|]_l [Sheep |-> r_|l_start|],
+		r_|l| |-> [proto |-> GET[|this, Ref|]_o_start]
+	] 
+	= 	
+	[
+		r_0 |-> [Sheep |-> r_1],
+		r_1 |-> [proto |-> r_0]
+	] 
 
 2 
 [comp_ns]
@@ -46,6 +61,17 @@ Afkortingen:
 =
 <o2, l2>
 
+o2 	= o1
+	= [	Sheep |-> r_1 ]
+
+l2 	= l1[GET[|Sheep, Ref|]_o1 |-> RO[|GET[|Sheep, Ref|]_o1|]_l[legCount |-> RA[|4|]_(o1, l1)]
+l2 	= l1[r_1 |-> RO[|r_1|]_l[legCount |-> 4]]
+l2 	= l1[r_1 |-> [proto |-> r_0, legCount |-> 4]]
+l2 	= [
+		r_0 |-> [Sheep |-> r_1],
+		r_1 |-> [proto |-> r_0, legCount |-> 4]
+	] 
+
 4
 [comp_ns]
 <CLONE Sheep AS MutantSheep; C, o2, l2> -> <o6, l8>
@@ -55,11 +81,31 @@ Afkortingen:
 <CLONE Sheep AS MutantSheep, o2, l2> ->
 <	
 	o2[MutantSheep |-> r_|l2|],
-	l2[	GET[|this, Ref|]_o2 |-> RO[|GET[|this Ref |]_o2 |]_l2 [MutantSheep |-> r_|l2|,
+	l2[	GET[|this, Ref|]_o2 |-> RO[|GET[|this Ref |]_o2 |]_l2 [MutantSheep |-> r_|l2|], 
 		r_|l2| |-> [proto |-> GET[|Sheep, Ref|]_o2]]
 >
 =
 <o3, l3>
+
+o3 	= o2[MutantSheep |-> r_|l2|]
+	= o2[MutantSheep |-> r_2]
+	= [	Sheep |-> r_1, MutantSheep |-> r_2 ]
+
+l3	= l2[	GET[|this, Ref|]_o2 |-> RO[|GET[|this Ref |]_o2 |]_l2 [MutantSheep |-> r_|l2|], 
+		r_|l2| |-> [proto |-> GET[|Sheep, Ref|]_o2]]
+	= l2[ 
+		r_0 |-> RO[|r_0|]_l2 [MutantSheep |-> r_2], 
+		r_2 |-> [proto |-> r_1]
+	= l2[
+		r_0 |-> [this |-> r_0, Sheep |-> r_1, MutantSheep |-> r_2], 
+		r_2 |-> [proto |-> r_1]
+		]
+	= [
+		r_0 |-> [this |-> r_0, Sheep |-> r_1, MutantSheep |-> r_2], 
+		r_1 |-> [proto |-> r_0, legCount |-> 4] 
+		r_2 |-> [proto |-> r_1]
+	]
+
 
 6
 [comp_ns]
@@ -71,10 +117,22 @@ Afkortingen:
 <SET MutantSheep SLOT legCount TO 7; D, o3, l3> ->
 <	
 	o3,
-	l3[GET[|MutantSheep, Ref|]_o3 |-> RO[|GET[|MutantSheep, Ref|]_o3|]_l[legCount |-> RA[|7|]_(o3, l3)]]
+	l3[GET[|MutantSheep, Ref|]_o3 |-> RO[|GET[|MutantSheep, Ref|]_o3|]_l3[legCount |-> RA[|7|]_(o3, l3)]]
 >
 =
 <o4, l4>
+
+o4 	= o3
+	= [	Sheep |-> r_1, MutantSheep |-> r_2 ]
+
+l4 	= l3[GET[|MutantSheep, Ref|]_o3 |-> RO[|GET[|MutantSheep, Ref|]_o3|]_l3[legCount |-> RA[|7|]_(o3, l3)]]
+	= l3[r_2 |-> RO[|r_3|]_l3[legCount |-> 7]]
+	= l3[r_2 |-> [r_2 |-> [proto |-> r_1, legCount |-> 7]]
+	= [
+		r_0 |-> [this |-> r_0, Sheep |-> r_1, MutantSheep |-> r_2], 
+		r_1 |-> [proto |-> r_0, legCount |-> 4] 
+		r_2 |-> [proto |-> r_1, legCount |-> 7]
+	]
 
 8
 [comp_ns]
@@ -84,12 +142,29 @@ Afkortingen:
 [clone_ns]
 <CLONE MutantSheep AS Dolly; E, o4, l4> ->
 <	
-	o4[Dolly |-> r_|l4|,
+	o4[Dolly |-> r_|l4|],
 	l4[GET[|this, Ref|]_o4 |-> RO[|GET[|this, Ref|]_o4|]_l4 [Dolly |-> r_|l4|,
 			r_|l4| |-> [proto |-> GET[|MutantSheep, Ref|]_o4]]
 >
 =
 <o5, l5>
+
+o5 	= o4[Dolly |-> r_|l4|]
+	= o4[Dolly |-> r_3]
+	= [	Sheep |-> r_1, MutantSheep |-> r_2, Dolly |-> r_3 ]
+
+l5 	= l4[GET[|this, Ref|]_o4 |-> RO[|GET[|this, Ref|]_o4|]_l4 [Dolly |-> r_|l4|],
+			r_|l4| |-> [proto |-> GET[|MutantSheep, Ref|]_o4]]
+	= l4[ r_0 |-> RO[| r_0 |]_l4 [Dolly |-> r_3],
+		  r_3 |-> [proto |-> r_2]]
+	= l4[ r_0 |-> [this |-> r_0, Sheep |-> r_1, MutantSheep |-> r_2, Dolly |-> r_3],
+		  r_3 |-> [proto |-> r_2]]
+	= [
+		r_0 |-> [this |-> r_0, Sheep |-> r_1, MutantSheep |-> r_2, Dolly |-> r_3], 
+		r_1 |-> [proto |-> r_0, legCount |-> 4] 
+		r_2 |-> [proto |-> r_1, legCount |-> 7]
+		r_3 |-> [proto |-> r_2]
+	]
 
 10
 [comp_ns]
@@ -102,10 +177,28 @@ Afkortingen:
 <SET MutantSheep SLOT growMoreLegs TO (SET this SLOT legCount TO x + FROM this CALL legCount), o5, l5> ->
 <	
 	o5,
-	l5[GET[|MutantSheep, Ref|]_o5 |-> RO[|GET[|MutantSheep, Ref|]_o5|]_l5[growMoreLegs |-> SET this SLOT legCount TO x + FROM this CALL legCount]]
+	l5[GET[|MutantSheep, Ref|]_o5 |-> RO[|GET[|MutantSheep, Ref|]_o5|]_l5[growMoreLegs |-> 
+		SET this SLOT legCount TO x + FROM this CALL legCount]]
 >
 =
 <o6, l6>
+
+o6 	= o5
+	=  [Sheep |-> r_1, MutantSheep |-> r_2, Dolly |-> r_3 ]
+
+l6 	= l5[GET[|MutantSheep, Ref|]_o5 |-> RO[|GET[|MutantSheep, Ref|]_o5|]_l5[growMoreLegs |-> 
+		SET this SLOT legCount TO x + FROM this CALL legCount]]
+	= l5[r_2 |-> RO[| r_2 |]_l5[growMoreLegs |-> 
+		SET this SLOT legCount TO x + FROM this CALL legCount]]
+	= l5[r_2 |-> [proto |-> r_1, legCount |-> 7, growMoreLegs |-> 
+				SET this SLOT legCount TO x + FROM this CALL legCount]]
+	= [
+		r_0 |-> [this |-> r_0, Sheep |-> r_1, MutantSheep |-> r_2, Dolly |-> r_3], 
+		r_1 |-> [proto |-> r_0, legCount |-> 4] 
+		r_2 |-> [proto |-> r_1, legCount |-> 7, growMoreLegs |-> 
+				SET this SLOT legCount TO x + FROM this CALL legCount]
+		r_3 |-> [proto |-> r_2]
+	]
 
 12
 [call_ns]
@@ -115,77 +208,94 @@ Afkortingen:
 [DvVar^a_ns]
 <WITH x := 2; epsilon , o6, l6> -> 
 <	
-	[x |-> RA[|2|]_o6],
+	[][x |-> RA[|2|]_(o6, l6)],
 	l6
 >
 =
 <o7, l7>
 
+o7 	= [][x |-> RA[|2|]_(o6, l6)]
+	= [x |-> 2]
+
+l7 	= l6
+	= [
+		r_0 |-> [this |-> r_0, Sheep |-> r_1, MutantSheep |-> r_2, Dolly |-> r_3], 
+		r_1 |-> [proto |-> r_0, legCount |-> 4] 
+		r_2 |-> [proto |-> r_1, legCount |-> 7, growMoreLegs |-> 
+				SET this SLOT legCount TO x + FROM this CALL legCount]
+		r_3 |-> [proto |-> r_2]
+	]
+
 14
 [DvSkip_ns]
-<epsilon, o6, l6> -> <[],	l6>
+<epsi, o6, l6> -> <[],	l6>
 
 15
 [seta_ns]
 <
-	GET[|growMoreLegs, I|]_(RO[|GET[|Dolly, O|]_o6|]_l6),
-	o7[proto |-> GET[|Dolly, O|]_o6, this |-> GET[|Dolly|]_o6],
+	GET[|growMoreLegs, I|]_(RO[|GET[|Dolly, Ref|]_o6|]_l6),
+	o7[proto |-> GET[|Dolly, Ref|]_o6, this |-> GET[|Dolly|]_o6],
+	l7
+> 
+= 
+<
+	GET[|growMoreLegs, I|]_(RO[|r_3|]_l6),
+	o7[proto |-> r_3, this |-> r_3],						= o7'
 	l7
 > 
 = 
 <
 	SET this SLOT legCount TO x + FROM this CALL legCount,
-	o7[proto |-> GET[|Dolly, O|]_o6, this |-> GET[|Dolly|]_o6],
+	o7[proto |-> r_3, this |-> r_3],
 	l7
 >
 ->
 <
-	o7[proto |-> GET[|Dolly, O|]_o6, this |-> GET[|Dolly|]_o6],
+	o7[proto |-> r_3, this |-> r_3],
 	l7[
-		GET [|this, Ref|]_o7 |-> RO[|GET[|this, Ref|]_o7|]_l7
-		[legCount |-> RA[|x + FROM this CALL legCount|]_(07, l7)]
+		GET [|this, Ref|]_o7' |-> RO[|GET[|this, Ref|]_o7'|]_l7
+		[legCount |-> RA[|x + FROM this CALL legCount|]_(07', l7)]
 	  ]
 > = 
 <
-	o7[proto |-> GET[|Dolly, O|]_o6, this |-> GET[|Dolly|]_o6],
+	o7[proto |-> r_3, this |-> r_3],
  	l7[
-		GET [|this, Ref|]_o7 |-> RO[|GET[|this, Ref|]_o7|]_l7
-		[legCount |-> RA[|x + FROM this CALL legCount|]_(07, l7)]
+		GET [|this, Ref|]_o7' |-> RO[|GET[|this, Ref|]_o7'|]_l7
+		[legCount |-> RA[|x + FROM this CALL legCount|]_(o7', l7)]
 	  ]
 >
 =
 <
-	o7[proto |-> GET[|Dolly, O|]_o6, this |-> GET[|Dolly|]_o6],
+	o7[proto |-> r_3, this |-> r_3],
  	l7[
-		GET [|this, Ref|]_o7 |-> RO[|GET[|this, Ref|]_o7|]_l7
+		GET [|this, Ref|]_o7' |-> RO[|GET[|this, Ref|]_o7'|]_l7
 		[legCount |-> 	RA[|x|]_(07, l7) + 
-						RA[|FROM this CALL legCount|]_(07, l7)
+						RA[|FROM this CALL legCount|]_(o7', l7)
 		]
 	  ]
  >
-=
-<
-	o7[proto |-> GET[|Dolly, O|]_o6, this |-> GET[|Dolly|]_o6],
- 	l7[
-		GET [|this, Ref|]_o7 |-> RO[|GET[|this, Ref|]_o7|]_l7
-		[legCount |-> 	2 + 
-						GET[|legCount, Z|]_RO[|GET[|this, Ref|]_o7|]_l7 
+= <o8, l8>
+
+o8 	= o7[proto |-> r_3, this |-> r_3]
+	= [x |-> 2 proto |-> r_3, this |-> r_3]
+
+l8 	= l7[
+		GET [|this, Ref|]_o7' |-> RO[|GET[|this, Ref|]_o7'|]_l7
+		[legCount |-> 	RA[|x|]_(07, l7) + 
+						RA[|FROM this CALL legCount|]_(o7', l7)
 		]
 	  ]
->
-=
-<
-	o7[proto |-> GET[|Dolly, O|]_o6, this |-> GET[|Dolly|]_o6],
- 	l7[
-		GET [|this, Ref|]_o7 |-> RO[|GET[|this, Ref|]_o7|]_l7
-		[legCount |-> 	2 + 7]
-	  ]
->
-<
-	o7[proto |-> GET[|Dolly, O|]_o6, this |-> GET[|Dolly|]_o6],
- 	l7[
-		GET [|this, Ref|]_o7 |-> RO[|GET[|this, Ref|]_o7|]_l7
-		[legCount |-> 9]
-	  ]
->
-= <o8, l8>
+	= l7[
+		r_3 |-> RO[|r_3|]_l7 [legCount |-> 	2 + 
+						GET[|legCount, Z|]_RO[|GET[|this, Ref|]_o7'|]_l7]
+	]
+	= l7 [	r_3 |-> RO[|r_3|]_l7[legCount |-> 	2 + 7] ]
+	= l7 [ r_3 |-> RO[|r_3|]_l7 [legCount |-> 9] ]
+	= l7 [ r_3 |-> [proto |-> r_2, legCount |-> 9] 
+	= [
+		r_0 |-> [this |-> r_0, Sheep |-> r_1, MutantSheep |-> r_2, Dolly |-> r_3], 
+		r_1 |-> [proto |-> r_0, legCount |-> 4] 
+		r_2 |-> [proto |-> r_1, legCount |-> 7, growMoreLegs |-> 
+				SET this SLOT legCount TO x + FROM this CALL legCount]
+		r_3 |-> [proto |-> r_2, legCount |-> 9]
+	] 

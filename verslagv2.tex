@@ -40,7 +40,6 @@
 \begin{document}
 \maketitle
 
-%TODO: loop tekst na op woordherhaling
 \begin{abstract}
 Dit werkstuk beschrijft de syntax en semantiek van WhIole, een door Io geinspireerde uitbreiding van While. Io is een puur objectge\"orienteerde programmeertaal. Hierbij wordt WhIole met natuurlijke semantiek beschreven. Vervolgens gebruiken we de beschreven syntax en semantiek om
 de mogelijkheden van Io te laten zien.
@@ -81,8 +80,7 @@ Dit voorbeeld is afkomstig van \url{andriybuday.com/2012/07/io-programming-langu
 In de eerste regel maken we een kloon van Object. Object is het prototype dat er altijd vanaf het begin al is,
 alle objecten die er later bij komen zijn op Object gebaseerd.
 Zoals de naam al suggereert maak je, als je een prototype kloont, een nieuwe instantie van dat prototye.
-%todo: clone maakt een nieuw (leeg) object aan met als prototype het orginele object
-Deze nieuwe instantie heeft precies dezelfde structuur en kenmerken als het prototype waar het uit gekloond is.
+Deze nieuwe instantie is grotendeels leeg, maar bevat een referentie naar het prototype waar deze uit gekloond is. Via deze referentie worden slots uit het prototype aangeroepen.
 Als er later veranderingen worden gemaakt aan het prototype dat gekloond is, dan hebben die ook effect op het nieuwe object.
 Sheep is dus een nieuw object dat precies hetzelfde kan en eruit ziet als Object.\newline
 
@@ -92,12 +90,7 @@ Hoewel Sheep een kloon is van Object, zijn het verschillende instanties, en dus 
 
 Ons schaap is veel te saai. Dit gaan we oplossen door een gemuteerd schaap te maken dat een kloon is van Sheep. Vervolgens zetten we het attribuut ``legCount'' van MutantSheep op 7.\newline
 
-%todo: dolly met kleine letter als instantie van MutantSheep?
-In de volgende stap maken we weer een kloon van ons gemuteerde schaap. Deze kloon noemen we dolly. De naam dolly, is naar conventie zonder hoofdletter geschreven.
-Dit is om het idee te geven dat het een instantie is van het object MutantSheep.
-Dit is alleen om het programmeren overzichtelijker te maken, want Io maakt geen onderscheid tussen klassen en instanties: er zijn alleen maar objecten.\newline
-
-Daarna gaan we een nieuwe methode maken en toevoegen aan MutantSheep, namelijk growMoreLegs.
+Na het clonen gaan we een nieuwe methode maken en toevoegen aan MutantSheep, namelijk growMoreLegs.
 growMoreLegs neemt één argument n en verhoogt ``legCount'' met die n. 
 Zoals eerder gezegd worden veranderingen op een prototype ook overgedragen op prototypes die eruit gekloond zijn. dolly heeft deze methode nu dus ook en kan er gebruik van maken.\newline
 
@@ -106,6 +99,8 @@ Om dit te doen maken we gebruik van de nieuwe methode growMoreLegs.
 We roepen de methode growMoreLegs van dolly aan met argument 2.
 De methode verhoogt het attribuut legCount van dolly met 2.
 Uiteindelijk heeft dolly dus 9 poten.
+
+\newline
 
 We hebben de code van het bovenstaande voorbeeld zo letterlijk mogelijk vertaald naar WhIole.
 Het vertaalde voorbeeld is het volgende:
@@ -189,8 +184,7 @@ Dit levert het resultaat op als je slot $x_i$ van object var aanroept met de var
 	 SET \enspace var_o\enspace SLOT\enspace x\enspace TO\enspace i
 \end{align*} 
 Dit maakt in object $var_o$ een slot aan met daarin $i$. $i$ kan zowel een booleaanse expressie, een aritmetische expressie als een methode zijn. 
-%todo: constructie woord?
-Zoals je kunt zien eindigen niet alle statements in een constructiewoord. Hierdoor is het niet altijd duidelijk wanneer het ene statement is afgelopen en het andere begint. Kijk maar naar:
+Aangezien een statement een onderdeel kan zijn van bepaalde statements (Bijvoorbeeld in While, of in een slot), is het niet altijd duidelijk wanneer het ene statement is afgelopen en het andere begint. Kijk maar naar:
 \begin{align*}
 WHILE \enspace x <= 2 \enspace DO \enspace SKIP; \enspace SKIP
 \end{align*}
@@ -229,9 +223,8 @@ Onze eigen toevoeging is natuurlijk objecten. Omdat we objecten graag by-referen
 r \in \mathcal{N}
 \end{gather*}
 Om referenties makkelijk op te kunnen schrijven zullen we de volgende afkorting gebruiken:
-%todo: juist geen set toch?
 \begin{gather*}
-r_x = \{x, x \in Ref\}
+r_x = x, x \in Ref
 \end{gather*}
 Objecten zelf definiëren we als volgt:
 \begin{gather*}\mathcal{O} : Var \rightarrow \mathcal{I} \end{gather*}
@@ -421,7 +414,7 @@ Semantiekregels:\\
 {
 	\begin{matrix}
 	\langle Dv', o, l \rangle \rightarrow \langle o\prime, l\prime \rangle\\
-	\langle GET \llbracket x, \mathcal{I} \rrbracket_{\RO \llbracket GET\llbracket var, \mathcal{O} \rrbracket_o \rrbracket_l}, o\prime [proto \mapsto GET\llbracket var, \mathcal{O} \rrbracket_o, this \mapsto GET\llbracket var \rrbracket_o], l\prime \rangle\\
+	\langle GET \llbracket x, \mathcal{I} \rrbracket_{\RO \llbracket GET\llbracket var, Ref \rrbracket_o \rrbracket_l}, o\prime [proto \mapsto GET\llbracket var, Ref \rrbracket_o, this \mapsto GET\llbracket var \rrbracket_o], l\prime \rangle\\
 	\rightarrow
 	\langle o\prime\prime, l\prime\prime \rangle
 	\end{matrix}	
