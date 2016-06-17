@@ -63,6 +63,8 @@ Aangezien het bij Io allemaal draait om objecten en hoe die met elkaar communice
 %Verder laten we zien dat hoewel Io geen keywords, zoals `if' en `for', het nog steeds dezelfde uitdrukkingskracht heeft als While. %Of willen we While en WhileIO vergelijken?
 Eerst leggen werken we uit hoe Io werkt en hoe dit verschilt met het door ons gemaakte WhIole. Hierbij zullen we een voorbeeld gebruiken dat in Io geschreven is dat voorbeeld vertalen we naar WhIole. Vervolgens leggen we de syntax en semantiek van WhIole vast door middel van natuurlijke semantiek. Tot slot werken we het hierboven genoemde voorbeeldprogramma uit met de door ons gedefinieerde semantiek. 
 
+\pagebreak
+
 \subsection*{Voorbeeld}
 Om een idee te krijgen van hoe een programma eruit ziet in Io, volgt hier een voorbeeld:
 \begin{lstlisting}[frame=single]
@@ -154,7 +156,7 @@ var ::= x
 \end{gather*}
 Onze statements zien er als volgt uit:
 \begin{align*}
-S ::=& SKIP 	
+S ::= \enspace& SKIP 	
 	\enspace|\enspace  IF\enspace b \enspace THEN \enspace S1 
 	\enspace|\enspace  ROM\enspace var\enspace CALL\enspace x_i \enspace Dv
 	\enspace|\enspace S1;S2 	
@@ -180,8 +182,6 @@ Dit maakt een slot in het huidige object met als naam $var_c$. Hierin komt een c
 
 \begin{gather*}
 FROM \enspace var\enspace CALL\enspace x_i\enspace Dv \\
-Dv 	::= E
-	\enspace|\enspace WITH\enspace x\enspace :=\enspace i; Dv
 \end{gather*}
 Dit levert het resultaat op als je slot $x_i$ van object var aanroept met de variabelen Dv. In een slot kan natuurlijk ook een getal of booleaanse waarde zitten, dus Dv kan ook leeg zijn. 
 
@@ -260,7 +260,7 @@ We gebruiken nog steeds dezelfde overgang, maar nu met een andere definitie voor
 \end{gather*}
 Daarnaast moeten wij nog definiëren dat aan de start van een programma de state niet leeg is, maar de varnaam $ this $ bind aan een leeg object $ [\enspace] $.
 \begin{gather*}
-o_{start} = [this \rightarrow r_0]	
+o_{start} = [this \rightarrow r_0]\\	
 l_{start} = [r_0 \mapsto [ \enspace ]]
 \end{gather*}
 Daarnaast moeten we enkele veranderingen maken aan de manier waarop aritmetische en booleaanse expressies worden geëvalueerd. 
