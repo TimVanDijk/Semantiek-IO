@@ -16,6 +16,8 @@ Afkortingen:
 	D = 567
 	E =	67
 
+o_start  = [this |-> r_0]
+l_start  = [r_0 |-> []]
 [comp_ns]
 0 <CLONE this AS Sheep; A, o, l> -> <o6, l8>
 
@@ -23,7 +25,7 @@ Afkortingen:
 [clone_ns]
 <CLONE this AS Sheep, o_start, l_start> ->
 <	
-	o_start[	Sheep |-> r_|l|],
+	o_start[ Sheep |-> r_|l|],
 	l_start
 	[
 		GET[|this, Ref|]_o_start |-> RO[|GET[|this, Ref|]_o_start|]_l_start [Sheep |-> r_|l_start|],
@@ -34,7 +36,7 @@ Afkortingen:
 <o1, l1>
 
 o1 	= o_start[	Sheep |-> r_|l_start|]
-	= [	Sheep |-> r_1]
+	= [this |-> r_0, Sheep |-> r_1]
 
 l1	= 
 	[
@@ -62,7 +64,7 @@ l1	=
 <o2, l2>
 
 o2 	= o1
-	= [	Sheep |-> r_1 ]
+	= [this |-> r_0, Sheep |-> r_1 ]
 
 l2 	= l1[GET[|Sheep, Ref|]_o1 |-> RO[|GET[|Sheep, Ref|]_o1|]_l[legCount |-> RA[|4|]_(o1, l1)]
 l2 	= l1[r_1 |-> RO[|r_1|]_l[legCount |-> 4]]
@@ -89,7 +91,7 @@ l2 	= [
 
 o3 	= o2[MutantSheep |-> r_|l2|]
 	= o2[MutantSheep |-> r_2]
-	= [	Sheep |-> r_1, MutantSheep |-> r_2 ]
+	= [this |-> r_0, Sheep |-> r_1, MutantSheep |-> r_2 ]
 
 l3	= l2[	GET[|this, Ref|]_o2 |-> RO[|GET[|this Ref |]_o2 |]_l2 [MutantSheep |-> r_|l2|], 
 		r_|l2| |-> [proto |-> GET[|Sheep, Ref|]_o2]]
@@ -123,7 +125,7 @@ l3	= l2[	GET[|this, Ref|]_o2 |-> RO[|GET[|this Ref |]_o2 |]_l2 [MutantSheep |-> 
 <o4, l4>
 
 o4 	= o3
-	= [	Sheep |-> r_1, MutantSheep |-> r_2 ]
+	= [this |-> r_0, Sheep |-> r_1, MutantSheep |-> r_2 ]
 
 l4 	= l3[GET[|MutantSheep, Ref|]_o3 |-> RO[|GET[|MutantSheep, Ref|]_o3|]_l3[legCount |-> RA[|7|]_(o3, l3)]]
 	= l3[r_2 |-> RO[|r_3|]_l3[legCount |-> 7]]
@@ -151,7 +153,7 @@ l4 	= l3[GET[|MutantSheep, Ref|]_o3 |-> RO[|GET[|MutantSheep, Ref|]_o3|]_l3[legC
 
 o5 	= o4[Dolly |-> r_|l4|]
 	= o4[Dolly |-> r_3]
-	= [	Sheep |-> r_1, MutantSheep |-> r_2, Dolly |-> r_3 ]
+	= [this |-> r_0, Sheep |-> r_1, MutantSheep |-> r_2, Dolly |-> r_3 ]
 
 l5 	= l4[GET[|this, Ref|]_o4 |-> RO[|GET[|this, Ref|]_o4|]_l4 [Dolly |-> r_|l4|],
 			r_|l4| |-> [proto |-> GET[|MutantSheep, Ref|]_o4]]
@@ -184,7 +186,7 @@ l5 	= l4[GET[|this, Ref|]_o4 |-> RO[|GET[|this, Ref|]_o4|]_l4 [Dolly |-> r_|l4|]
 <o6, l6>
 
 o6 	= o5
-	=  [Sheep |-> r_1, MutantSheep |-> r_2, Dolly |-> r_3 ]
+	=  [this |-> r_0, Sheep |-> r_1, MutantSheep |-> r_2, Dolly |-> r_3 ]
 
 l6 	= l5[GET[|MutantSheep, Ref|]_o5 |-> RO[|GET[|MutantSheep, Ref|]_o5|]_l5[growMoreLegs |-> 
 		SET this SLOT legCount TO x + FROM this CALL legCount]]
@@ -228,7 +230,7 @@ l7 	= l6
 
 14
 [DvSkip_ns]
-<epsi, o6, l6> -> <[],	l6>
+<epsilon, o6, l6> -> <[],	l6>
 
 15
 [seta_ns]
