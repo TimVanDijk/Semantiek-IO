@@ -378,7 +378,7 @@ Semantiekregels:\\
 \begin{matrix}
 \langle CLONE \enspace var_p \enspace AS \enspace var_c, o, l\rangle 
 \rightarrow\\
-\langle o[var_c \mapsto r_{|l|+1}], l[GET \llbracket this, Ref \rrbracket_o \mapsto \RO \llbracket GET \llbracket this, Ref \rrbracket_o \rrbracket_l[var_c \mapsto r_{|l|+1}] ,\\ r_{|l|+1} \mapsto [ proto \mapsto GET \llbracket var_p, Ref \rrbracket_o]]\rangle
+\langle o[var_c \mapsto r_{|l|}], l[GET \llbracket this, Ref \rrbracket_o \mapsto \RO \llbracket GET \llbracket this, Ref \rrbracket_o \rrbracket_l[var_c \mapsto r_{|l|}] ,\\ r_{|l|} \mapsto [ proto \mapsto GET \llbracket var_p, Ref \rrbracket_o]]\rangle
 \end{matrix}\\[60pt]
 %\hline
 \begin{matrix}
