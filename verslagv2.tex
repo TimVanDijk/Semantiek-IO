@@ -421,7 +421,7 @@ Semantiekregels:\\
 {
 	\begin{matrix}
 	\langle Dv', o, l \rangle \rightarrow \langle o\prime, l\prime \rangle\\
-	\langle GET \llbracket x, \mathcal{I} \rrbracket_{\RO \llbracket GET\llbracket var, \mathcal{O} \rrbracket_o \rrbracket_l}, o\prime [proto \mapsto GET\llbracket var, \mathcal{O} \rrbracket_o, this \mapsto GET\llbracket var \rrbracket_o], l\prime \rangle\\
+	\langle GET \llbracket x, \mathcal{I} \rrbracket_{\RO \llbracket GET\llbracket var, Ref \rrbracket_o \rrbracket_l}, o\prime [proto \mapsto GET\llbracket var, Ref \rrbracket_o, this \mapsto GET\llbracket var \rrbracket_o], l\prime \rangle\\
 	\rightarrow
 	\langle o\prime\prime, l\prime\prime \rangle
 	\end{matrix}	
@@ -501,7 +501,7 @@ Deze nummers zijn in onderstaande boom gezet om de structuur aan te geven.
 
 NIET AF!!!!!!
 %$
-%\dfrac
+%\ac
 %	{1 \dfrac{\dfrac{3 \dfrac{5 \dfrac{7 \dfrac{9}{\mbox{8 10}}{8}}{6}}{4}}{2}} {0}}
 %$
 
