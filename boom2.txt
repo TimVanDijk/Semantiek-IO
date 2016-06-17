@@ -14,7 +14,7 @@ Afkortingen:
 	B = 34567 (Alles na de tweede regel)
 	C = 4567 etc.
 	D = 567
-	E =	67
+	E = 67
 	F = 7
 [comp_ns]
 0 <CLONE this AS Sheep; A, o, l> -> <o6, l8>
@@ -189,109 +189,3 @@ Afkortingen:
 	  ]
 >
 = <o8, l8>
-
-
-
-
-
-
-1
-[clone_ns]
-<CLONE this AS Sheep; A, o, l> ->
-<	o[Sheep |-> r_|l|+1],
-	l[	GET[|this, Ref|]_o |-> RO[|GET[|this, Ref |]_o |]_l [Sheep |-> r_|l|+1,
-		r_|l|+1 |-> [proto |-> GET[|this, Ref|]_o]]
->
-=
-<o', l'>
-
-2
-[set^a_ns]
-<SET Sheep SLOT legCount TO 4; B, o', l'> ->
-<	o',
-	l'[GET[|Sheep, Ref|]_o |-> RO[|GET[|Sheep, Ref|]_o|]_l[legCount |-> RA[|4|]_(o,l)]]
->
-=
-<o'', l''>
-
-3
-[clone_ns]
-<CLONE Sheep AS MutantSheep; C, o'', l''> ->
-<	o''[MutantSheep |-> r_|l|+1],
-	l''[	GET[|Sheep, Ref|]_o |-> RO[|GET[|Sheep Ref |]_o |]_l [MutantSheep |-> r_|l|+1,
-		r_|l|+1 |-> [proto |-> GET[|Sheep, Ref|]_o]]
->
-=
-<o''', l'''>
-
-4
-[set^a_ns]
-<SET MutantSheep SLOT legCount TO 7; D, o''', l'''> ->
-<	o''',
-	l'''[GET[|MutantSheep, Ref|]_o |-> RO[|GET[|MutantSheep, Ref|]_o|]_l[legCount |-> RA[|7|]_(o,l)]]
->
-=
-<o'''', l''''>
-
-5
-[clone_ns]
-<CLONE MutantSheep AS Dolly; E, o'''', l''''> ->
-<	o''''[Dolly |-> r_|l|+1],
-	l''''[GET[|MutantSheep, Ref|]_o |-> RO[|GET[|MutantSheep Ref |]_o |]_l [Dolly |-> r_|l|+1,
-			r_|l|+1 |-> [proto |-> GET[|MutantSheep, Ref|]_o]]
->
-=
-<o''''', l'''''>
-
-6
-[set^notab_ns]
-<SET MutantSheep SLOT growMoreLegs TO (SET this SLOT legCount TO x + FROM this CALL legCount); E, o''''', l'''''> ->
-<	o''''',
-	l'''''[GET[|MutantSheep, Ref|]_o |-> RO[|GET[|MutantSheep, Ref|]_o|]_l[growMoreLegs |-> RO[|SET this SLOT legCount TO x + FROM this CALL legCount|]_(o,l)]]
->
-=
-<o'''''', l''''''>
-
-7
-[call_ns]
-<FROM Dolly CALL growMoreLegs WITH x := 2;, o'''''', l''''''> -> 
-<	o'''''''',
-	l''''''''
->
-
-8
-[DvVara_ns]
-<x := 2, o'''''', l''''''> -> 
-<	o'''''''[x |-> RA[|2|]_o],
-	l''''''
->
-=
-<o'''''''', l''''''''>
-
-9
-[DvSkip_ns]
-<E, o'''''''', l''''''''> ->
-<	[],
-	l''''''
->
-=
-<o''''''''', l'''''''''>
-
-10
-[seta_ns]
-<GET[|growMoreLegs, I|]_(RO[|GET[|Dolly, O|]_o|]_l),
-o'''''''''[proto |-> GET[|Dolly, O|]_o, this |-> GET[|Dolly|]_o],
-l''''''''' > = 
-<SET this SLOT legCount TO x + FROM this CALL legCount,
-o'''''''''[proto |-> GET[|Dolly, O|]_o, this |-> GET[|Dolly|]_o],
-l''''''''' > =
-<SET this SLOT legCount TO 2 + 7,
-o'''''''''[proto |-> GET[|Dolly, O|]_o, this |-> GET[|Dolly|]_o],
-l''''''''' > =
-<SET this SLOT legCount TO 2 + 7,
-o'''''''''',
-l'''''''''' > ->
-<o'''''''''',
-l''''''''''[GET[|this, Ref|]_o |-> RO[|GET[|this, Ref|]_o|]_l[legCount |-> RA[|7+2|]_(o,l)]]> =
-<o''''''''''',
- l'''''''''''>
